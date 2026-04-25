@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Missions - CEDRUS Expertise Comptable & Conseils</title>
+    <meta name="description" content="Découvrez nos services de comptabilité, fiscalité et social. Une expertise complète pour votre entreprise avec CEDRUS.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Nos Missions - CEDRUS Expertise Comptable & Conseils">
+    <meta property="og:description" content="Découvrez nos services de comptabilité, fiscalité et social. Une expertise complète pour votre entreprise.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cedrus-expertise.fr/fr/missions.html">
+
+    <!-- Favicon SVG inline -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-weight='bold' fill='%233E9364'>C</text></svg>">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="../assets/styles.css">
+
+    <!-- Tailwind config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cedrus': { 700: '#357A56', 600: '#3E9364', 500: '#4FA36F', 200: '#BFE6AE' },
+                        'ink': '#0B1420',
+                        'muted': '#6B7280',
+                        'paper': '#F8FAF9',
+                        'gold': '#D4A853'
+                    },
+                    fontFamily: {
+                        'playfair': ['Playfair Display', 'serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "CEDRUS EXPERTISE COMPTABLE & CONSEILS",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "8 AVENUE DES TERRASSES",
+            "addressLocality": "MARNES-LA-COQUETTE",
+            "postalCode": "92430",
+            "addressCountry": "FR"
+        },
+        "url": "https://cedrus-expertise.fr",
+        "description": "Cabinet d'expertise comptable nouvelle generation au service des dirigeants de demain"
+    }
+    </script>
+
+    <style>
+        .parallax-bg { background-attachment: fixed; background-size: cover; background-position: center; }
+        @media (max-width: 768px) { .parallax-bg { background-attachment: scroll; } }
+
+        .gold-sep { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #D4A853, transparent); margin: 0 auto; }
+        .gold-sep-wide { width: 200px; height: 1px; background: linear-gradient(90deg, transparent, #D4A853, #D4A853, transparent); margin: 0 auto; }
+        .gold-sep-left { width: 60px; height: 2px; background: linear-gradient(90deg, #D4A853, transparent); }
+
+        .img-zoom-wrapper { overflow: hidden; }
+        .img-zoom-wrapper img { transition: transform 0.6s ease; }
+        .img-zoom-wrapper:hover img { transform: scale(1.05); }
+
+        .lang-menu { display: none; position: absolute; top: 100%; right: 0; background: white; border-radius: 0.5rem; box-shadow: 0 4px 24px rgba(0,0,0,0.12); min-width: 150px; z-index: 50; overflow: hidden; }
+        .lang-menu.open { display: block; }
+        .lang-menu a { display: block; padding: 0.5rem 1rem; color: #6B7280; font-size: 0.875rem; transition: background 0.2s; }
+        .lang-menu a:hover { background: #F8FAF9; }
+        .lang-menu a.active { font-weight: 600; color: #0B1420; }
+    </style>
+</head>
+<body class="bg-paper font-inter text-ink">
+    <!-- Navigation -->
+    <nav id="mainNav" class="fixed top-0 z-40 w-full transition-all duration-500" style="background:transparent;">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-5 transition-all duration-500" id="navInner">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <img src="../cedrus.png" alt="CEDRUS" class="h-10 w-auto opacity-90 group-hover:opacity-100 transition-opacity">
+                <div class="hidden sm:flex flex-col">
+                    <span class="text-lg font-playfair font-bold tracking-wider nav-text transition-colors duration-500" style="color:white;">CEDRUS</span>
+                    <span class="text-xs tracking-widest uppercase nav-text transition-colors duration-500" style="color:rgba(255,255,255,0.7);">Expertise Comptable</span>
+                </div>
+            </a>
+            <div class="hidden md:flex items-center gap-x-8">
+                <a href="index.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Accueil</a>
+                <a href="cabinet.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Cabinet</a>
+                <a href="missions.html" data-nav-link class="text-sm font-medium tracking-wide nav-link transition-all duration-300" style="color:white;">Missions</a>
+                <a href="honoraires.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Honoraires</a>
+                <a href="contact.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Contact</a>
+                <a href="espace-client.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">Espace Client</a>
+                <!-- Language selector -->
+                <div class="relative">
+                    <button onclick="toggleLangMenu()" class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100 flex items-center gap-1" style="color:rgba(255,255,255,0.7);">
+                        FR
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="langMenu" class="lang-menu">
+                        <a href="../missions.html">EN</a>
+                        <a href="#" class="active">Fran&ccedil;ais</a>
+                        <a href="../ar/missions.html">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</a>
+                    </div>
+                </div>
+                <a href="onboarding.html" class="text-sm font-medium px-6 py-2.5 rounded-full border border-white/40 hover:bg-white hover:text-ink transition-all duration-300 nav-cta" style="color:white;">Commencer</a>
+            </div>
+            <button data-mobile-menu class="md:hidden p-2 rounded-lg nav-text" style="color:white;" aria-label="Menu"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 9h16.5m-16.5 6.75h16.5"></path></svg></button>
+        </div>
+        <div data-mobile-menu-panel class="hidden md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg border-b border-gray-100 shadow-xl">
+            <div class="px-6 py-8 space-y-5">
+                <a href="index.html" class="block text-muted">Accueil</a>
+                <a href="cabinet.html" class="block text-muted">Cabinet</a>
+                <a href="missions.html" class="block text-ink font-medium">Missions</a>
+                <a href="honoraires.html" class="block text-muted">Honoraires</a>
+                <a href="contact.html" class="block text-muted">Contact</a>
+                <a href="espace-client.html" class="block text-muted hover:text-ink transition-colors">Espace Client</a>
+                <div class="flex items-center gap-4 pt-2 text-sm text-muted">
+                    <a href="../missions.html" class="hover:text-ink transition-colors">EN</a>
+                    <span class="font-semibold text-ink">FR</span>
+                    <a href="../ar/missions.html" class="hover:text-ink transition-colors">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</a>
+                </div>
+                <div class="pt-2"><a href="onboarding.html" class="block bg-ink text-white px-6 py-3.5 rounded-full font-medium text-center text-sm">Commencer</a></div>
+            </div>
+        </div>
+        <div data-mobile-menu-overlay class="hidden md:hidden fixed inset-0 bg-black/20 z-30"></div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=2070&q=80');"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <div class="gold-sep mb-8"></div>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-playfair font-bold text-white mb-8 animate-on-scroll">
+                Nos Missions
+            </h1>
+            <p class="text-xl text-white/90 max-w-3xl mx-auto animate-on-scroll">
+                Une expertise comptable complète au service de votre entreprise
+            </p>
+            <div class="gold-sep mt-8"></div>
+        </div>
+    </section>
+
+    <!-- Accounting Section -->
+    <section class="py-24 bg-paper">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center mb-20">
+                <div class="animate-on-scroll">
+                    <div class="gold-sep-left mb-6"></div>
+                    <h2 class="text-3xl md:text-4xl font-playfair font-bold text-ink mb-6">Comptabilité</h2>
+                    <p class="text-lg text-muted leading-relaxed">
+                        La comptabilité est bien plus qu'une obligation réglementaire : c'est un outil de gestion essentiel. Chez CEDRUS, nous assurons une gestion rigoureuse et personnalisee de vos obligations comptables et fiscales.
+                    </p>
+                </div>
+                <div class="img-zoom-wrapper rounded-2xl shadow-xl animate-on-scroll">
+                    <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80" alt="Comptabilité" class="w-full h-72 object-cover rounded-2xl">
+                </div>
+            </div>
+
+            <div class="space-y-0 max-w-4xl mx-auto">
+                <div class="flex items-start gap-6 py-8 border-b border-gray-100 animate-on-scroll">
+                    <div class="w-12 h-12 rounded-xl bg-cedrus-600/10 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-cedrus-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-ink mb-1">Liasse fiscale & comptes annuels</h3>
+                        <p class="text-muted text-sm leading-relaxed">Bilan, compte de resultat et annexes constituant un dossier fiscal complet, hors opérations de dissolution ou de liquidation.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-6 py-8 border-b border-gray-100 animate-on-scroll">
+                    <div class="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-ink mb-1">Déclarations fiscales</h3>
+                        <p class="text-muted text-sm leading-relaxed">Traitement des déclarations de TVA, d'impôt sur les sociétés et autres déclarations obligatoires, selon votre activité et régime fiscal.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-6 py-8 border-b border-gray-100 animate-on-scroll">
+                    <div class="w-12 h-12 rounded-xl bg-cedrus-600/10 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-cedrus-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-ink mb-1">Tenue comptable</h3>
+                        <p class="text-muted text-sm leading-relaxed">Saisie et traitement des factures d'achat, de vente et des notes de frais, via des outils dematerialises.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-6 py-8 border-b border-gray-100 animate-on-scroll">
+                    <div class="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-ink mb-1">Rapprochement bancaire</h3>
+                        <p class="text-muted text-sm leading-relaxed">Vérification régulière de la coherence entre les releves bancaires et les ecritures comptables.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-6 py-8 animate-on-scroll">
+                    <div class="w-12 h-12 rounded-xl bg-cedrus-600/10 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-cedrus-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-ink mb-1">Conseil fiscal, juridique et social</h3>
+                        <p class="text-muted text-sm leading-relaxed">Optimisation fiscale, analyse de situation et leviers juridiques : credits d'impôt, arbitrages et choix de régime.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payroll & HR Section -->
+    <section class="py-24 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="img-zoom-wrapper rounded-2xl shadow-xl animate-on-scroll lg:order-2">
+                    <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=800&q=80" alt="Social" class="w-full h-72 object-cover rounded-2xl">
+                </div>
+                <div class="animate-on-scroll lg:order-1">
+                    <div class="gold-sep-left mb-6"></div>
+                    <h2 class="text-3xl md:text-4xl font-playfair font-bold text-ink mb-6">Social</h2>
+                    <div class="space-y-5 mt-8">
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-cedrus-600 flex items-center justify-center shrink-0 mt-0.5">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                            </div>
+                            <div>
+                                <p class="font-medium text-ink">Déclarations préalables à l'embauche (DPAE)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-cedrus-600 flex items-center justify-center shrink-0 mt-0.5">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                            </div>
+                            <div>
+                                <p class="font-medium text-ink">Bulletins de paie</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-cedrus-600 flex items-center justify-center shrink-0 mt-0.5">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                            </div>
+                            <div>
+                                <p class="font-medium text-ink">Déclarations sociales (URSSAF, caisses de retraite, prevoyance, mutuelle)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-gold flex items-center justify-center shrink-0 mt-0.5">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                            </div>
+                            <div>
+                                <p class="font-medium text-ink">Rédaction des contrats de travail</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-gold flex items-center justify-center shrink-0 mt-0.5">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                            </div>
+                            <div>
+                                <p class="font-medium text-ink">Tenue des dossiers individuels des salariés</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Task Distribution Section -->
+    <section class="py-20 bg-paper">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-on-scroll">
+                <div class="gold-sep mb-6"></div>
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold text-ink mb-8">Répartition des tâches</h2>
+                <p class="text-lg text-muted max-w-3xl mx-auto">
+                    Découvrez comment nous organisons nos services pour vous offrir des resultats optimaux
+                </p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden animate-on-scroll">
+                <div class="border-b border-gray-200">
+                    <nav class="flex" aria-label="Onglets">
+                        <button class="tab-button active px-6 py-4 text-sm font-medium text-cedrus-600 border-b-2 border-cedrus-600" data-tab="comptabilite">
+                            Comptabilité
+                        </button>
+                        <button class="tab-button px-6 py-4 text-sm font-medium text-muted hover:text-cedrus-600 border-b-2 border-transparent hover:border-gray-300" data-tab="fiscal">
+                            Fiscal
+                        </button>
+                        <button class="tab-button px-6 py-4 text-sm font-medium text-muted hover:text-cedrus-600 border-b-2 border-transparent hover:border-gray-300" data-tab="social">
+                            Social
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Tab content -->
+                <div class="p-6">
+                    <!-- Comptabilite -->
+                    <div id="comptabilite" class="tab-content">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Tâche</th>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Frequence</th>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Responsable</th>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Remarques</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Collecte des pièces justificatives</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Mensuel</span></td>
+                                        <td class="px-4 py-3 text-muted">Client</td>
+                                        <td class="px-4 py-3 text-muted">--</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Préparation du dossier</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Variable</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">--</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Imputation des ecritures comptables</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Mensuel</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">--</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Enregistrement des immobilisations</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Variable</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">--</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Rapprochement bancaire</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Mensuel</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">--</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Revue de coherence</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Mensuel</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">--</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Inventaire en cours</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Annuel</span></td>
+                                        <td class="px-4 py-3 text-muted">Client</td>
+                                        <td class="px-4 py-3 text-muted">En fin d'exercice</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Etablissement d'un dossier pr&eacute;visionnel</td>
+                                        <td class="px-4 py-3"><span class="bg-gold/20 text-gold px-2 py-1 rounded-full text-xs font-medium">Forfait</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">450&nbsp;&euro; HT</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Fiscal -->
+                    <div id="fiscal" class="tab-content hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Tâche</th>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Frequence</th>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Responsable</th>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Remarques</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Préparation de la liasse fiscale</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Annuel</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">--</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Déclarations fiscales periodiques</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Variable</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">--</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Assistance en cas de contrôle fiscal</td>
+                                        <td class="px-4 py-3"><span class="bg-gold/20 text-gold px-2 py-1 rounded-full text-xs font-medium">Forfait</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">450&nbsp;&euro; HT / demi-journ&eacute;e</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Social -->
+                    <div id="social" class="tab-content hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Tâche</th>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Frequence</th>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Responsable</th>
+                                        <th class="px-4 py-3 text-left font-medium text-ink">Remarques</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Préparation des déclarations sociales</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Mensuel</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">--</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Elaboration des bulletins de paie</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Mensuel</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">--</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Assistance en cas de contrôle URSSAF</td>
+                                        <td class="px-4 py-3"><span class="bg-gold/20 text-gold px-2 py-1 rounded-full text-xs font-medium">Forfait</span></td>
+                                        <td class="px-4 py-3 text-muted">Cabinet</td>
+                                        <td class="px-4 py-3 text-muted">650&nbsp;&euro; HT</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Attestation de conformité</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">&Agrave; la demande</span></td>
+                                        <td class="px-4 py-3 text-muted">Client</td>
+                                        <td class="px-4 py-3 text-muted">--</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-muted">Elements variables de paie</td>
+                                        <td class="px-4 py-3"><span class="bg-cedrus-200 text-cedrus-600 px-2 py-1 rounded-full text-xs font-medium">Mensuel</span></td>
+                                        <td class="px-4 py-3 text-muted">Client</td>
+                                        <td class="px-4 py-3 text-muted">A transmettre avant le 28 du mois.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="relative py-24 overflow-hidden">
+        <div class="absolute inset-0 parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=2070&q=80');"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <div class="gold-sep mb-8"></div>
+            <h2 class="text-3xl md:text-4xl font-playfair font-bold text-white mb-8 animate-on-scroll">
+                Besoin de nos services ?
+            </h2>
+            <p class="text-xl text-white/90 mb-8 animate-on-scroll">
+                Consultez nos honoraires et prenez rendez-vous pour un accompagnement personnalise
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-on-scroll">
+                <a href="honoraires.html" class="bg-white text-ink hover:bg-gray-100 px-8 py-4 rounded-full font-medium transition-colors">
+                    Voir nos honoraires
+                </a>
+                <a href="onboarding.html" class="border-2 border-white text-white hover:bg-white hover:text-white px-8 py-4 rounded-full font-medium transition-all duration-300">
+                    Prendre rendez-vous
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-white py-16" style="background: linear-gradient(180deg, #3C4B5F 0%, #1E2D41 50%, #08121F 100%);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">CEDRUS</h3>
+                    <p class="text-gray-300 mb-2">8 AVENUE DES TERRASSES</p>
+                    <p class="text-gray-300 mb-4">92430 MARNES-LA-COQUETTE</p>
+                    <p class="text-gray-300">contact@cedrus-expertise.fr</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">Liens rapides</h3>
+                    <ul class="space-y-2">
+                        <li><a href="cabinet.html" class="text-gray-300 hover:text-white transition-colors">Notre cabinet</a></li>
+                        <li><a href="missions.html" class="text-gray-300 hover:text-white transition-colors">Nos missions</a></li>
+                        <li><a href="honoraires.html" class="text-gray-300 hover:text-white transition-colors">Honoraires</a></li>
+                        <li><a href="contact.html" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">Suivez-nous</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="LinkedIn">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                    <p class="text-gray-300 text-sm">&copy; 2024 CEDRUS EXPERTISE COMPTABLE & CONSEILS. Tous droits reserves.</p>
+                    <div class="flex space-x-6 text-sm">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">Mentions légales</a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">Politique de confidentialité</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main script -->
+    <script src="../assets/main.js"></script>
+
+    <!-- Tab script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active', 'text-cedrus-600', 'border-cedrus-600');
+                        btn.classList.add('text-muted', 'border-transparent');
+                    });
+                    this.classList.add('active', 'text-cedrus-600', 'border-cedrus-600');
+                    this.classList.remove('text-muted', 'border-transparent');
+
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.getElementById(targetTab).classList.remove('hidden');
+                });
+            });
+        });
+    </script>
+
+    <!-- Language menu toggle -->
+    <script>
+    function toggleLangMenu() {
+        var menu = document.getElementById('langMenu');
+        menu.classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+        var menu = document.getElementById('langMenu');
+        if (menu && !e.target.closest('.relative')) {
+            menu.classList.remove('open');
+        }
+    });
+    </script>
+
+    <!-- Nav scroll JS -->
+    <script>
+    (function() {
+        var nav = document.getElementById('mainNav');
+        var navInner = document.getElementById('navInner');
+        var scrolled = false;
+        function updateNav() {
+            var s = window.scrollY > 80;
+            if (s === scrolled) return;
+            scrolled = s;
+            if (scrolled) {
+                nav.style.background = 'rgba(255,255,255,0.97)';
+                nav.style.boxShadow = '0 1px 20px rgba(0,0,0,0.06)';
+                navInner.style.paddingTop = '12px';
+                navInner.style.paddingBottom = '12px';
+                document.querySelectorAll('.nav-text').forEach(function(el) { el.style.color = '#0B1420'; });
+                document.querySelectorAll('.nav-link').forEach(function(el) { el.style.color = el.classList.contains('font-medium') ? '#3E9364' : '#6B7280'; });
+                var cta = document.querySelector('.nav-cta');
+                if (cta) { cta.style.color = '#0B1420'; cta.style.borderColor = '#0B1420'; }
+            } else {
+                nav.style.background = 'transparent';
+                nav.style.boxShadow = 'none';
+                navInner.style.paddingTop = '20px';
+                navInner.style.paddingBottom = '20px';
+                document.querySelectorAll('.nav-text').forEach(function(el) { el.style.color = 'white'; });
+                    document.querySelectorAll('.nav-link').forEach(function(el) {
+                        el.style.color = el.classList.contains('font-medium') ? 'white' : 'rgba(255,255,255,0.7)';
+                    });
+                    var cta = document.querySelector('.nav-cta');
+                    if (cta) { cta.style.color = 'white'; cta.style.borderColor = 'rgba(255,255,255,0.4)'; }
+            }
+        }
+        window.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+    })();
+    </script>
+</body>
+</html>

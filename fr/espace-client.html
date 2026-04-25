@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEDRUS - Espace Client</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-weight='bold' fill='%233E9364'>C</text></svg>">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/styles.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cedrus': { 700: '#357A56', 600: '#3E9364', 500: '#4FA36F', 200: '#BFE6AE' },
+                        'ink': '#0B1420', 'muted': '#6B7280', 'paper': '#F8FAF9', 'gold': '#D4A853'
+                    },
+                    fontFamily: {
+                        'playfair': ['Playfair Display', 'serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .gold-sep { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #D4A853, transparent); margin: 0 auto; }
+
+        .login-input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        .login-input:focus {
+            outline: none;
+            border-color: #3E9364;
+            box-shadow: 0 0 0 3px rgba(62,147,100,0.1);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+            transition: color 0.3s;
+        }
+        .input-wrapper:focus-within .input-icon {
+            color: #3E9364;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #3E9364, #4FA36F);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(62,147,100,0.2);
+        }
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(62,147,100,0.3);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9CA3AF;
+            transition: color 0.3s;
+        }
+        .toggle-password:hover { color: #6B7280; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.6s ease forwards; }
+        .fade-in-delay { animation: fadeIn 0.6s ease 0.15s forwards; opacity: 0; }
+        .fade-in-delay-2 { animation: fadeIn 0.6s ease 0.3s forwards; opacity: 0; }
+    </style>
+</head>
+<body class="font-inter text-ink min-h-screen flex">
+
+    <!-- Language switcher -->
+    <div class="fixed top-5 right-5 z-30" id="langSwitcher">
+        <button onclick="toggleLangMenu()" class="text-sm text-ink hover:bg-gray-50 transition-colors flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white border border-gray-200 shadow-sm">
+            <span>FR</span>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </button>
+        <div id="langMenu" class="hidden absolute top-full right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden min-w-[130px]">
+            <a href="../espace-client.html" onclick="sessionStorage.setItem('cedrus_lang_chosen','en')" class="block px-4 py-2.5 text-sm text-muted hover:bg-gray-50">English</a>
+            <a href="espace-client.html" class="block px-4 py-2.5 text-sm text-ink hover:bg-gray-50 font-medium">Fran&ccedil;ais</a>
+        </div>
+    </div>
+
+    <!-- Left side: image -->
+    <div class="hidden lg:block lg:w-1/2 relative">
+        <div class="absolute inset-0 bg-cover bg-center"
+             style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2070&q=80');">
+        </div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+
+        <div class="relative h-full flex flex-col justify-between p-12 z-10">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center gap-3">
+                <img src="../cedrus.png" alt="CEDRUS" class="h-10 w-auto">
+                <div class="flex flex-col">
+                    <span class="text-lg font-playfair font-bold tracking-wider text-white">CEDRUS</span>
+                    <span class="text-xs tracking-widest uppercase text-white/60">Expertise Comptable</span>
+                </div>
+            </a>
+
+            <!-- Message -->
+            <div class="max-w-md">
+                <div class="w-12 h-px bg-gold mb-8"></div>
+                <h2 class="text-3xl font-playfair font-bold text-white leading-snug mb-4">
+                    Votre espace personnel sécurisé
+                </h2>
+                <p class="text-white/70 leading-relaxed">
+                    Accédez à vos documents comptables, suivez vos dossiers en temps réel et communiquez avec votre expert-comptable en toute simplicité.
+                </p>
+            </div>
+
+            <!-- Features -->
+            <div class="flex gap-8 text-white/50 text-sm">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+                    <span>Données chiffrées</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+                    <span>Documents en ligne</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Accès 24h/24</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right side: form -->
+    <div class="w-full lg:w-1/2 bg-paper flex items-center justify-center p-6 sm:p-12">
+        <div class="w-full max-w-md">
+
+            <!-- Mobile logo -->
+            <div class="lg:hidden text-center mb-10 fade-in">
+                <a href="index.html" class="inline-flex items-center gap-3">
+                    <img src="../cedrus.png" alt="CEDRUS" class="h-12 w-auto">
+                </a>
+            </div>
+
+            <!-- Header -->
+            <div class="mb-10 fade-in">
+                <h1 class="text-2xl md:text-3xl font-playfair font-bold text-ink mb-2">Espace Client</h1>
+                <p class="text-muted">Connectez-vous pour accéder à vos documents et dossiers.</p>
+            </div>
+
+            <!-- Form -->
+            <form onsubmit="handleLogin(event)" class="space-y-5 fade-in-delay">
+                <div>
+                    <label class="block text-sm font-medium text-ink mb-2">Adresse email</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+                        <input type="email" class="login-input" id="loginEmail" placeholder="votre@email.com">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-sm font-medium text-ink">Mot de passe</label>
+                        <a href="#" class="text-sm text-cedrus-600 hover:text-cedrus-500 transition-colors" onclick="showForgot(event)">Mot de passe oublie ?</a>
+                    </div>
+                    <div class="input-wrapper">
+                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+                        <input type="password" class="login-input" id="loginPassword" placeholder="Votre mot de passe">
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <svg class="w-5 h-5" id="eyeIcon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="remember" class="w-4 h-4 rounded border-gray-300 text-cedrus-600 focus:ring-cedrus-500">
+                    <label for="remember" class="text-sm text-muted">Se souvenir de moi</label>
+                </div>
+
+                <button type="submit" class="btn-login">Se connecter</button>
+
+                <!-- Error message -->
+                <div id="loginError" class="hidden text-center text-sm text-red-500 bg-red-50 p-3 rounded-lg"></div>
+            </form>
+
+            <!-- Separator -->
+            <div class="my-8 fade-in-delay-2">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
+                    <div class="relative flex justify-center"><span class="px-4 bg-paper text-sm text-muted">Pas encore client ?</span></div>
+                </div>
+            </div>
+
+            <!-- CTA sign up -->
+            <div class="text-center fade-in-delay-2">
+                <a href="onboarding.html" class="inline-block w-full border-2 border-ink text-ink px-6 py-3.5 rounded-xl font-medium hover:bg-ink hover:text-white transition-all duration-300 text-center">
+                    Démarrer mon parcours
+                </a>
+                <p class="text-xs text-muted mt-3">Repondez a quelques questions et nous reviendrons vers vous sous 24 heures</p>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-12 text-center">
+                <a href="index.html" class="text-sm text-muted hover:text-ink transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+                    Retour au site
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            var input = document.getElementById('loginPassword');
+            var icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>';
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            var err = document.getElementById('loginError');
+            err.classList.add('hidden');
+            var email = document.getElementById('loginEmail').value.trim();
+            var password = document.getElementById('loginPassword').value;
+            if (!email || !password) {
+                err.textContent = 'Veuillez saisir votre email et votre mot de passe.';
+                err.style.color = '#ef4444'; err.style.background = '#fef2f2';
+                err.classList.remove('hidden');
+                return;
+            }
+            try {
+                var res = await fetch('/api/client/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password })
+                });
+                var data = await res.json();
+                if (!res.ok) {
+                    err.textContent = data.error === 'invalid_credentials'
+                        ? 'Email ou mot de passe incorrect.'
+                        : data.error === 'no_client_profile'
+                            ? "Aucun dossier lié à ce compte. Contactez CEDRUS."
+                            : data.error === 'account_suspended'
+                                ? 'Votre compte est suspendu. Contactez CEDRUS.'
+                                : 'Connexion impossible. Réessayez.';
+                    err.style.color = '#ef4444'; err.style.background = '#fef2f2';
+                    err.classList.remove('hidden');
+                    return;
+                }
+                localStorage.setItem('cedrus_client_token', data.access_token);
+                var societies = data.societies || [];
+                if (societies.length === 1) {
+                    localStorage.setItem('cedrus_active_client_id', societies[0].id);
+                    localStorage.setItem('cedrus_active_client_name', societies[0].raison_sociale);
+                    window.location.href = '../dashboard-client.html';
+                } else {
+                    window.location.href = '../choix-dossier.html';
+                }
+            } catch (ex) {
+                err.textContent = 'Erreur de connexion. Réessayez.';
+                err.style.color = '#ef4444'; err.style.background = '#fef2f2';
+                err.classList.remove('hidden');
+            }
+        }
+
+        (function handleInvitationLink() {
+            if (!location.hash || location.hash.indexOf('access_token=') === -1) return;
+            var params = {};
+            location.hash.slice(1).split('&').forEach(function(kv) {
+                var p = kv.split('='); params[p[0]] = decodeURIComponent(p[1] || '');
+            });
+            if (params.access_token && (params.type === 'invite' || params.type === 'recovery' || params.type === 'signup')) {
+                sessionStorage.setItem('cedrus_invite_token', params.access_token);
+                window.location.href = '../set-password.html';
+            }
+        })();
+
+        function showForgot(e) {
+            e.preventDefault();
+            var err = document.getElementById('loginError');
+            err.classList.remove('hidden');
+            err.style.color = '#3E9364';
+            err.style.background = '#F0FDF4';
+            err.textContent = 'Veuillez nous contacter à contact@cedrus-expertise.fr pour réinitialiser votre mot de passe.';
+        }
+
+        function toggleLangMenu() {
+            document.getElementById('langMenu').classList.toggle('hidden');
+        }
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#langSwitcher')) {
+                document.getElementById('langMenu').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

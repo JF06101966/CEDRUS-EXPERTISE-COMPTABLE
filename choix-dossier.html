@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEDRUS — Choisir un dossier</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-weight='bold' fill='%233E9364'>C</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/styles.css">
+    <script>
+        tailwind.config = { theme: { extend: { colors: {
+            'cedrus': { 700:'#357A56', 600:'#3E9364', 500:'#4FA36F', 200:'#BFE6AE' },
+            'ink':'#0B1420', 'muted':'#6B7280', 'paper':'#F8FAF9', 'gold':'#D4A853'
+        }, fontFamily: { 'playfair':['Playfair Display','serif'], 'inter':['Inter','sans-serif'] } } } }
+    </script>
+    <style>
+        .soc-card { background:white; border:2px solid #E5E7EB; border-radius:16px; padding:24px; cursor:pointer; transition:all .25s ease; }
+        .soc-card:hover { border-color:#3E9364; transform:translateY(-2px); box-shadow:0 10px 30px rgba(62,147,100,.12); }
+        .initial { width:56px; height:56px; border-radius:14px; background:#BFE6AE; color:#357A56; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:1.3rem; }
+        .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:999px; font-size:0.72rem; font-weight:500; }
+        .badge-connected { background:#D1FAE5; color:#065F46; }
+        .badge-pending { background:#FEF3C7; color:#92400E; }
+        .badge-suspended { background:#FEE2E2; color:#991B1B; }
+    </style>
+</head>
+<body class="font-inter text-ink min-h-screen bg-paper">
+
+<div class="max-w-4xl mx-auto px-6 py-12">
+    <div class="text-center mb-10">
+        <img src="cedrus.png" alt="CEDRUS" class="h-12 mx-auto mb-6">
+        <h1 class="text-3xl font-playfair font-bold text-ink mb-2">Choisissez un dossier</h1>
+        <p class="text-muted">Vous avez accès à plusieurs dossiers. Sélectionnez celui que vous souhaitez consulter.</p>
+    </div>
+
+    <div id="societiesGrid" class="grid md:grid-cols-2 gap-4"></div>
+
+    <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-gray-100">
+        <p class="text-muted text-lg">Aucun dossier n'est lié à votre compte.</p>
+        <p class="text-sm text-muted mt-2">Contactez CEDRUS à <a href="mailto:contact@cedrus-expertise.fr" class="text-cedrus-600 hover:underline">contact@cedrus-expertise.fr</a></p>
+    </div>
+
+    <div class="mt-10 text-center">
+        <button onclick="signOut()" class="text-sm text-muted hover:text-ink transition-colors">Se déconnecter</button>
+    </div>
+</div>
+
+<script>
+(async function init() {
+    const token = localStorage.getItem('cedrus_client_token');
+    if (!token) {
+        window.location.href = 'espace-client.html';
+        return;
+    }
+    try {
+        const res = await fetch('/api/client/my-societies', {
+            headers: { Authorization: 'Bearer ' + token }
+        });
+        if (!res.ok) {
+            if (res.status === 401) {
+                localStorage.removeItem('cedrus_client_token');
+                window.location.href = 'espace-client.html';
+                return;
+            }
+            throw new Error('HTTP ' + res.status);
+        }
+        const data = await res.json();
+        const societies = data.societies || [];
+        if (societies.length === 0) {
+            document.getElementById('emptyState').classList.remove('hidden');
+            return;
+        }
+        // Si 1 seule société, on redirige directement
+        if (societies.length === 1) {
+            localStorage.setItem('cedrus_active_client_id', societies[0].id);
+            localStorage.setItem('cedrus_active_client_name', societies[0].raison_sociale);
+            window.location.href = 'dashboard-client.html';
+            return;
+        }
+        render(societies);
+    } catch (ex) {
+        alert('Erreur de chargement : ' + ex.message);
+    }
+})();
+
+function render(societies) {
+    const grid = document.getElementById('societiesGrid');
+    grid.innerHTML = societies.map(s => {
+        const initials = (s.raison_sociale || '?').split(/\s+/).map(w => w.charAt(0)).join('').slice(0, 2).toUpperCase();
+        const badge = s.statut === 'suspended'
+            ? '<span class="badge badge-suspended">Suspendu</span>'
+            : (s.pennylane_connected ? '<span class="badge badge-connected">Pennylane ✓</span>' : '<span class="badge badge-pending">En préparation</span>');
+        return `
+            <div class="soc-card" onclick="pickSociety('${s.id}', ${JSON.stringify(s.raison_sociale || '').replace(/"/g,'&quot;')})">
+                <div class="flex items-start gap-4 mb-3">
+                    <div class="initial">${esc(initials)}</div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-playfair font-semibold text-lg text-ink truncate">${esc(s.raison_sociale || '—')}</h3>
+                        <p class="text-xs text-muted mt-0.5">${esc(s.siren ? 'SIREN ' + s.siren : '—')}</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    ${badge}
+                    <span class="text-xs text-cedrus-600 font-medium">Ouvrir →</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function pickSociety(id, name) {
+    localStorage.setItem('cedrus_active_client_id', id);
+    localStorage.setItem('cedrus_active_client_name', name);
+    window.location.href = 'dashboard-client.html';
+}
+
+function signOut() {
+    localStorage.removeItem('cedrus_client_token');
+    localStorage.removeItem('cedrus_active_client_id');
+    localStorage.removeItem('cedrus_active_client_name');
+    localStorage.removeItem('cedrus_client_info');
+    window.location.href = 'espace-client.html';
+}
+
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+</script>
+</body>
+</html>

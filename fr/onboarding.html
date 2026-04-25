@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEDRUS - Parlons de votre besoin</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-weight='bold' fill='%233E9364'>C</text></svg>">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/styles.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cedrus': { 700: '#357A56', 600: '#3E9364', 500: '#4FA36F', 200: '#BFE6AE' },
+                        'ink': '#0B1420', 'muted': '#6B7280', 'paper': '#F8FAF9', 'gold': '#D4A853'
+                    },
+                    fontFamily: {
+                        'playfair': ['Playfair Display', 'serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .gold-sep { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #D4A853, transparent); margin: 0 auto; }
+
+        .step-indicator { transition: all 0.4s ease; }
+        .step-indicator.active { background: #3E9364; color: white; box-shadow: 0 0 0 4px rgba(62,147,100,0.15); }
+        .step-indicator.done { background: #D4A853; color: white; }
+        .step-indicator.pending { background: #F3F4F6; color: #9CA3AF; }
+
+        .step-line { height: 2px; flex: 1; background: #E5E7EB; transition: background 0.4s ease; }
+        .step-line.done { background: #D4A853; }
+
+        .step-content { display: none; animation: fadeStep 0.5s ease; }
+        .step-content.active { display: block; }
+        @keyframes fadeStep { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        .choice-card {
+            border: 2px solid #E5E7EB;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            background: white;
+        }
+        .choice-card:hover { border-color: #BFE6AE; }
+        .choice-card.selected {
+            border-color: #3E9364;
+            background: linear-gradient(135deg, #F0FDF4, #ECFDF5);
+        }
+        .choice-card.selected .card-icon { color: #3E9364; }
+        .choice-card .card-check { opacity: 0; transition: opacity 0.2s; }
+        .choice-card.selected .card-check { opacity: 1; }
+
+        .onboarding-input {
+            width: 100%; padding: 14px 20px; border: 2px solid #E5E7EB; border-radius: 12px;
+            font-size: 1rem; font-family: 'Inter', sans-serif; transition: border-color 0.3s ease; background: white;
+        }
+        .onboarding-input:focus { outline: none; border-color: #3E9364; }
+
+        .btn-next {
+            background: linear-gradient(135deg, #3E9364, #4FA36F); color: white; padding: 14px 44px; border-radius: 12px;
+            font-weight: 500; transition: all 0.3s ease; border: none; cursor: pointer; font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(62,147,100,0.2);
+        }
+        .btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(62,147,100,0.3); }
+        .btn-next:disabled { background: #D1D5DB; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .btn-back {
+            color: #6B7280; padding: 14px 24px; font-weight: 500; transition: color 0.3s ease;
+            cursor: pointer; background: none; border: none; font-size: 1rem;
+        }
+        .btn-back:hover { color: #0B1420; }
+
+        /* Pappers autocomplete */
+        #companyBlock { display: none; animation: fadeStep 0.4s ease; }
+        #companyBlock.visible { display: block; }
+        .search-wrapper { position: relative; }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9CA3AF; }
+        #companySearch { padding-left: 44px; }
+        #searchResults {
+            position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+            background: white; border: 2px solid #E5E7EB; border-top: none; border-radius: 0 0 12px 12px;
+            max-height: 260px; overflow-y: auto; display: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+        #searchResults.open { display: block; }
+        .search-item {
+            padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #F3F4F6;
+            transition: background 0.15s;
+        }
+        .search-item:hover { background: #F0FDF4; }
+        .search-item:last-child { border-bottom: none; }
+        .search-item .company-name { font-weight: 500; color: #0B1420; }
+        .search-item .company-info { font-size: 0.8rem; color: #6B7280; margin-top: 2px; }
+        .search-spinner { display: none; }
+        .search-spinner.active { display: block; }
+
+        #companyCard {
+            display: none; animation: fadeStep 0.4s ease;
+            background: white; border: 2px solid #3E9364; border-radius: 12px; padding: 20px;
+        }
+        #companyCard.visible { display: block; }
+        .company-detail { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #F3F4F6; }
+        .company-detail:last-child { border-bottom: none; }
+        .company-detail .label { color: #6B7280; font-size: 0.85rem; }
+        .company-detail .value { color: #0B1420; font-weight: 500; font-size: 0.85rem; text-align: right; }
+
+        /* Creation block (FIPAR-inspired) */
+        #creationBlock { display: none; animation: fadeStep 0.4s ease; }
+        #creationBlock.visible { display: block; }
+        .creation-section-title {
+            font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600;
+            color: #0B1420; margin-bottom: 4px; display: flex; align-items: center; gap: 10px;
+        }
+        .creation-section-title::before {
+            content: ''; width: 20px; height: 2px;
+            background: linear-gradient(90deg, #D4A853, transparent);
+        }
+        .creation-section-desc { color: #6B7280; font-size: 0.82rem; margin-bottom: 14px; }
+        .creation-field-label {
+            display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+            text-transform: uppercase; color: #0B1420; margin-bottom: 6px;
+        }
+        .creation-field-label .req { color: #D4A853; margin-left: 2px; }
+        .creation-input {
+            width: 100%; padding: 11px 16px; border: 1.5px solid #E5E7EB; border-radius: 10px;
+            font-size: 0.92rem; font-family: 'Inter', sans-serif; background: white;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease; outline: none;
+        }
+        .creation-input:focus { border-color: #3E9364; box-shadow: 0 0 0 3px rgba(62,147,100,0.08); }
+        .creation-input[type="number"] { -moz-appearance: textfield; }
+        .creation-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 560px) { .creation-grid-2 { grid-template-columns: 1fr; } }
+        .creation-divider-line {
+            height: 1px; background: linear-gradient(90deg, transparent, #E5E7EB, transparent);
+        }
+        .creation-tip {
+            display: flex; align-items: flex-start; gap: 10px;
+            background: linear-gradient(135deg, #FEF7E6, #FEFBF0);
+            border-left: 3px solid #D4A853; border-radius: 8px; padding: 10px 14px;
+            font-size: 0.8rem; color: #5B4A1F; margin-top: 10px;
+        }
+        .creation-tip svg { flex-shrink: 0; margin-top: 2px; color: #D4A853; }
+    </style>
+</head>
+<body class="bg-paper font-inter text-ink min-h-screen flex flex-col">
+
+    <!-- Nav -->
+    <nav class="w-full bg-white border-b border-gray-100">
+        <div class="max-w-3xl mx-auto flex items-center justify-between px-4 py-4">
+            <a href="index.html" class="flex items-center gap-3">
+                <img src="../cedrus.png" alt="CEDRUS" class="h-9 w-auto">
+                <div class="flex flex-col">
+                    <span class="text-base font-playfair font-bold tracking-wider text-ink">CEDRUS</span>
+                    <span class="text-[10px] tracking-widest uppercase text-muted">Expertise Comptable</span>
+                </div>
+            </a>
+            <a href="index.html" class="text-muted hover:text-ink transition-colors text-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+                Retour au site
+            </a>
+        </div>
+    </nav>
+
+    <main class="flex-1 flex items-start justify-center py-12 px-4">
+        <div class="w-full max-w-2xl">
+
+            <!-- Header -->
+            <div class="text-center mb-10">
+                <div class="gold-sep mb-6"></div>
+                <h1 class="text-3xl md:text-4xl font-playfair font-bold text-ink mb-3">Parlons de votre besoin</h1>
+                <p class="text-muted">Quelques questions pour mieux vous accompagner. Cela prend 2 minutes.</p>
+            </div>
+
+            <!-- Step indicators with lines -->
+            <div class="flex items-center justify-center gap-0 mb-14 px-8" id="stepIndicators">
+                <div class="step-indicator active w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold shrink-0">1</div>
+                <div class="step-line" id="line1"></div>
+                <div class="step-indicator pending w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold shrink-0">2</div>
+                <div class="step-line" id="line2"></div>
+                <div class="step-indicator pending w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold shrink-0">3</div>
+                <div class="step-line" id="line3"></div>
+                <div class="step-indicator pending w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold shrink-0">4</div>
+                <div class="step-line" id="line4"></div>
+                <div class="step-indicator pending w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold shrink-0">5</div>
+            </div>
+
+            <!-- STEP 1 : Situation -->
+            <div class="step-content active" data-step="1">
+                <h3 class="text-2xl font-playfair font-semibold text-ink mb-2">Quelle est votre situation ?</h3>
+                <p class="text-muted mb-8">Choisissez l'option qui vous correspond le mieux.</p>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div class="choice-card rounded-xl p-6 flex items-start gap-4" data-value="creation" onclick="selectChoice(this, 'situation')">
+                        <div class="card-icon text-muted shrink-0 mt-0.5">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-ink">Je créé mon entreprise</p>
+                            <p class="text-sm text-muted mt-1">Nouveau projet en France</p>
+                        </div>
+                        <div class="card-check text-cedrus-600 shrink-0">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                        </div>
+                    </div>
+                    <div class="choice-card rounded-xl p-6 flex items-start gap-4" data-value="existant" onclick="selectChoice(this, 'situation')">
+                        <div class="card-icon text-muted shrink-0 mt-0.5">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21"/></svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-ink">J'ai déjà une entreprise</p>
+                            <p class="text-sm text-muted mt-1">Je cherche un nouveau cabinet comptable</p>
+                        </div>
+                        <div class="card-check text-cedrus-600 shrink-0">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <!-- Company search block (Pappers) -->
+                <div id="companyBlock" class="mt-8">
+                    <div class="border-t border-gray-100 pt-6">
+                        <label class="block text-sm font-medium text-ink mb-2">Num&eacute;ro SIRET</label>
+                        <div class="search-wrapper">
+                            <svg class="search-icon w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>
+                            <input type="text" class="onboarding-input" id="companySearch" placeholder="14 chiffres (ex. 812 345 678 00012)" autocomplete="off" inputmode="numeric" maxlength="17" oninput="searchBySiret(this.value)">
+                            <div class="search-spinner absolute right-4 top-1/2 -translate-y-1/2" id="searchSpinner">
+                                <svg class="w-5 h-5 animate-spin text-cedrus-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                            </div>
+                            <div id="searchResults"></div>
+                        </div>
+                        <p class="text-xs text-muted mt-2" id="siretHint">Retrouvez votre SIRET sur votre extrait K-Bis.</p>
+
+                        <!-- Company card -->
+                        <div id="companyCard" class="mt-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-playfair font-semibold text-ink" id="cardName">-</h4>
+                                <button onclick="clearCompany()" class="text-sm text-muted hover:text-ink transition-colors">Modifier</button>
+                            </div>
+                            <div class="space-y-0">
+                                <div class="company-detail"><span class="label">SIREN</span><span class="value" id="cardSiren">-</span></div>
+                                <div class="company-detail"><span class="label">SIRET (siège)</span><span class="value" id="cardSiret">-</span></div>
+                                <div class="company-detail"><span class="label">Forme juridique</span><span class="value" id="cardForme">-</span></div>
+                                <div class="company-detail"><span class="label">Adresse</span><span class="value" id="cardAdresse">-</span></div>
+                                <div class="company-detail"><span class="label">Dirigeant</span><span class="value" id="cardDirigeant">-</span></div>
+                                <div class="company-detail"><span class="label">Code NAF</span><span class="value" id="cardNaf">-</span></div>
+                                <div class="company-detail"><span class="label">Date de création</span><span class="value" id="cardCreation">-</span></div>
+                            </div>
+                            <div class="mt-3 flex items-center gap-2 text-xs text-muted">
+                                <svg class="w-3.5 h-3.5 text-cedrus-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                                Données issues de l'API Entreprises (gouv.fr)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloc Création — expérience en une étape -->
+                <div id="creationBlock" class="mt-8">
+                    <div class="border-t border-gray-100 pt-6">
+                        <div class="creation-section-title">Parlez-nous de votre projet</div>
+                        <div class="creation-section-desc">Décrivez votre projet, vos besoins et la forme sociale envisagée. Notre équipe reviendra vers vous pour en discuter ensemble et fixer un premier rendez-vous.</div>
+
+                        <div class="mt-2">
+                            <label class="creation-field-label">Votre projet &amp; vos besoins<span class="req">*</span></label>
+                            <textarea class="creation-input" id="cr_project" rows="8" placeholder="Décrivez votre activité, l'avancement du projet, la présence éventuelle d'associés ou de salariés. Partagez vos besoins en termes de choix de forme sociale (SARL, SAS, EURL...), vos priorités : fiscalité, protection du patrimoine, simplicité..." oninput="checkCreationSend()"></textarea>
+                        </div>
+
+                        <div class="creation-divider-line mt-6 mb-4"></div>
+
+                        <div class="creation-section-title">Vos coordonnées</div>
+                        <div class="creation-section-desc">Pour que nous puissions vous recontacter et fixer un premier rendez-vous.</div>
+
+                        <div class="creation-grid-2 mt-2">
+                            <div>
+                                <label class="creation-field-label">Prénom<span class="req">*</span></label>
+                                <input type="text" class="creation-input" id="cr_firstname" placeholder="Votre prénom" oninput="checkCreationSend()">
+                            </div>
+                            <div>
+                                <label class="creation-field-label">Nom<span class="req">*</span></label>
+                                <input type="text" class="creation-input" id="cr_lastname" placeholder="Votre nom" oninput="checkCreationSend()">
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="creation-field-label">Email<span class="req">*</span></label>
+                            <input type="email" class="creation-input" id="cr_email" placeholder="votre@email.com" oninput="checkCreationSend()">
+                        </div>
+                        <div class="mt-4">
+                            <label class="creation-field-label">Téléphone<span class="req">*</span></label>
+                            <input type="tel" class="creation-input" id="cr_phone" placeholder="+33 6 12 34 56 78" oninput="checkCreationSend()">
+                        </div>
+
+                        <div class="flex justify-end mt-8">
+                            <button class="btn-next" onclick="submitCreation()" id="btnCreationSend" disabled>Envoyer ma demande</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-10" id="btn1Wrap">
+                    <button class="btn-next" onclick="nextStep()" id="btn1" disabled>Continuer</button>
+                </div>
+            </div>
+
+            <!-- STEP 2 : Needs -->
+            <div class="step-content" data-step="2">
+                <div id="step2Greeting" class="hidden mb-4 bg-gradient-to-br from-[#F0FDF4] to-[#ECFDF5] border border-cedrus-200/60 rounded-2xl px-5 py-4 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-cedrus-600/10 flex items-center justify-center text-cedrus-600 shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75"/></svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-muted">Bonjour</p>
+                        <p class="font-semibold text-ink truncate" id="step2GreetingName">&mdash;</p>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-playfair font-semibold text-ink mb-2">De quoi avez-vous besoin ?</h3>
+                <p class="text-muted mb-8">Vous pouvez s&eacute;lectionner plusieurs options.</p>
+                <div class="space-y-3">
+                    <div class="choice-card rounded-xl p-5 flex items-center gap-4" data-value="compta-fiscal" onclick="toggleMulti(this, 'besoins')">
+                        <div class="card-icon text-muted shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z"/></svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-ink">Comptabilit&eacute; / Fiscalit&eacute;</p>
+                            <p class="text-sm text-muted">Tenue comptable, bilan annuel, d&eacute;clarations fiscales, optimisation</p>
+                        </div>
+                        <div class="card-check text-cedrus-600 shrink-0">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                        </div>
+                    </div>
+                    <div class="choice-card rounded-xl p-5 flex items-center gap-4" data-value="social-paie" onclick="toggleMulti(this, 'besoins')">
+                        <div class="card-icon text-muted shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-ink">Social / Paies</p>
+                            <p class="text-sm text-muted">Bulletins de paie, cotisations sociales, contrats de travail</p>
+                        </div>
+                        <div class="card-check text-cedrus-600 shrink-0">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                        </div>
+                    </div>
+                    <div class="choice-card rounded-xl p-5 flex items-center gap-4" data-value="juridique" onclick="toggleMulti(this, 'besoins')">
+                        <div class="card-icon text-muted shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971z"/></svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium text-ink">Secr&eacute;tariat juridique</p>
+                            <p class="text-sm text-muted">Assembl&eacute;es g&eacute;n&eacute;rales, proc&egrave;s-verbaux, formalit&eacute;s et registres</p>
+                        </div>
+                        <div class="card-check text-cedrus-600 shrink-0">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-10">
+                    <button class="btn-back" onclick="prevStep()">Retour</button>
+                    <button class="btn-next" onclick="nextStep()" id="btn2" disabled>Continuer</button>
+                </div>
+            </div>
+
+            <!-- STEP 3 : Volumetrie + check APE -->
+            <div class="step-content" data-step="3">
+                <h3 class="text-2xl font-playfair font-semibold text-ink mb-2">Votre volum&eacute;trie</h3>
+                <p class="text-muted mb-8">Quelques chiffres pour calibrer notre proposition.</p>
+
+                <!-- APE exclusion banner (shown if APE code matches an excluded activity) -->
+                <div id="apeExclusion" class="hidden bg-gradient-to-br from-[#FFF8E6] to-[#FFFBEB] border border-gold/30 rounded-2xl p-6 mb-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-gold/20 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.732 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-ink mb-1">Activit&eacute; non prise en charge</p>
+                            <p class="text-sm text-muted mb-3">
+                                Votre code d'activit&eacute; <span id="apeCodeLabel" class="font-semibold text-ink"></span> correspond &agrave; <span id="apeActivityLabel" class="font-semibold text-ink"></span>, un secteur que notre cabinet ne prend pas en charge aujourd'hui.
+                            </p>
+                            <p class="text-sm text-muted">
+                                Nous vous invitons &agrave; nous contacter directement par e-mail &agrave; <a href="mailto:contact@cedrus-expertise.fr" class="text-cedrus-600 font-medium hover:underline">contact@cedrus-expertise.fr</a> pour &eacute;tudier une solution adapt&eacute;e.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volumetry form -->
+                <div id="volumetryForm" class="space-y-7">
+                    <!-- Factures fournisseurs -->
+                    <div>
+                        <label class="block text-sm font-medium text-ink mb-3">Factures fournisseurs pr&eacute;visionnelles <span class="text-muted font-normal">(par mois)</span></label>
+                        <div class="relative">
+                            <input type="number" id="nbFacturesFournisseurs" class="onboarding-input" min="0" max="9999" step="1" placeholder="0" oninput="setInvoicesPrecise('facturesFournisseurs', this.value)" />
+                            <span class="absolute right-5 top-1/2 -translate-y-1/2 text-sm text-muted pointer-events-none">/ mois</span>
+                        </div>
+                        <p class="text-xs text-muted mt-2">Chiffre approximatif pr&eacute;visionnel.</p>
+                    </div>
+
+                    <!-- Factures clients -->
+                    <div>
+                        <label class="block text-sm font-medium text-ink mb-3">Factures clients pr&eacute;visionnelles <span class="text-muted font-normal">(par mois)</span></label>
+                        <div class="relative">
+                            <input type="number" id="nbFacturesClients" class="onboarding-input" min="0" max="9999" step="1" placeholder="0" oninput="setInvoicesPrecise('facturesClients', this.value)" />
+                            <span class="absolute right-5 top-1/2 -translate-y-1/2 text-sm text-muted pointer-events-none">/ mois</span>
+                        </div>
+                        <p class="text-xs text-muted mt-2">Chiffre approximatif pr&eacute;visionnel.</p>
+                    </div>
+
+                    <!-- Nombre de salaries -->
+                    <div>
+                        <label class="block text-sm font-medium text-ink mb-3">Nombre de salari&eacute;s pr&eacute;visionnel</label>
+                        <div class="relative">
+                            <input type="number" id="nbSalaries" class="onboarding-input" min="0" max="999" step="1" placeholder="0" oninput="setSalariesPrecise(this.value)" />
+                            <span class="absolute right-5 top-1/2 -translate-y-1/2 text-sm text-muted pointer-events-none">salari&eacute;s</span>
+                        </div>
+                        <p class="text-xs text-muted mt-2">Indiquez un chiffre pr&eacute;cis (0 si aucun salari&eacute; pr&eacute;vu).</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-10">
+                    <button class="btn-back" onclick="prevStep()">Retour</button>
+                    <button class="btn-next" onclick="nextStep()" id="btn3" disabled>Voir la proposition</button>
+                </div>
+            </div>
+
+            <!-- STEP 4 : Proposition tarifaire -->
+            <div class="step-content" data-step="4">
+                <h3 class="text-2xl font-playfair font-semibold text-ink mb-2">Votre proposition d'accompagnement</h3>
+                <p class="text-muted mb-8">Estimation personnalis&eacute;e bas&eacute;e sur vos r&eacute;ponses.</p>
+
+                <!-- Quote card -->
+                <div class="relative bg-gradient-to-br from-ink to-[#1F2937] rounded-2xl p-6 md:p-8 text-white overflow-hidden mb-6">
+                    <div class="absolute top-0 right-0 w-60 h-60 bg-gradient-to-br from-gold/25 to-transparent rounded-full blur-3xl"></div>
+
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-2 mb-6">
+                            <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.784-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <span class="text-xs uppercase tracking-widest text-white/70">Proposition CEDRUS</span>
+                        </div>
+
+                        <div class="flex items-end gap-2 mb-2">
+                            <p class="text-5xl md:text-6xl font-playfair font-bold"><span id="quoteAmount">0</span></p>
+                            <p class="text-2xl text-white/80 mb-1.5">&euro; HT</p>
+                        </div>
+                        <p class="text-sm text-white/60 mb-6">par mois &bull; engagement 1 an renouvelable par tacite reconduction</p>
+
+                        <!-- Breakdown -->
+                        <div class="bg-white/5 backdrop-blur-sm rounded-xl p-5 space-y-2.5" id="quoteBreakdown"></div>
+
+                        <p class="text-xs text-white/50 mt-5 leading-relaxed">
+                            Cette tarification a une valeur indicative. Elle pourra &ecirc;tre ajust&eacute;e lors du rendez-vous avec votre Expert-Comptable, en fonction des sp&eacute;cificit&eacute;s de votre dossier.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Included -->
+                <div class="bg-white border border-gray-100 rounded-xl p-5">
+                    <p class="text-sm font-semibold text-ink mb-3">Inclus dans votre forfait</p>
+                    <ul class="space-y-2" id="quoteIncluded"></ul>
+                </div>
+
+                <div class="flex justify-between mt-10">
+                    <button class="btn-back" onclick="prevStep()">Retour</button>
+                    <button class="btn-next" onclick="nextStep()" id="btn4">Valider et continuer</button>
+                </div>
+            </div>
+
+            <!-- STEP 5 : Contact details -->
+            <div class="step-content" data-step="5">
+                <h3 class="text-2xl font-playfair font-semibold text-ink mb-2">Vos coordonn&eacute;es</h3>
+                <p class="text-muted mb-8">Pour que nous puissions vous recontacter.</p>
+                <div class="space-y-5">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-ink mb-2">Pr&eacute;nom</label>
+                            <input type="text" class="onboarding-input" id="prenom" placeholder="Votre pr&eacute;nom" oninput="checkStep5()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-ink mb-2">Nom</label>
+                            <input type="text" class="onboarding-input" id="nom" placeholder="Votre nom" oninput="checkStep5()">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-ink mb-2">Email</label>
+                        <input type="email" class="onboarding-input" id="email" placeholder="votre@email.com" oninput="checkStep5()">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-ink mb-2">T&eacute;l&eacute;phone (avec indicatif)</label>
+                        <input type="tel" class="onboarding-input" id="tel" placeholder="+33 6 12 34 56 78" oninput="checkStep5()">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-ink mb-2">Un mot sur votre situation <span class="text-muted font-normal">(facultatif)</span></label>
+                        <textarea class="onboarding-input" id="message" rows="3" placeholder="D&eacute;crivez bri&egrave;vement vos besoins..."></textarea>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-10">
+                    <button class="btn-back" onclick="prevStep()">Retour</button>
+                    <button class="btn-next" onclick="submitForm()" id="btn5" disabled>Valider et enregistrer</button>
+                </div>
+            </div>
+
+            <!-- CONFIRMATION -->
+            <div class="step-content" data-step="done">
+                <div class="text-center py-12">
+                    <div class="w-20 h-20 bg-gradient-to-br from-cedrus-600 to-cedrus-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    </div>
+                    <h3 class="text-3xl font-playfair font-bold text-ink mb-3">Votre onboarding est enregistr&eacute; <span id="confirmName"></span></h3>
+                    <p class="text-lg text-muted mb-1">Nous avons bien re&ccedil;u votre demande.</p>
+                    <p class="text-muted mb-10">Un accus&eacute; de r&eacute;ception vous a &eacute;t&eacute; envoy&eacute; par e-mail.<br>Votre expert-comptable vous contactera sous 24 heures ouvr&eacute;es.</p>
+
+                    <!-- Summary card -->
+                    <div class="bg-white border border-gray-100 rounded-2xl p-6 max-w-md mx-auto text-left mb-10 shadow-sm">
+                        <p class="text-xs uppercase tracking-widest text-gold font-semibold mb-4">R&eacute;capitulatif de votre dossier</p>
+                        <div class="space-y-2.5 text-sm" id="confirmSummary"></div>
+                    </div>
+
+                    <div class="gold-sep mb-10"></div>
+
+                    <div class="flex justify-center">
+                        <a href="index.html" class="inline-block border-2 border-ink text-ink px-8 py-3 rounded-lg font-medium hover:bg-ink hover:text-white transition-all duration-300 text-sm tracking-wide uppercase">Retour &agrave; l'accueil</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="border-t border-gray-100 py-6">
+        <div class="max-w-3xl mx-auto px-4 text-center">
+            <p class="text-xs text-muted">CEDRUS Expertise Comptable & Conseils &mdash; 8 Avenue des Terrasses, 92430 Marnes-la-Coquette</p>
+        </div>
+    </footer>
+
+    <script>
+        var currentStep = 1, totalSteps = 5, formData = { volumetrie: {} };
+
+        // Codes NAF/APE exclus (activit&eacute;s non prises en charge)
+        var EXCLUDED_APE = {
+            '4511Z': 'Commerce de v&eacute;hicules automobiles l&eacute;gers',
+            '4519Z': 'Commerce d\'autres v&eacute;hicules automobiles',
+            '4779Z': 'Commerce de d&eacute;tail de biens d\'occasion en magasin (antiquaires)',
+            '6612Z': 'Courtage de valeurs mobili&egrave;res et de marchandises',
+            '6619A': 'Supports juridiques de gestion de patrimoine mobilier',
+            '6619B': 'Autres activit&eacute;s auxiliaires de services financiers (bureaux de change)',
+            '7911Z': 'Activit&eacute;s des agences de voyage',
+            '7912Z': 'Activit&eacute;s des voyagistes'
+        };
+
+        function normalizeApe(code) {
+            if (!code) return '';
+            return String(code).replace(/\./g, '').toUpperCase().trim();
+        }
+
+        // French Business Search API (gouv.fr - free, no key required)
+        var searchTimeout = null;
+
+        function selectChoice(el, field) {
+            el.parentElement.querySelectorAll('.choice-card').forEach(function(c) { c.classList.remove('selected'); });
+            el.classList.add('selected');
+            formData[field] = el.dataset.value;
+            var btn = document.getElementById('btn' + currentStep);
+            if (btn) btn.disabled = false;
+            // Au step 1 avec "existant", le bouton ne s'active QUE si un SIRET valide est saisi.
+            if (currentStep === 1 && field === 'situation' && el.dataset.value === 'existant') {
+                if (btn) btn.disabled = !(formData.entreprise && formData.entreprise.siren);
+            }
+
+            // Show/hide conditional blocks in Step 1
+            if (field === 'situation') {
+                var companyBlock = document.getElementById('companyBlock');
+                var creationBlock = document.getElementById('creationBlock');
+                var btn1Wrap = document.getElementById('btn1Wrap');
+                var stepIndicators = document.getElementById('stepIndicators');
+
+                if (el.dataset.value === 'existant') {
+                    companyBlock.classList.add('visible');
+                    creationBlock.classList.remove('visible');
+                    if (btn1Wrap) btn1Wrap.style.display = '';
+                    if (stepIndicators) stepIndicators.style.display = '';
+                    clearCreation();
+                    setTimeout(function() { document.getElementById('companySearch').focus(); }, 300);
+                } else if (el.dataset.value === 'creation') {
+                    creationBlock.classList.add('visible');
+                    companyBlock.classList.remove('visible');
+                    // Masquer les indicateurs d'étape et le bouton Continuer — création = une seule étape
+                    if (btn1Wrap) btn1Wrap.style.display = 'none';
+                    if (stepIndicators) stepIndicators.style.display = 'none';
+                    clearCompany();
+                    setTimeout(function() { document.getElementById('cr_project').focus(); }, 300);
+                } else {
+                    companyBlock.classList.remove('visible');
+                    creationBlock.classList.remove('visible');
+                    if (btn1Wrap) btn1Wrap.style.display = '';
+                    if (stepIndicators) stepIndicators.style.display = '';
+                    clearCompany();
+                    clearCreation();
+                }
+            }
+        }
+
+        function checkCreationSend() {
+            if (formData.situation !== 'creation') return;
+            var project = document.getElementById('cr_project').value.trim();
+            var first = document.getElementById('cr_firstname').value.trim();
+            var last = document.getElementById('cr_lastname').value.trim();
+            var email = document.getElementById('cr_email').value.trim();
+            var phone = document.getElementById('cr_phone').value.trim();
+            var btn = document.getElementById('btnCreationSend');
+            if (btn) btn.disabled = !(project && first && last && email && phone);
+        }
+
+        function clearCreation() {
+            ['cr_project','cr_firstname','cr_lastname','cr_email','cr_phone'].forEach(function(id) {
+                var el = document.getElementById(id); if (el) el.value = '';
+            });
+            var btn = document.getElementById('btnCreationSend');
+            if (btn) btn.disabled = true;
+        }
+
+        async function submitCreation() {
+            var btn = document.getElementById('btnCreationSend');
+            if (btn) { btn.disabled = true; btn.textContent = 'Envoi en cours…'; }
+            var payload = {
+                statut_entreprise: 'creation',
+                projet: document.getElementById('cr_project').value.trim(),
+                prenom: document.getElementById('cr_firstname').value.trim(),
+                nom: document.getElementById('cr_lastname').value.trim(),
+                email: document.getElementById('cr_email').value.trim(),
+                telephone: document.getElementById('cr_phone').value.trim(),
+                langue: 'fr'
+            };
+            try {
+                var res = await fetch('/api/leads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                document.getElementById('confirmName').textContent = payload.prenom ? payload.prenom + ' !' : '!';
+                document.querySelector('[data-step="1"]').classList.remove('active');
+                document.querySelector('[data-step="done"]').classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                alert('Échec de l\'envoi. Réessayez ou contactez-nous à contact@cedrus-expertise.fr');
+                if (btn) { btn.disabled = false; btn.textContent = 'Envoyer ma demande'; }
+            }
+        }
+
+        function searchBySiret(raw) {
+            clearTimeout(searchTimeout);
+            var input = document.getElementById('companySearch');
+            var results = document.getElementById('searchResults');
+            var spinner = document.getElementById('searchSpinner');
+            var hint = document.getElementById('siretHint');
+
+            // Ne garde que les chiffres et met en forme par blocs (3 3 3 5)
+            var digits = raw.replace(/\D/g, '').slice(0, 14);
+            var formatted = digits.replace(/(\d{3})(\d{0,3})(\d{0,3})(\d{0,5}).*/, function(_, a, b, c, d) {
+                return [a, b, c, d].filter(Boolean).join(' ');
+            });
+            if (formatted !== raw) {
+                input.value = formatted;
+            }
+
+            results.classList.remove('open');
+
+            if (digits.length === 0) {
+                hint.textContent = 'Retrouvez votre SIRET sur votre extrait K-Bis.';
+                hint.className = 'text-xs text-muted mt-2';
+                return;
+            }
+            if (digits.length < 14) {
+                hint.textContent = digits.length + '/14 chiffres';
+                hint.className = 'text-xs text-muted mt-2';
+                return;
+            }
+
+            // 14 chiffres : on lance la recherche
+            hint.textContent = 'Recherche de l\'entreprise...';
+            hint.className = 'text-xs text-cedrus-600 mt-2';
+            spinner.classList.add('active');
+
+            searchTimeout = setTimeout(function() {
+                fetch('/api/lookup-company?q=' + digits)
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        spinner.classList.remove('active');
+                        if (!data.results || data.results.length === 0) {
+                            hint.textContent = 'Aucune entreprise trouv&eacute;e pour ce num&eacute;ro SIRET.';
+                            hint.className = 'text-xs text-red-500 mt-2';
+                            hint.innerHTML = hint.textContent;
+                            return;
+                        }
+                        window._searchResults = data.results;
+                        hint.textContent = 'Entreprise identifi&eacute;e.';
+                        hint.innerHTML = hint.textContent;
+                        hint.className = 'text-xs text-cedrus-600 mt-2';
+                        pickCompany(0);
+                    })
+                    .catch(function() {
+                        spinner.classList.remove('active');
+                        hint.textContent = 'Erreur de connexion. R&eacute;essayez dans un instant.';
+                        hint.innerHTML = hint.textContent;
+                        hint.className = 'text-xs text-red-500 mt-2';
+                    });
+            }, 250);
+        }
+
+        function pickCompany(index) {
+            var company = window._searchResults[index];
+            var siege = company.siege || {};
+            var dirigeants = company.dirigeants || [];
+            var dirigeant = dirigeants.length > 0
+                ? (dirigeants[0].prenom || '') + ' ' + (dirigeants[0].nom || '')
+                : '-';
+            var adresse = siege.adresse || '-';
+            var naf = siege.activite_principale || company.activite_principale || '-';
+            var nature = company.nature_juridique || '-';
+            var categorie = company.categorie_entreprise || '';
+
+            document.getElementById('cardName').textContent = company.nom_complet || '-';
+            document.getElementById('cardSiren').textContent = company.siren || '-';
+            document.getElementById('cardSiret').textContent = siege.siret || '-';
+            document.getElementById('cardForme').textContent = nature;
+            document.getElementById('cardAdresse').textContent = adresse;
+            document.getElementById('cardDirigeant').textContent = dirigeant;
+            document.getElementById('cardNaf').textContent = naf;
+            document.getElementById('cardCreation').textContent = company.date_creation || siege.date_creation || '-';
+
+            document.getElementById('companyCard').classList.add('visible');
+            document.getElementById('searchResults').classList.remove('open');
+
+            formData.entreprise = {
+                nom: company.nom_complet,
+                siren: company.siren,
+                siret: siege.siret,
+                forme: nature,
+                categorie: categorie,
+                adresse: adresse,
+                dirigeant: dirigeant,
+                naf: naf,
+                creation: company.date_creation || siege.date_creation,
+                effectif: siege.tranche_effectif_salarie || ''
+            };
+            if (currentStep === 1) {
+                var btn1 = document.getElementById('btn1');
+                if (btn1) btn1.disabled = false;
+            }
+        }
+
+        function clearCompany() {
+            document.getElementById('companyCard').classList.remove('visible');
+            document.getElementById('companySearch').value = '';
+            document.getElementById('searchResults').classList.remove('open');
+            var hint = document.getElementById('siretHint');
+            if (hint) {
+                hint.textContent = 'Retrouvez votre SIRET sur votre extrait K-Bis.';
+                hint.className = 'text-xs text-muted mt-2';
+            }
+            delete formData.entreprise;
+            if (currentStep === 1 && formData.situation === 'existant') {
+                var btn1 = document.getElementById('btn1');
+                if (btn1) btn1.disabled = true;
+            }
+        }
+
+        // Close results on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-wrapper')) {
+                document.getElementById('searchResults').classList.remove('open');
+            }
+        });
+
+        function toggleMulti(el, field) {
+            el.classList.toggle('selected');
+            if (!formData[field]) formData[field] = [];
+            var val = el.dataset.value;
+            var idx = formData[field].indexOf(val);
+            if (idx > -1) formData[field].splice(idx, 1); else formData[field].push(val);
+            var btn = document.getElementById('btn' + currentStep);
+            if (btn) btn.disabled = formData[field].length === 0;
+        }
+
+        // ===== VOLUMETRIE (step 3) =====
+        function selectVolume(el, field, min, max) {
+            el.parentElement.querySelectorAll('.choice-card').forEach(function(c) { c.classList.remove('selected'); });
+            el.classList.add('selected');
+            formData.volumetrie[field] = { label: el.dataset.value, min: min, max: max, avg: Math.round((min + max) / 2) };
+            checkStep3();
+        }
+
+        function setSalariesPrecise(val) {
+            var n = parseInt(val, 10);
+            if (isNaN(n) || n < 0) { delete formData.volumetrie.salaries; checkStep3(); return; }
+            formData.volumetrie.salaries = { label: String(n), min: n, max: n, avg: n, precise: n };
+            checkStep3();
+        }
+
+        function setInvoicesPrecise(field, val) {
+            var n = parseInt(val, 10);
+            if (isNaN(n) || n < 0) { delete formData.volumetrie[field]; checkStep3(); return; }
+            formData.volumetrie[field] = { label: String(n), min: n, max: n, avg: n, precise: n };
+            checkStep3();
+        }
+
+        function checkStep3() {
+            var v = formData.volumetrie || {};
+            var btn = document.getElementById('btn3');
+            if (!btn) return;
+            btn.disabled = !(v.facturesFournisseurs && v.facturesClients && v.salaries);
+        }
+
+        // Accueil nominatif sur l'&eacute;tape 2 (donn&eacute;es API Entreprises / Pappers)
+        function applyStep2Greeting() {
+            var greet = document.getElementById('step2Greeting');
+            var nameEl = document.getElementById('step2GreetingName');
+            if (!greet || !nameEl) return;
+            var e = formData.entreprise;
+            if (!e || !e.nom) { greet.classList.add('hidden'); return; }
+            var label = e.nom;
+            if (e.dirigeant && e.dirigeant !== '-' && e.dirigeant.trim() !== '') {
+                label = e.dirigeant + ' &bull; ' + e.nom;
+            }
+            nameEl.innerHTML = label;
+            greet.classList.remove('hidden');
+        }
+
+        // APE check shown when entering step 3
+        function applyApeCheck() {
+            var ex = document.getElementById('apeExclusion');
+            var form = document.getElementById('volumetryForm');
+            var btn = document.getElementById('btn3');
+            var naf = formData.entreprise && formData.entreprise.naf ? normalizeApe(formData.entreprise.naf) : '';
+
+            if (naf && EXCLUDED_APE[naf]) {
+                document.getElementById('apeCodeLabel').textContent = naf;
+                document.getElementById('apeActivityLabel').innerHTML = EXCLUDED_APE[naf];
+                ex.classList.remove('hidden');
+                form.classList.add('hidden');
+                btn.disabled = true;
+                btn.style.display = 'none';
+            } else {
+                ex.classList.add('hidden');
+                form.classList.remove('hidden');
+                btn.style.display = '';
+                checkStep3();
+            }
+        }
+
+        // ===== PROPOSITION TARIFAIRE (step 4) - Grille CEDRUS PILOT =====
+        // Tarifs Standards 2025 :
+        //   Bilan: 1 840 &euro; | 0-499 fact: 4,94 &euro; | 500-1199: 4,60 &euro; | 1200+: 4,28 &euro;
+        //   Social: 980 &euro; + 330 &euro; / salari&eacute; (27,50 &euro; / paye)
+        //   AGO: 580 &euro;
+        // Tarifs SCI / LMNP :
+        //   SCI-IS 1 000 &euro; | SCI-IR 795 &euro; | LMNP 1 020 &euro; (+ 160 &euro; / bien)
+        function computeComptaCommerciale(nbFacturesAnnee) {
+            var total = 1840; // minimum bilan
+            var n = nbFacturesAnnee;
+            if (n <= 0) return total;
+            if (n <= 499) {
+                total += n * 4.94;
+            } else if (n <= 1199) {
+                total += 499 * 4.94 + (n - 499) * 4.60;
+            } else {
+                total += 499 * 4.94 + 700 * 4.60 + (n - 1199) * 4.28;
+            }
+            return total;
+        }
+
+        function detectStructureType() {
+            var forme = formData.entreprise && formData.entreprise.forme ? String(formData.entreprise.forme).toUpperCase() : '';
+            if (forme.indexOf('SCI') > -1) return 'SCI-IR'; // d&eacute;faut SCI-IR, le plus fr&eacute;quent
+            if (forme.indexOf('LMNP') > -1 || forme.indexOf('LOUEUR EN MEUBL') > -1) return 'LMNP';
+            return 'COMMERCIALE';
+        }
+
+        function calculateQuote() {
+            var v = formData.volumetrie || {};
+            var besoins = formData.besoins || [];
+            var ff = v.facturesFournisseurs ? v.facturesFournisseurs.avg : 0;
+            var fc = v.facturesClients ? v.facturesClients.avg : 0;
+            var sal = v.salaries && typeof v.salaries.precise === 'number' ? v.salaries.precise : (v.salaries ? v.salaries.avg : 0);
+            var hasComptaFiscal = besoins.indexOf('compta-fiscal') > -1;
+            var hasSocialPaie = besoins.indexOf('social-paie') > -1;
+            var hasJuridique = besoins.indexOf('juridique') > -1;
+
+            var structure = detectStructureType();
+            var nbFacturesAn = (ff + fc) * 12;
+
+            var lines = [];
+            var totalAnnuel = 0;
+
+            // Forfait Comptabilit&eacute; / Fiscalit&eacute;
+            if (hasComptaFiscal) {
+                var comptaAnnuel = 0;
+                var comptaLabel = 'Forfait Comptabilit&eacute; &amp; Fiscalit&eacute;';
+                var comptaDetail = '';
+                if (structure === 'SCI-IR') {
+                    comptaAnnuel = 795;
+                    comptaDetail = 'SCI-IR &bull; bilan annuel';
+                } else if (structure === 'SCI-IS') {
+                    comptaAnnuel = 1000;
+                    comptaDetail = 'SCI-IS &bull; bilan annuel';
+                } else if (structure === 'LMNP') {
+                    comptaAnnuel = 1020;
+                    comptaDetail = 'LMNP &bull; bilan annuel';
+                } else {
+                    comptaAnnuel = computeComptaCommerciale(nbFacturesAn);
+                    comptaDetail = 'Bilan 1 840 &euro; + ~' + nbFacturesAn + ' factures/an';
+                }
+                lines.push({ label: comptaLabel, detail: comptaDetail, value: comptaAnnuel });
+                totalAnnuel += comptaAnnuel;
+            }
+
+            // Forfait Social / Paies (uniquement soci&eacute;t&eacute;s commerciales)
+            // Forfait 600 &euro; si moins de 5 salari&eacute;s, sinon 980 &euro;
+            if (hasSocialPaie && structure === 'COMMERCIALE') {
+                var socialBase = sal < 5 ? 600 : 980;
+                var socialAnnuel = socialBase + sal * 330;
+                var socialDetail = 'Forfait ' + socialBase + ' &euro; + ' + sal + ' salari&eacute;' + (sal > 1 ? 's' : '') + ' &times; 330 &euro;';
+                lines.push({ label: 'Forfait Social', detail: socialDetail, value: socialAnnuel });
+                totalAnnuel += socialAnnuel;
+            }
+
+            // Forfait Juridique - uniquement soci&eacute;t&eacute;s commerciales
+            if (hasJuridique && structure === 'COMMERCIALE') {
+                lines.push({ label: 'Forfait Juridique (AGO annuelle)', detail: 'Factur&eacute; 6 mois apr&egrave;s cl&ocirc;ture', value: 580 });
+                totalAnnuel += 580;
+            }
+
+            // Affichage : mensuel + annuel
+            var annuelCommercial = totalAnnuel;
+            var juridiqueAnnuel = (hasJuridique && structure === 'COMMERCIALE') ? 580 : 0;
+            var mensuelBase = Math.round((annuelCommercial - juridiqueAnnuel) / 12);
+
+            // Affiche le mensuel comme chiffre principal
+            document.getElementById('quoteAmount').textContent = mensuelBase.toLocaleString('fr-FR');
+
+            // Breakdown d&eacute;taill&eacute; en HT ANNUEL
+            var breakdownHtml = lines.map(function(l) {
+                return '<div class="flex items-start justify-between gap-3 text-sm">'
+                    + '<div class="flex-1"><p class="text-white font-medium">' + l.label + '</p>'
+                    + (l.detail ? '<p class="text-white/50 text-xs mt-0.5">' + l.detail + '</p>' : '')
+                    + '</div>'
+                    + '<span class="text-white font-semibold whitespace-nowrap">' + l.value.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' &euro;/an</span>'
+                    + '</div>';
+            }).join('');
+
+            // Total annuel
+            breakdownHtml += '<div class="border-t border-white/15 pt-3 mt-3 flex items-center justify-between">'
+                + '<span class="text-white/90 text-sm">Total annuel HT</span>'
+                + '<span class="text-gold font-bold text-lg">' + totalAnnuel.toLocaleString('fr-FR') + ' &euro;</span>'
+                + '</div>';
+
+            // Note mensualisation
+            if (juridiqueAnnuel > 0) {
+                breakdownHtml += '<p class="text-[11px] text-white/50 leading-relaxed pt-1">Comptable et social mensualis&eacute;s, juridique (AGO) factur&eacute; au 6e mois apr&egrave;s cl&ocirc;ture du bilan.</p>';
+            } else {
+                breakdownHtml += '<p class="text-[11px] text-white/50 leading-relaxed pt-1">Forfait mensualis&eacute; sur 12 mois.</p>';
+            }
+
+            document.getElementById('quoteBreakdown').innerHTML = breakdownHtml;
+
+            // Badge structure
+            var structureLabel = {
+                'COMMERCIALE': 'Soci&eacute;t&eacute; commerciale',
+                'SCI-IR': 'SCI &agrave; l\'IR',
+                'SCI-IS': 'SCI &agrave; l\'IS',
+                'LMNP': 'Loueur Meubl&eacute; Non Professionnel'
+            }[structure] || structure;
+
+            // Included
+            var included = [
+                'Expert-comptable d&eacute;di&eacute;, joignable par email &amp; t&eacute;l&eacute;phone',
+                'Acc&egrave;s &agrave; votre espace client s&eacute;curis&eacute; CEDRUS',
+                'Synchronisation automatique avec votre comptabilit&eacute; Pennylane',
+                'Alertes sur vos &eacute;ch&eacute;ances fiscales et sociales',
+                'Premi&egrave;re consultation gratuite et sans engagement',
+                'Tarifs bas&eacute;s sur la grille ' + structureLabel
+            ];
+            document.getElementById('quoteIncluded').innerHTML = included.map(function(item) {
+                return '<li class="flex items-start gap-2 text-sm text-muted">'
+                    + '<svg class="w-4 h-4 text-cedrus-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>'
+                    + '<span>' + item + '</span></li>';
+            }).join('');
+
+            formData.proposition = {
+                structure: structure,
+                annuel: totalAnnuel,
+                mensuel: mensuelBase,
+                detail: lines
+            };
+        }
+
+        function checkStep5() {
+            var p = document.getElementById('prenom').value.trim();
+            var n = document.getElementById('nom').value.trim();
+            var e = document.getElementById('email').value.trim();
+            var t = document.getElementById('tel').value.trim();
+            var btn = document.getElementById('btn5');
+            if (btn) btn.disabled = !(p && n && e && t);
+        }
+
+        function nextStep() {
+            if (currentStep >= totalSteps) return;
+            // Garde-fou : SIRET obligatoire pour les entreprises existantes
+            if (currentStep === 1 && formData.situation === 'existant'
+                && (!formData.entreprise || !formData.entreprise.siren)) {
+                var hint = document.getElementById('siretHint');
+                if (hint) {
+                    hint.textContent = 'Veuillez saisir votre SIRET (14 chiffres) avant de continuer.';
+                    hint.className = 'text-xs text-red-500 mt-2 font-medium';
+                }
+                var input = document.getElementById('companySearch');
+                if (input) input.focus();
+                return;
+            }
+            if (currentStep === 5) {
+                formData.prenom = document.getElementById('prenom').value;
+                formData.nom = document.getElementById('nom').value;
+                formData.email = document.getElementById('email').value;
+                formData.tel = document.getElementById('tel').value;
+                formData.message = document.getElementById('message').value;
+            }
+            document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
+            currentStep++;
+            document.querySelector('[data-step="' + currentStep + '"]').classList.add('active');
+
+            // Hooks specifiques a l'entree d'une &eacute;tape
+            if (currentStep === 2) applyStep2Greeting();
+            if (currentStep === 3) applyApeCheck();
+            if (currentStep === 4) calculateQuote();
+
+            updateIndicators();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function prevStep() {
+            if (currentStep <= 1) return;
+            document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
+            currentStep--;
+            document.querySelector('[data-step="' + currentStep + '"]').classList.add('active');
+            updateIndicators();
+        }
+
+        function updateIndicators() {
+            var indicators = document.querySelectorAll('.step-indicator');
+            var lines = document.querySelectorAll('.step-line');
+            indicators.forEach(function(ind, i) {
+                ind.classList.remove('active', 'done', 'pending');
+                if (i + 1 < currentStep) ind.classList.add('done');
+                else if (i + 1 === currentStep) ind.classList.add('active');
+                else ind.classList.add('pending');
+            });
+            lines.forEach(function(line, i) {
+                line.classList.toggle('done', i + 1 < currentStep);
+            });
+        }
+
+        async function submitForm() {
+            var payload = {
+                statut_entreprise: formData.situation === 'existant' ? 'existant'
+                                 : formData.situation === 'creation' ? 'creation' : formData.situation || null,
+                besoins: formData.besoins || [],
+                entreprise: formData.entreprise || null,
+                volumetrie: formData.volumetrie || {},
+                proposition: formData.proposition || null,
+                prenom: formData.prenom || '',
+                nom: formData.nom || '',
+                email: formData.email || '',
+                telephone: formData.tel || '',
+                message: formData.message || '',
+                rdvmode: formData.rdvmode || '',
+                dispo: formData.dispo || '',
+                langue: 'fr'
+            };
+
+            var btns = document.querySelectorAll('button.btn-next');
+            btns.forEach(function(b){ b.disabled = true; });
+
+            try {
+                var res = await fetch('/api/leads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+            } catch (err) {
+                alert('Échec de l\'envoi. Réessayez ou contactez-nous à contact@cedrus-expertise.fr');
+                btns.forEach(function(b){ b.disabled = false; });
+                return;
+            }
+
+            document.getElementById('confirmName').textContent = formData.prenom ? formData.prenom + ' !' : '!';
+
+            // Summary card
+            var structureLabel = {
+                'COMMERCIALE': 'Soci&eacute;t&eacute; commerciale',
+                'SCI-IR': 'SCI &agrave; l\'IR',
+                'SCI-IS': 'SCI &agrave; l\'IS',
+                'LMNP': 'LMNP'
+            }[(formData.proposition && formData.proposition.structure) || 'COMMERCIALE'] || '&mdash;';
+
+            var besoinsLabels = {
+                'compta-fiscal': 'Comptabilit&eacute; / Fiscalit&eacute;',
+                'social-paie': 'Social / Paies',
+                'juridique': 'Secr&eacute;tariat juridique'
+            };
+            var besoinsList = (formData.besoins || []).map(function(b) { return besoinsLabels[b] || b; }).join(', ') || '&mdash;';
+
+            var rows = [
+                { label: 'Entreprise', value: (formData.entreprise && formData.entreprise.nom) || '&mdash;' },
+                { label: 'Type de structure', value: structureLabel },
+                { label: 'Prestations retenues', value: besoinsList }
+            ];
+            if (formData.proposition) {
+                rows.push({
+                    label: 'Forfait mensuel HT',
+                    value: '<span class="font-semibold text-cedrus-600">' + formData.proposition.mensuel.toLocaleString('fr-FR') + ' &euro;</span>'
+                });
+                rows.push({
+                    label: 'Total annuel HT',
+                    value: '<span class="font-semibold text-ink">' + formData.proposition.annuel.toLocaleString('fr-FR') + ' &euro;</span>'
+                });
+            }
+            rows.push({ label: 'Engagement', value: '1 an, tacite reconduction' });
+
+            document.getElementById('confirmSummary').innerHTML = rows.map(function(r) {
+                return '<div class="flex items-start justify-between gap-3 pb-2.5 border-b border-gray-50 last:border-0">'
+                    + '<span class="text-muted shrink-0">' + r.label + '</span>'
+                    + '<span class="text-right">' + r.value + '</span>'
+                    + '</div>';
+            }).join('');
+
+            document.querySelector('[data-step="' + currentStep + '"]').classList.remove('active');
+            document.querySelector('[data-step="done"]').classList.add('active');
+            document.querySelectorAll('.step-indicator').forEach(function(ind) { ind.classList.remove('active', 'pending'); ind.classList.add('done'); });
+            document.querySelectorAll('.step-line').forEach(function(l) { l.classList.add('done'); });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

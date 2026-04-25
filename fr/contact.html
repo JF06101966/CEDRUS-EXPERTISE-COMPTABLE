@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - CEDRUS Expertise Comptable & Conseils</title>
+    <meta name="description" content="Contactez CEDRUS Expertise Comptable. Prenez rendez-vous, retrouvez nos coordonnées et notre localisation à Marnes-la-Coquette.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Contact - CEDRUS Expertise Comptable & Conseils">
+    <meta property="og:description" content="Contactez CEDRUS Expertise Comptable. Prenez rendez-vous et retrouvez nos coordonnées.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cedrus-expertise.fr/fr/contact.html">
+
+    <!-- Favicon SVG inline -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-weight='bold' fill='%233E9364'>C</text></svg>">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="../assets/styles.css">
+
+    <!-- Tailwind config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cedrus': {
+                            700: '#357A56',
+                            600: '#3E9364',
+                            500: '#4FA36F',
+                            200: '#BFE6AE'
+                        },
+                        'ink': '#0B1420',
+                        'muted': '#6B7280',
+                        'paper': '#F8FAF9',
+                        'gold': '#D4A853'
+                    },
+                    fontFamily: {
+                        'playfair': ['Playfair Display', 'serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "CEDRUS EXPERTISE COMPTABLE & CONSEILS",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "8 AVENUE DES TERRASSES",
+            "addressLocality": "MARNES-LA-COQUETTE",
+            "postalCode": "92430",
+            "addressCountry": "FR"
+        },
+        "url": "https://cedrus-expertise.fr",
+        "description": "Un cabinet d'expertise comptable nouvelle generation au service des dirigeants de demain"
+    }
+    </script>
+
+    <style>
+        .parallax-bg { background-attachment: fixed; background-size: cover; background-position: center; }
+        @media (max-width: 768px) { .parallax-bg { background-attachment: scroll; } }
+
+        .gold-sep { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #D4A853, transparent); margin: 0 auto; }
+        .gold-sep-wide { width: 200px; height: 1px; background: linear-gradient(90deg, transparent, #D4A853, #D4A853, transparent); margin: 0 auto; }
+        .gold-sep-left { width: 60px; height: 2px; background: linear-gradient(90deg, #D4A853, transparent); }
+
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .lang-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            min-width: 140px;
+            z-index: 50;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .lang-dropdown-content.show {
+            display: block;
+        }
+        .lang-dropdown-content a {
+            display: block;
+            padding: 10px 16px;
+            font-size: 13px;
+            color: #0B1420;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .lang-dropdown-content a:hover {
+            background: #F8FAF9;
+        }
+        .lang-dropdown-content a.active {
+            color: #3E9364;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-paper font-inter text-ink">
+    <!-- Navigation -->
+    <nav id="mainNav" class="fixed top-0 z-40 w-full transition-all duration-500" style="background:transparent;">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-5 transition-all duration-500" id="navInner">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <img src="../cedrus.png" alt="CEDRUS" class="h-10 w-auto opacity-90 group-hover:opacity-100 transition-opacity">
+                <div class="hidden sm:flex flex-col">
+                    <span class="text-lg font-playfair font-bold tracking-wider nav-text transition-colors duration-500" style="color:white;">CEDRUS</span>
+                    <span class="text-xs tracking-widest uppercase nav-text transition-colors duration-500" style="color:rgba(255,255,255,0.7);">Expertise Comptable</span>
+                </div>
+            </a>
+            <div class="hidden md:flex items-center gap-x-8">
+                <a href="index.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Accueil</a>
+                <a href="cabinet.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Le Cabinet</a>
+                <a href="missions.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Missions</a>
+                <a href="honoraires.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Honoraires</a>
+                <a href="contact.html" data-nav-link class="text-sm font-medium tracking-wide nav-link transition-all duration-300" style="color:white;">Contact</a>
+                <a href="espace-client.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">Espace Client</a>
+                <!-- Language Selector -->
+                <div class="lang-dropdown">
+                    <button onclick="toggleLangMenu()" class="text-sm tracking-wide nav-link transition-all duration-300 flex items-center gap-1" style="color:rgba(255,255,255,0.7);">
+                        FR
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="langDropdown" class="lang-dropdown-content">
+                        <a href="contact.html" class="active">FR - Fran&ccedil;ais</a>
+                        <a href="../contact.html">EN - English</a>
+                        <a href="../ar/contact.html">AR - العربية</a>
+                    </div>
+                </div>
+                <a href="onboarding.html" class="text-sm font-medium px-6 py-2.5 rounded-full border border-white/40 hover:bg-white hover:text-ink transition-all duration-300 nav-cta" style="color:white;">Commencer</a>
+            </div>
+            <button data-mobile-menu class="md:hidden p-2 rounded-lg nav-text" style="color:white;" aria-label="Menu"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 9h16.5m-16.5 6.75h16.5"></path></svg></button>
+        </div>
+        <div data-mobile-menu-panel class="hidden md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg border-b border-gray-100 shadow-xl">
+            <div class="px-6 py-8 space-y-5">
+                <a href="index.html" class="block text-muted">Accueil</a>
+                <a href="cabinet.html" class="block text-muted">Le Cabinet</a>
+                <a href="missions.html" class="block text-muted">Missions</a>
+                <a href="honoraires.html" class="block text-muted">Honoraires</a>
+                <a href="contact.html" class="block text-ink font-medium">Contact</a>
+                <a href="espace-client.html" class="block text-muted hover:text-ink transition-colors">Espace Client</a>
+                <div class="flex gap-3 text-sm text-muted">
+                    <a href="contact.html" class="text-cedrus-600 font-medium">FR</a>
+                    <span class="text-gold">|</span>
+                    <a href="../contact.html" class="hover:text-ink transition-colors">EN</a>
+                    <span class="text-gold">|</span>
+                    <a href="../ar/contact.html" class="hover:text-ink transition-colors">AR</a>
+                </div>
+                <div class="pt-2"><a href="onboarding.html" class="block bg-ink text-white px-6 py-3.5 rounded-full font-medium text-center text-sm">Commencer</a></div>
+            </div>
+        </div>
+        <div data-mobile-menu-overlay class="hidden md:hidden fixed inset-0 bg-black/20 z-30"></div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 parallax-bg"
+             style="background-image: url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=2070&q=80');">
+        </div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <div class="gold-sep mb-8"></div>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-playfair font-bold text-white mb-8 animate-on-scroll">
+                Contact
+            </h1>
+            <p class="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto animate-on-scroll font-light">
+                Nous sommes &agrave; votre disposition pour r&eacute;pondre &agrave; toutes vos questions
+            </p>
+            <div class="gold-sep-wide mt-10"></div>
+        </div>
+
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+            <svg class="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </div>
+    </section>
+
+    <!-- Contact Details Section -->
+    <section class="py-24 lg:py-32 bg-paper">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Section header -->
+            <div class="text-center mb-16 animate-on-scroll">
+                <div class="gold-sep mb-6"></div>
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold text-ink mb-4">Nos coordonn&eacute;es</h2>
+                <p class="text-muted max-w-xl mx-auto">Un cabinet 100&nbsp;% digital, joignable o&ugrave; que vous soyez et &agrave; tout moment.</p>
+            </div>
+
+            <!-- Premium contact card -->
+            <div class="animate-on-scroll">
+                <div class="relative bg-white rounded-3xl shadow-xl overflow-hidden">
+                    <!-- Gold top accent -->
+                    <div class="h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+
+                    <div class="p-10 md:p-14">
+                        <div class="grid md:grid-cols-2 gap-10 md:gap-12">
+
+                            <!-- Email -->
+                            <a href="mailto:cabinet@cedrus-expertisecomptable.com" class="group flex items-start gap-5 hover:-translate-y-0.5 transition-transform duration-300">
+                                <div class="bg-ink text-gold w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-cedrus-600 group-hover:text-ink transition-colors duration-300">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <h3 class="text-xs font-semibold tracking-widest uppercase text-muted mb-2">Email</h3>
+                                    <p class="text-ink font-medium break-all group-hover:text-cedrus-600 transition-colors">cabinet@cedrus-expertisecomptable.com</p>
+                                    <span class="inline-block mt-2 text-xs text-cedrus-600 opacity-0 group-hover:opacity-100 transition-opacity">&rarr; &Eacute;crivez-nous</span>
+                                </div>
+                            </a>
+
+                            <!-- Phone -->
+                            <a href="tel:+33100000000" class="group flex items-start gap-5 hover:-translate-y-0.5 transition-transform duration-300">
+                                <div class="bg-ink text-gold w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-cedrus-600 group-hover:text-ink transition-colors duration-300">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xs font-semibold tracking-widest uppercase text-muted mb-2">T&eacute;l&eacute;phone</h3>
+                                    <p class="text-ink font-medium">+33 (0)1 XX XX XX XX</p>
+                                    <span class="inline-block mt-2 text-xs text-cedrus-600 opacity-0 group-hover:opacity-100 transition-opacity">&rarr; Appelez-nous</span>
+                                </div>
+                            </a>
+
+                            <!-- Disponibilité -->
+                            <div class="flex items-start gap-5">
+                                <div class="bg-ink text-gold w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xs font-semibold tracking-widest uppercase text-muted mb-2">Disponibilit&eacute;</h3>
+                                    <p class="text-ink font-medium leading-relaxed">Lundi &ndash; Vendredi<br><span class="text-muted font-normal">9h00 &ndash; 18h00</span></p>
+                                </div>
+                            </div>
+
+                            <!-- Siège -->
+                            <div class="flex items-start gap-5">
+                                <div class="bg-ink text-gold w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xs font-semibold tracking-widest uppercase text-muted mb-2">Si&egrave;ge social</h3>
+                                    <p class="text-ink font-medium leading-relaxed">8 Avenue des Terrasses<br><span class="text-muted font-normal">92430 Marnes-la-Coquette</span></p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="gold-sep mt-12 mb-10"></div>
+
+                        <!-- CTA -->
+                        <div class="text-center">
+                            <p class="text-muted mb-6">Pr&ecirc;t &agrave; d&eacute;marrer ? Lancez votre accompagnement en quelques minutes.</p>
+                            <a href="onboarding.html" class="inline-flex items-center gap-2 bg-cedrus-600 hover:bg-cedrus-500 text-ink px-8 py-4 rounded-full font-medium transition-all duration-300 text-base shadow-md hover:shadow-lg">
+                                Commencer en ligne
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <!-- Gold bottom accent -->
+                    <div class="h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Data Protection Section -->
+    <section class="py-24 lg:py-28 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="gold-sep mb-6"></div>
+            </div>
+            <div class="bg-paper rounded-2xl p-10 lg:p-12 shadow-sm border border-gray-100 animate-on-scroll">
+                <h2 class="text-2xl font-playfair font-semibold text-ink mb-6">Protection des Donn&eacute;es</h2>
+                <p class="text-muted mb-6 leading-relaxed">
+                    Conform&eacute;ment au R&egrave;glement G&eacute;n&eacute;ral sur la Protection des Donn&eacute;es (RGPD), vos donn&eacute;es personnelles sont collect&eacute;es et trait&eacute;es par CEDRUS EXPERTISE COMPTABLE & CONSEILS dans le strict respect de la r&eacute;glementation en vigueur.
+                </p>
+                <p class="text-muted mb-6 leading-relaxed">
+                    Vous disposez d'un droit d'acc&egrave;s, de rectification, de suppression et d'opposition au traitement de vos donn&eacute;es. Pour exercer ces droits ou pour toute question relative au traitement de vos donn&eacute;es, veuillez nous contacter.
+                </p>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-cedrus-600 hover:text-cedrus-500 font-medium transition-colors">
+                        Politique de Confidentialit&eacute;
+                    </a>
+                    <span class="text-gold">|</span>
+                    <a href="#" class="text-cedrus-600 hover:text-cedrus-500 font-medium transition-colors">
+                        Mentions L&eacute;gales
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="relative py-28 lg:py-36 overflow-hidden">
+        <div class="absolute inset-0 parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2070&q=80');"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <div class="gold-sep mb-8"></div>
+            <h2 class="text-3xl md:text-5xl font-playfair font-bold text-white mb-8 animate-on-scroll">
+                Pr&ecirc;t &agrave; nous rencontrer ?
+            </h2>
+            <p class="text-xl text-white/90 mb-10 animate-on-scroll font-light">
+                R&eacute;servez un rendez-vous d&eacute;couverte gratuit et sans engagement
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-on-scroll">
+                <a href="onboarding.html" class="bg-white text-cedrus-600 hover:bg-gray-50 px-10 py-4 rounded-full font-medium transition-all duration-300 text-lg text-center">
+                    Prendre RDV
+                </a>
+                <a href="onboarding.html" class="border border-white/40 text-white hover:bg-white/10 px-10 py-4 rounded-full font-medium transition-all duration-300 text-lg">
+                    Commencer en Ligne
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-white py-16" style="background: linear-gradient(180deg, #3C4B5F 0%, #1E2D41 50%, #08121F 100%);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <!-- Coordonnees -->
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">CEDRUS</h3>
+                    <p class="text-gray-300 mb-2">8 AVENUE DES TERRASSES</p>
+                    <p class="text-gray-300 mb-4">92430 MARNES-LA-COQUETTE</p>
+                    <p class="text-gray-300">cabinet@cedrus-expertisecomptable.com</p>
+                </div>
+
+                <!-- Liens rapides -->
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">Liens Rapides</h3>
+                    <ul class="space-y-2">
+                        <li><a href="cabinet.html" class="text-gray-300 hover:text-white transition-colors">Le Cabinet</a></li>
+                        <li><a href="missions.html" class="text-gray-300 hover:text-white transition-colors">Nos Missions</a></li>
+                        <li><a href="honoraires.html" class="text-gray-300 hover:text-white transition-colors">Honoraires</a></li>
+                        <li><a href="contact.html" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Reseaux sociaux -->
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">Suivez-nous</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="LinkedIn">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barre legale -->
+            <div class="border-t border-gray-700 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                    <p class="text-gray-300 text-sm">
+                        &copy; 2024 CEDRUS EXPERTISE COMPTABLE & CONSEILS. Tous droits r&eacute;serv&eacute;s.
+                    </p>
+                    <div class="flex space-x-6 text-sm">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">Mentions L&eacute;gales</a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">Politique de Confidentialit&eacute;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Appointment booking modal -->
+    <div data-modal="rdv" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Overlay -->
+            <div data-modal-close class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+
+            <!-- Modal content -->
+            <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-6 pt-6 pb-4">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-playfair font-semibold text-ink">Prendre Rendez-vous</h3>
+                        <button data-modal-close class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <form data-validate class="space-y-6">
+                        <div>
+                            <label for="nom" class="block text-sm font-medium text-ink mb-2">Nom complet *</label>
+                            <input type="text" id="nom" name="nom" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cedrus-600 focus:border-transparent transition-colors">
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-ink mb-2">Email *</label>
+                            <input type="email" id="email" name="email" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cedrus-600 focus:border-transparent transition-colors">
+                        </div>
+
+                        <div>
+                            <label for="telephone" class="block text-sm font-medium text-ink mb-2">T&eacute;l&eacute;phone *</label>
+                            <input type="tel" id="telephone" name="telephone" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cedrus-600 focus:border-transparent transition-colors">
+                        </div>
+
+                        <div>
+                            <label for="societe" class="block text-sm font-medium text-ink mb-2">Soci&eacute;t&eacute;</label>
+                            <input type="text" id="societe" name="societe"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cedrus-600 focus:border-transparent transition-colors">
+                        </div>
+
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-ink mb-2">Message *</label>
+                            <textarea id="message" name="message" rows="4" required
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cedrus-600 focus:border-transparent transition-colors resize-none"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="creneau" class="block text-sm font-medium text-ink mb-2">Cr&eacute;neau souhait&eacute;</label>
+                            <select id="creneau" name="creneau"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cedrus-600 focus:border-transparent transition-colors">
+                                <option value="">S&eacute;lectionnez un cr&eacute;neau</option>
+                                <option value="matin">Matin (9h - 12h)</option>
+                                <option value="apres-midi">Apr&egrave;s-midi (14h - 18h)</option>
+                                <option value="soir">Soir (18h - 19h)</option>
+                            </select>
+                        </div>
+
+                        <div class="flex space-x-4 pt-4">
+                            <button type="submit"
+                                    class="flex-1 bg-cedrus-600 hover:bg-cedrus-500 text-white font-medium py-3 px-6 rounded-xl transition-colors">
+                                Envoyer
+                            </button>
+                            <button type="button" data-modal-close
+                                    class="flex-1 bg-gray-300 hover:bg-gray-400 text-ink font-medium py-3 px-6 rounded-xl transition-colors">
+                                Annuler
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-6 pt-4 border-t border-gray-100 text-center">
+                        <p class="text-sm text-muted mb-2">Vous pr&eacute;f&eacute;rez commencer directement en ligne ?</p>
+                        <a href="onboarding.html" class="text-cedrus-600 hover:text-cedrus-500 font-medium text-sm transition-colors">
+                            Acc&eacute;der &agrave; l'inscription en ligne &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main script -->
+    <script src="../assets/main.js"></script>
+
+    <!-- Language menu toggle -->
+    <script>
+    function toggleLangMenu() {
+        var dropdown = document.getElementById('langDropdown');
+        dropdown.classList.toggle('show');
+    }
+    document.addEventListener('click', function(e) {
+        var dropdown = document.getElementById('langDropdown');
+        if (dropdown && !e.target.closest('.lang-dropdown')) {
+            dropdown.classList.remove('show');
+        }
+    });
+    </script>
+
+    <!-- Nav scroll -->
+    <script>
+    (function() {
+        var nav = document.getElementById('mainNav');
+        var navInner = document.getElementById('navInner');
+        var scrolled = false;
+        function updateNav() {
+            var s = window.scrollY > 80;
+            if (s === scrolled) return;
+            scrolled = s;
+            if (scrolled) {
+                nav.style.background = 'rgba(255,255,255,0.97)';
+                nav.style.boxShadow = '0 1px 20px rgba(0,0,0,0.06)';
+                navInner.style.paddingTop = '12px';
+                navInner.style.paddingBottom = '12px';
+                document.querySelectorAll('.nav-text').forEach(function(el) { el.style.color = '#0B1420'; });
+                document.querySelectorAll('.nav-link').forEach(function(el) { el.style.color = el.classList.contains('font-medium') ? '#3E9364' : '#6B7280'; });
+                var cta = document.querySelector('.nav-cta');
+                if (cta) { cta.style.color = '#0B1420'; cta.style.borderColor = '#0B1420'; }
+            } else {
+                nav.style.background = 'transparent';
+                nav.style.boxShadow = 'none';
+                navInner.style.paddingTop = '20px';
+                navInner.style.paddingBottom = '20px';
+                document.querySelectorAll('.nav-text').forEach(function(el) { el.style.color = 'white'; });
+                    document.querySelectorAll('.nav-link').forEach(function(el) {
+                        el.style.color = el.classList.contains('font-medium') ? 'white' : 'rgba(255,255,255,0.7)';
+                    });
+                    var cta = document.querySelector('.nav-cta');
+                    if (cta) { cta.style.color = 'white'; cta.style.borderColor = 'rgba(255,255,255,0.4)'; }
+            }
+        }
+        window.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+    })();
+    </script>
+</body>
+</html>

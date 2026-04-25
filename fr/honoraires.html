@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Honoraires - CEDRUS Expertise Comptable & Conseils</title>
+    <meta name="description" content="Découvrez nos honoraires comptables transparents. Tarifs clairs et conditions détaillées avec CEDRUS.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Nos Honoraires - CEDRUS Expertise Comptable & Conseils">
+    <meta property="og:description" content="Découvrez nos honoraires comptables transparents. Tarifs clairs et conditions détaillées.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cedrus-expertise.fr/fr/honoraires.html">
+
+    <!-- Favicon SVG inline -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-weight='bold' fill='%233E9364'>C</text></svg>">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="../assets/styles.css">
+
+    <!-- Tailwind config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cedrus': {
+                            700: '#357A56',
+                            600: '#3E9364',
+                            500: '#4FA36F',
+                            200: '#BFE6AE'
+                        },
+                        'ink': '#0B1420',
+                        'muted': '#6B7280',
+                        'paper': '#F8FAF9',
+                        'gold': '#D4A853'
+                    },
+                    fontFamily: {
+                        'playfair': ['Playfair Display', 'serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .parallax-bg {
+            will-change: transform;
+            transform: translateZ(0);
+            background-attachment: fixed;
+        }
+        @supports (-webkit-touch-callout: none) {
+            .parallax-bg { background-attachment: scroll; }
+        }
+        .gold-sep {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #D4A853, #F0D78C, #D4A853);
+            margin: 0 auto 1rem auto;
+            border-radius: 2px;
+        }
+        .gold-sep-wide {
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #D4A853, #F0D78C, #D4A853, transparent);
+            margin: 0 auto;
+            border-radius: 2px;
+        }
+        .gold-sep-left {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #D4A853, #F0D78C, #D4A853);
+            border-radius: 2px;
+        }
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .lang-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            min-width: 140px;
+            z-index: 50;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .lang-dropdown-content.show {
+            display: block;
+        }
+        .lang-dropdown-content a {
+            display: block;
+            padding: 10px 16px;
+            font-size: 13px;
+            color: #0B1420;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .lang-dropdown-content a:hover {
+            background: #F8FAF9;
+        }
+        .lang-dropdown-content a.active {
+            color: #3E9364;
+            font-weight: 600;
+        }
+    </style>
+
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "CEDRUS EXPERTISE COMPTABLE & CONSEILS",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "8 AVENUE DES TERRASSES",
+            "addressLocality": "MARNES-LA-COQUETTE",
+            "postalCode": "92430",
+            "addressCountry": "FR"
+        },
+        "url": "https://cedrus-expertise.fr",
+        "description": "Un cabinet d'expertise comptable nouvelle generation au service des dirigeants de demain"
+    }
+    </script>
+</head>
+<body class="bg-paper font-inter text-ink">
+    <!-- Navigation -->
+    <nav id="mainNav" class="fixed top-0 z-40 w-full transition-all duration-500" style="background:transparent;">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-5 transition-all duration-500" id="navInner">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <img src="../cedrus.png" alt="CEDRUS" class="h-10 w-auto opacity-90 group-hover:opacity-100 transition-opacity">
+                <div class="hidden sm:flex flex-col">
+                    <span class="text-lg font-playfair font-bold tracking-wider nav-text transition-colors duration-500" style="color:white;">CEDRUS</span>
+                    <span class="text-xs tracking-widest uppercase nav-text transition-colors duration-500" style="color:rgba(255,255,255,0.7);">Expertise Comptable</span>
+                </div>
+            </a>
+            <div class="hidden md:flex items-center gap-x-8">
+                <a href="index.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Accueil</a>
+                <a href="cabinet.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Le Cabinet</a>
+                <a href="missions.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Missions</a>
+                <a href="honoraires.html" data-nav-link class="text-sm font-medium tracking-wide nav-link transition-all duration-300" style="color:white;">Honoraires</a>
+                <a href="contact.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300" style="color:rgba(255,255,255,0.7);">Contact</a>
+                <a href="espace-client.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">Espace Client</a>
+                <!-- Language Selector -->
+                <div class="lang-dropdown">
+                    <button onclick="toggleLangMenu()" class="text-sm tracking-wide nav-link transition-all duration-300 flex items-center gap-1" style="color:rgba(255,255,255,0.7);">
+                        FR
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="langDropdown" class="lang-dropdown-content">
+                        <a href="honoraires.html" class="active">FR - Fran&ccedil;ais</a>
+                        <a href="../honoraires.html">EN - English</a>
+                        <a href="../ar/honoraires.html">AR - العربية</a>
+                    </div>
+                </div>
+                <a href="onboarding.html" class="text-sm font-medium px-6 py-2.5 rounded-full border border-white/40 hover:bg-white hover:text-ink transition-all duration-300 nav-cta" style="color:white;">Commencer</a>
+            </div>
+            <button data-mobile-menu class="md:hidden p-2 rounded-lg nav-text" style="color:white;" aria-label="Menu"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 9h16.5m-16.5 6.75h16.5"></path></svg></button>
+        </div>
+        <div data-mobile-menu-panel class="hidden md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg border-b border-gray-100 shadow-xl">
+            <div class="px-6 py-8 space-y-5">
+                <a href="index.html" class="block text-muted">Accueil</a>
+                <a href="cabinet.html" class="block text-muted">Le Cabinet</a>
+                <a href="missions.html" class="block text-muted">Missions</a>
+                <a href="honoraires.html" class="block text-ink font-medium">Honoraires</a>
+                <a href="contact.html" class="block text-muted">Contact</a>
+                <a href="espace-client.html" class="block text-muted hover:text-ink transition-colors">Espace Client</a>
+                <div class="flex gap-3 text-sm text-muted">
+                    <a href="honoraires.html" class="text-cedrus-600 font-medium">FR</a>
+                    <span class="text-gold">|</span>
+                    <a href="../honoraires.html" class="hover:text-ink transition-colors">EN</a>
+                    <span class="text-gold">|</span>
+                    <a href="../ar/honoraires.html" class="hover:text-ink transition-colors">AR</a>
+                </div>
+                <div class="pt-2"><a href="onboarding.html" class="block bg-ink text-white px-6 py-3.5 rounded-full font-medium text-center text-sm">Commencer</a></div>
+            </div>
+        </div>
+        <div data-mobile-menu-overlay class="hidden md:hidden fixed inset-0 bg-black/20 z-30"></div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-[40vh] py-20 flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=2070&q=80');"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+        <div class="relative max-w-5xl mx-auto px-4 text-center z-10">
+            <div class="gold-sep-wide mb-8"></div>
+            <h1 class="text-4xl md:text-6xl font-playfair font-bold text-white mb-6">Nos Honoraires</h1>
+            <p class="text-xl text-white/80 max-w-2xl mx-auto">Des tarifs transparents et des conditions claires pour un service de qualit&eacute;</p>
+        </div>
+    </section>
+
+    <!-- Pricing - tout sur une page -->
+    <section class="py-16 bg-paper">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Grille 3 forfaits -->
+            <div class="grid md:grid-cols-3 gap-5 mb-6 animate-on-scroll">
+
+                <!-- Comptabilit&eacute; (mis en avant) -->
+                <div class="bg-white rounded-2xl border-2 border-cedrus-600 p-6 flex flex-col relative shadow-sm">
+                    <div class="absolute -top-3 left-6 bg-cedrus-600 text-ink text-[10px] font-semibold tracking-widest uppercase px-3 py-1 rounded-full">Forfait mensuel</div>
+                    <h2 class="text-xl font-playfair font-bold text-ink mb-1 mt-2">Comptabilit&eacute;</h2>
+                    <p class="text-xs text-muted mb-5">Pour 120 factures annuelles</p>
+
+                    <div class="flex items-baseline gap-1.5 mb-1">
+                        <p class="text-4xl font-playfair font-bold text-ink">202,73&nbsp;&euro;</p>
+                        <p class="text-xs text-muted">HT&nbsp;/&nbsp;mois</p>
+                    </div>
+                    <p class="text-[11px] text-muted mb-5">soit 2&nbsp;432,80&nbsp;&euro;&nbsp;HT&nbsp;/&nbsp;an</p>
+
+                    <div class="w-8 h-px bg-gold mb-4"></div>
+
+                    <ul class="space-y-1.5 text-xs text-muted mb-5 flex-1">
+                        <li class="flex items-start gap-2"><svg class="w-3.5 h-3.5 text-cedrus-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg><span><strong class="text-ink font-medium">Liasse fiscale</strong></span></li>
+                        <li class="flex items-start gap-2"><svg class="w-3.5 h-3.5 text-cedrus-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg><span><strong class="text-ink font-medium">Plaquette comptable annuelle</strong> (bilan, CR, annexes)</span></li>
+                        <li class="flex items-start gap-2"><svg class="w-3.5 h-3.5 text-cedrus-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg><span><strong class="text-ink font-medium">D&eacute;clarations fiscales</strong> (TVA, IS, CFE, CVAE)</span></li>
+                        <li class="flex items-start gap-2"><svg class="w-3.5 h-3.5 text-cedrus-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg><span><strong class="text-ink font-medium">Connexion bancaire</strong> automatis&eacute;e (open banking)</span></li>
+                        <li class="flex items-start gap-2"><svg class="w-3.5 h-3.5 text-cedrus-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg><span><strong class="text-ink font-medium">120 factures</strong> trait&eacute;es / an</span></li>
+                        <li class="flex items-start gap-2"><svg class="w-3.5 h-3.5 text-cedrus-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg><span>Expert-comptable d&eacute;di&eacute; + espace client</span></li>
+                    </ul>
+
+                    <a href="onboarding.html" class="block text-center bg-gradient-to-br from-ink to-[#1F2937] text-ink text-xs font-medium px-4 py-3 rounded-lg hover:shadow-lg transition-all">
+                        Volume sup&eacute;rieur ? Obtenir un devis personnalis&eacute;
+                    </a>
+                    <p class="text-[10px] text-muted text-center mt-2">Tarification ajust&eacute;e selon volum&eacute;trie et salari&eacute;s</p>
+                </div>
+
+                <!-- Social -->
+                <div class="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col">
+                    <div class="text-[10px] font-semibold tracking-widest uppercase text-gold mb-2 mt-2">Forfait annuel</div>
+                    <h2 class="text-xl font-playfair font-bold text-ink mb-1">Social</h2>
+                    <p class="text-xs text-muted mb-5">Paie, DSN, d&eacute;clarations URSSAF</p>
+
+                    <div class="space-y-3 mb-4">
+                        <div class="border border-gray-100 rounded-xl p-4">
+                            <p class="text-[11px] text-muted mb-1">Moins de 5 salari&eacute;s</p>
+                            <div class="flex items-baseline gap-1">
+                                <p class="text-2xl font-playfair font-bold text-ink">600&nbsp;&euro;</p>
+                                <p class="text-xs text-muted">HT&nbsp;/&nbsp;an</p>
+                            </div>
+                        </div>
+                        <div class="border border-gray-100 rounded-xl p-4">
+                            <p class="text-[11px] text-muted mb-1">&Agrave; partir de 5 salari&eacute;s</p>
+                            <div class="flex items-baseline gap-1">
+                                <p class="text-2xl font-playfair font-bold text-ink">980&nbsp;&euro;</p>
+                                <p class="text-xs text-muted">HT&nbsp;/&nbsp;an</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-8 h-px bg-gold mb-4"></div>
+                    <p class="text-xs text-muted mb-1">Bulletins de paie suppl&eacute;mentaires :</p>
+                    <p class="text-xs text-ink font-medium">27,50&nbsp;&euro;&nbsp;HT&nbsp;/&nbsp;bulletin &mdash; 330&nbsp;&euro;&nbsp;HT&nbsp;/&nbsp;salari&eacute;&nbsp;/&nbsp;an</p>
+                </div>
+
+                <!-- Juridique -->
+                <div class="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col">
+                    <div class="text-[10px] font-semibold tracking-widest uppercase text-gold mb-2 mt-2">Forfait annuel</div>
+                    <h2 class="text-xl font-playfair font-bold text-ink mb-1">Juridique</h2>
+                    <p class="text-xs text-muted mb-5">Secr&eacute;tariat juridique soci&eacute;t&eacute;s commerciales</p>
+
+                    <div class="flex items-baseline gap-1.5 mb-1">
+                        <p class="text-4xl font-playfair font-bold text-ink">580&nbsp;&euro;</p>
+                        <p class="text-xs text-muted">HT&nbsp;/&nbsp;an</p>
+                    </div>
+                    <p class="text-[11px] text-muted mb-5">Factur&eacute; au 6e mois apr&egrave;s cl&ocirc;ture</p>
+
+                    <div class="w-8 h-px bg-gold mb-4"></div>
+
+                    <ul class="space-y-1.5 text-xs text-muted mb-4">
+                        <li class="flex items-start gap-2"><svg class="w-3.5 h-3.5 text-cedrus-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg><span>R&eacute;daction des <strong class="text-ink font-medium">AGO annuelles</strong></span></li>
+                        <li class="flex items-start gap-2"><svg class="w-3.5 h-3.5 text-cedrus-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg><span><strong class="text-ink font-medium">D&eacute;p&ocirc;t des comptes</strong> au greffe du tribunal de commerce</span></li>
+                    </ul>
+
+                    <div class="mt-auto bg-[#FFFBEB] border border-gold/30 rounded-lg px-3 py-2.5">
+                        <div class="flex items-start gap-2">
+                            <svg class="w-3 h-3 text-gold shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.732 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                            <p class="text-[10px] text-muted leading-snug text-justify">
+                                <strong class="text-ink">Sanctions absence de d&eacute;p&ocirc;t au greffe</strong> &mdash; Obligation l&eacute;gale (art. L.232-21 &agrave; L.232-23 C. com.), &agrave; effectuer dans le mois suivant l'approbation des comptes. L'absence de d&eacute;p&ocirc;t expose le dirigeant &agrave; : <strong class="text-ink">amende de 1 500&nbsp;&euro;</strong> (3 000&nbsp;&euro; en r&eacute;cidive, art. R.247-3), injonction de faire sous astreinte par le pr&eacute;sident du tribunal, signalement Infogreffe, et mise en cause de la responsabilit&eacute; du dirigeant en cas de proc&eacute;dure collective.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conditions et modalites - compact 2 colonnes -->
+            <div class="grid md:grid-cols-2 gap-5 animate-on-scroll">
+                <div class="bg-white rounded-2xl border border-gray-100 p-5">
+                    <div class="flex items-center gap-3 mb-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-cedrus-600/10 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-cedrus-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <h3 class="text-sm font-semibold text-ink">Dur&eacute;e &amp; Renouvellement</h3>
+                    </div>
+                    <p class="text-xs text-muted leading-relaxed">
+                        Missions conclues pour une <strong class="text-ink font-medium">dur&eacute;e d'une ann&eacute;e, renouvelable par tacite reconduction</strong>, conform&eacute;ment &agrave; la d&eacute;ontologie de l'<strong class="text-ink font-medium">Ordre des Experts-Comptables</strong>.
+                    </p>
+                </div>
+                <div class="bg-white rounded-2xl border border-gray-100 p-5">
+                    <div class="flex items-center gap-3 mb-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-gold/10 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+                        </div>
+                        <h3 class="text-sm font-semibold text-ink">R&eacute;siliation</h3>
+                    </div>
+                    <p class="text-xs text-muted leading-relaxed">
+                        Par <strong class="text-ink font-medium">lettre recommand&eacute;e avec AR</strong>, avec un <strong class="text-ink font-medium">pr&eacute;avis de 3 mois avant la fin de l'exercice fiscal</strong>. Prestations maintenues pendant le pr&eacute;avis, restitution des documents &agrave; l'&eacute;ch&eacute;ance.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=2070&q=80');"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <div class="gold-sep-wide mb-8"></div>
+            <h2 class="text-3xl md:text-4xl font-playfair font-bold text-white mb-8 animate-on-scroll">
+                Des questions sur nos tarifs ?
+            </h2>
+            <p class="text-xl text-gray-300 mb-8 animate-on-scroll">
+                Contactez-nous pour un devis personnalis&eacute; adapt&eacute; &agrave; vos besoins
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-on-scroll">
+                <a href="onboarding.html" class="bg-white text-ink hover:bg-gray-100 px-8 py-4 rounded-full font-medium transition-colors">
+                    Nous Contacter
+                </a>
+                <a href="onboarding.html" class="border-2 border-white text-white hover:bg-white hover:text-white px-8 py-4 rounded-full font-medium transition-all duration-300">
+                    Prendre Rendez-vous
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-white py-16" style="background: linear-gradient(180deg, #3C4B5F 0%, #1E2D41 50%, #08121F 100%);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <!-- Coordonnees -->
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">CEDRUS</h3>
+                    <p class="text-gray-300 mb-2">8 AVENUE DES TERRASSES</p>
+                    <p class="text-gray-300 mb-4">92430 MARNES-LA-COQUETTE</p>
+                    <p class="text-gray-300">contact@cedrus-expertise.fr</p>
+                </div>
+
+                <!-- Liens rapides -->
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">Liens Rapides</h3>
+                    <ul class="space-y-2">
+                        <li><a href="cabinet.html" class="text-gray-300 hover:text-white transition-colors">Le Cabinet</a></li>
+                        <li><a href="missions.html" class="text-gray-300 hover:text-white transition-colors">Nos Missions</a></li>
+                        <li><a href="honoraires.html" class="text-gray-300 hover:text-white transition-colors">Honoraires</a></li>
+                        <li><a href="contact.html" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Reseaux sociaux -->
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">Suivez-nous</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="LinkedIn">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barre legale -->
+            <div class="border-t border-gray-700 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                    <p class="text-gray-300 text-sm">
+                        &copy; 2024 CEDRUS EXPERTISE COMPTABLE & CONSEILS. Tous droits r&eacute;serv&eacute;s.
+                    </p>
+                    <div class="flex space-x-6 text-sm">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">Mentions L&eacute;gales</a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">Politique de Confidentialit&eacute;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main script -->
+    <script src="../assets/main.js"></script>
+
+    <!-- Language menu toggle -->
+    <script>
+    function toggleLangMenu() {
+        var dropdown = document.getElementById('langDropdown');
+        dropdown.classList.toggle('show');
+    }
+    document.addEventListener('click', function(e) {
+        var dropdown = document.getElementById('langDropdown');
+        if (dropdown && !e.target.closest('.lang-dropdown')) {
+            dropdown.classList.remove('show');
+        }
+    });
+    </script>
+
+    <!-- Nav scroll effect -->
+    <script>
+    (function() {
+        var nav = document.getElementById('mainNav');
+        var navInner = document.getElementById('navInner');
+        var scrolled = false;
+        function updateNav() {
+            var s = window.scrollY > 80;
+            if (s === scrolled) return;
+            scrolled = s;
+            if (scrolled) {
+                nav.style.background = 'rgba(255,255,255,0.97)';
+                nav.style.boxShadow = '0 1px 20px rgba(0,0,0,0.06)';
+                navInner.style.paddingTop = '12px';
+                navInner.style.paddingBottom = '12px';
+                document.querySelectorAll('.nav-text').forEach(function(el) { el.style.color = '#0B1420'; });
+                document.querySelectorAll('.nav-link').forEach(function(el) { el.style.color = el.classList.contains('font-medium') ? '#3E9364' : '#6B7280'; });
+                var cta = document.querySelector('.nav-cta');
+                if (cta) { cta.style.color = '#0B1420'; cta.style.borderColor = '#0B1420'; }
+            } else {
+                nav.style.background = 'transparent';
+                nav.style.boxShadow = 'none';
+                navInner.style.paddingTop = '20px';
+                navInner.style.paddingBottom = '20px';
+                document.querySelectorAll('.nav-text').forEach(function(el) { el.style.color = 'white'; });
+                    document.querySelectorAll('.nav-link').forEach(function(el) {
+                        el.style.color = el.classList.contains('font-medium') ? 'white' : 'rgba(255,255,255,0.7)';
+                    });
+                    var cta = document.querySelector('.nav-cta');
+                    if (cta) { cta.style.color = 'white'; cta.style.borderColor = 'rgba(255,255,255,0.4)'; }
+            }
+        }
+        window.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+    })();
+    </script>
+</body>
+</html>

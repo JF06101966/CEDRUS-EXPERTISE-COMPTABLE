@@ -1,0 +1,325 @@
+/* CEDRUS - Variables CSS personnalisées */
+:root {
+  --cedrus-600: #3E9364;
+  --cedrus-500: #4FA36F;
+  --cedrus-200: #BFE6AE;
+  --ink: #0B1420;
+  --muted: #6B7280;
+  --paper: #F8FAF9;
+}
+
+/* Import des polices Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Typographies */
+.font-playfair { font-family: 'Playfair Display', serif; }
+.font-inter { font-family: 'Inter', sans-serif; }
+
+/* Sur les pages RTL (AR), force la police Playfair pour le texte Latin
+   afin d'éviter le fallback du navigateur sur une serif arabe. */
+[dir="rtl"] .font-playfair,
+[dir="rtl"] [class*="font-playfair"] {
+    font-family: 'Playfair Display', 'Times New Roman', serif !important;
+}
+/* Texte Latin explicitement marqué (logo CEDRUS dans nav AR) */
+[lang="en"][dir="ltr"] {
+    font-family: 'Playfair Display', 'Times New Roman', serif;
+    unicode-bidi: isolate;
+}
+
+/* ============================================================
+   OPTIMISATIONS MOBILE (≤ 767px)
+   ============================================================ */
+@media (max-width: 767px) {
+    /* Évite le scroll horizontal sans casser position:fixed sur iOS Safari.
+       (overflow-x: hidden sur html/body est un piège iOS connu — on l'évite). */
+    body { width: 100%; }
+    /* Inputs ≥ 16px pour empêcher iOS de zoomer au focus */
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+    /* Menu mobile : garantit que le panneau est cliquable au-dessus de tout */
+    [data-mobile-menu-panel] {
+        z-index: 50 !important;
+        pointer-events: auto !important;
+    }
+    [data-mobile-menu-panel] a {
+        pointer-events: auto !important;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(62,147,100,0.2);
+    }
+    [data-mobile-menu-overlay] {
+        z-index: 35 !important;
+    }
+    /* Modales : ne dépassent jamais l'écran */
+    .modal-overlay,
+    [class*="modal-overlay"] {
+        padding: 12px !important;
+    }
+    .modal-panel {
+        max-width: 100% !important;
+        max-height: 92vh !important;
+        border-radius: 16px !important;
+    }
+    /* Tap targets minimum 44x44px (recommandation Apple/Google) */
+    button, a.btn-primary, a.btn-secondary, .btn-primary, .btn-secondary, .btn-success, .btn-gold {
+        min-height: 44px;
+    }
+    /* Padding réduit sur cartes pour gagner en surface utile */
+    .stat-card, .panel, .data-row, .entity-row {
+        padding: 14px 16px !important;
+    }
+    /* Empêche les images des cartes d'écraser le texte */
+    .entity-row .entity-avatar {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 0.78rem !important;
+    }
+    /* Hero welcome admin : police plus petite */
+    .hero-welcome {
+        padding: 24px 20px !important;
+    }
+    .hero-welcome .headline {
+        font-size: 1.5rem !important;
+        line-height: 1.2 !important;
+    }
+    .hero-welcome .hero-stats {
+        gap: 16px !important;
+    }
+    /* Tableaux scrollables à l'horizontale plutôt que dépassement */
+    table {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+    /* Toasts : largeur 100% écran moins padding */
+    .toast-stack {
+        top: 12px !important;
+        right: 12px !important;
+        left: 12px !important;
+    }
+    .toast {
+        min-width: 0 !important;
+        width: 100%;
+    }
+    /* Évite les SVG fixes qui peuvent forcer un dépassement */
+    svg {
+        max-width: 100%;
+    }
+    /* Les filtres horizontaux deviennent scrollables */
+    .filter-bar {
+        overflow-x: auto;
+        white-space: nowrap;
+        flex-wrap: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    /* Searchbar pleine largeur sur mobile */
+    .search-bar {
+        max-width: 100% !important;
+    }
+}
+
+/* Très petits écrans (≤ 380px — iPhone SE et anciens) */
+@media (max-width: 380px) {
+    .hero-welcome .headline { font-size: 1.3rem !important; }
+    .kpi-number { font-size: 1.7rem !important; }
+}
+
+/* Couleurs personnalisées */
+.bg-cedrus-600 { background-color: var(--cedrus-600); }
+.bg-cedrus-500 { background-color: var(--cedrus-500); }
+.bg-cedrus-200 { background-color: var(--cedrus-200); }
+.bg-ink { background-color: var(--ink); }
+.bg-muted { background-color: var(--muted); }
+.bg-paper { background-color: var(--paper); }
+.text-cedrus-600 { color: var(--cedrus-600); }
+.text-cedrus-500 { color: var(--cedrus-500); }
+.text-cedrus-200 { color: var(--cedrus-200); }
+.text-ink { color: var(--ink); }
+.text-muted { color: var(--muted); }
+.text-paper { color: var(--paper); }
+
+.border-cedrus-600 { border-color: var(--cedrus-600); }
+.border-cedrus-500 { border-color: var(--cedrus-500); }
+.border-cedrus-200 { border-color: var(--cedrus-200); }
+.border-ink { border-color: var(--ink); }
+.border-muted { border-color: var(--muted); }
+.border-paper { border-color: var(--paper); }
+
+
+/* Utilitaires personnalisés */
+
+/* Animations d'apparition */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Focus visible pour l'accessibilité */
+.focus-visible:focus {
+  outline: 2px solid var(--cedrus-500);
+  outline-offset: 2px;
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--paper);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cedrus-200);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cedrus-500);
+}
+
+/* Transitions fluides */
+.transition-all {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ombres personnalisées */
+.shadow-cedrus {
+  box-shadow: 0 4px 6px -1px rgba(79, 163, 111, 0.1), 0 2px 4px -1px rgba(79, 163, 111, 0.06);
+}
+
+.shadow-cedrus-lg {
+  box-shadow: 0 10px 15px -3px rgba(79, 163, 111, 0.1), 0 4px 6px -2px rgba(79, 163, 111, 0.05);
+}
+
+/* Cèdre du Liban - Copie conforme de l'image */
+.cedar-background {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 900px;
+  height: 1000px;
+  opacity: 0.15;
+  z-index: 1;
+  filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.2));
+}
+
+.cedar-tree {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Tronc principal avec base élargie */
+.cedar-trunk {
+  position: absolute;
+  bottom: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 25px;
+  height: 300px;
+  background: linear-gradient(to bottom, #4A4A4A 0%, #666666 50%, #4A4A4A 100%);
+  clip-path: polygon(45% 0%, 55% 0%, 60% 100%, 40% 100%);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Racines du cèdre */
+.cedar-roots {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(ellipse at center, #666666, #4A4A4A, transparent);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+/* Étages du feuillage - forme pyramidale étalée comme dans l'image */
+.cedar-layer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, #B8B8B8, #A0A0A0, #888888);
+  opacity: 0.8;
+}
+
+/* Sommet - petit et pointu */
+.cedar-layer-1 {
+  bottom: 480px;
+  width: 80px;
+  height: 60px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: radial-gradient(ellipse at center, #C0C0C0, #A8A8A8, #909090);
+}
+
+/* Deuxième étage */
+.cedar-layer-2 {
+  bottom: 440px;
+  width: 160px;
+  height: 80px;
+  border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+  background: radial-gradient(ellipse at center, #B8B8B8, #A0A0A0, #888888);
+}
+
+/* Troisième étage */
+.cedar-layer-3 {
+  bottom: 390px;
+  width: 260px;
+  height: 100px;
+  border-radius: 50% 50% 50% 50% / 75% 75% 25% 25%;
+  background: radial-gradient(ellipse at center, #B0B0B0, #989898, #808080);
+}
+
+/* Quatrième étage */
+.cedar-layer-4 {
+  bottom: 330px;
+  width: 380px;
+  height: 120px;
+  border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%;
+  background: radial-gradient(ellipse at center, #A8A8A8, #909090, #787878);
+}
+
+/* Cinquième étage */
+.cedar-layer-5 {
+  bottom: 260px;
+  width: 520px;
+  height: 140px;
+  border-radius: 50% 50% 50% 50% / 85% 85% 15% 15%;
+  background: radial-gradient(ellipse at center, #A0A0A0, #888888, #707070);
+}
+
+/* Base - le plus large étage */
+.cedar-layer-6 {
+  bottom: 180px;
+  width: 680px;
+  height: 160px;
+  border-radius: 50% 50% 50% 50% / 90% 90% 10% 10%;
+  background: radial-gradient(ellipse at center, #989898, #808080, #686868);
+}
+
+/* Étage le plus bas - très étalé */
+.cedar-layer-7 {
+  bottom: 90px;
+  width: 850px;
+  height: 180px;
+  border-radius: 50% 50% 50% 50% / 95% 95% 5% 5%;
+  background: radial-gradient(ellipse at center, #909090, #787878, #606060);
+}
+
+
+
+ 

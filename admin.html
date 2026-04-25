@@ -1,0 +1,3327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEDRUS — Administration</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-weight='bold' fill='%233E9364'>C</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="assets/styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cedrus': { 700: '#357A56', 600: '#3E9364', 500: '#4FA36F', 200: '#BFE6AE' },
+                        'ink': '#0B1420', 'muted': '#6B7280', 'paper': '#F8FAF9', 'gold': '#D4A853'
+                    },
+                    fontFamily: { 'playfair': ['Playfair Display', 'serif'], 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --ink: #0B1420;
+            --ink-soft: #1F2937;
+            --ink-deep: #06101C;
+            --muted: #6B7280;
+            --muted-soft: #9CA3AF;
+            --line: #ECEDEE;
+            --line-soft: #F3F4F5;
+            --paper: #F7F4EC;        /* crème chaude type papier vergé */
+            --paper-warm: #FAF7F0;
+            --cream: #F1EADA;
+            --cedrus-50: #EFF7F1;
+            --cedrus-200: #BFE6AE;
+            --cedrus-500: #4FA36F;
+            --cedrus-600: #3E9364;
+            --cedrus-700: #357A56;
+            --cedrus-900: #1E4A34;
+            --gold: #D4A853;
+            --gold-soft: #F5E8C7;
+            --gold-deep: #B8902F;
+            --shadow-sm: 0 1px 2px rgba(11,20,32,0.05), 0 2px 4px rgba(11,20,32,0.04);
+            --shadow-md: 0 4px 12px rgba(11,20,32,0.06), 0 12px 28px rgba(11,20,32,0.08);
+            --shadow-lg: 0 12px 32px rgba(11,20,32,0.10), 0 32px 64px rgba(11,20,32,0.14);
+        }
+
+        html, body { background: var(--paper); }
+        body {
+            background-image:
+                radial-gradient(circle at 20% 10%, rgba(212,168,83,0.04) 0%, transparent 40%),
+                radial-gradient(circle at 80% 90%, rgba(62,147,100,0.03) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* ===== Login ===== */
+        .login-input { width:100%; padding:14px 20px; border:1.5px solid var(--line); border-radius:12px; font-size:1rem; transition:all 0.2s; background:white; }
+        .login-input:focus { outline:none; border-color:var(--cedrus-600); box-shadow: 0 0 0 4px rgba(62,147,100,0.08); }
+
+        /* ===== Layout ===== */
+        .admin-shell { display:flex; min-height:100vh; }
+
+        /* ===== Sidebar (light, with gold accents) ===== */
+        .admin-sidebar {
+            width:268px; flex-shrink:0;
+            background: linear-gradient(180deg, #FFFFFF 0%, #FDFBF5 100%);
+            color: var(--ink);
+            display:flex; flex-direction:column; position:sticky; top:0; height:100vh; z-index:30;
+            border-right:1px solid var(--line);
+        }
+        .admin-sidebar::before {
+            content:''; position:absolute; inset:0; pointer-events:none;
+            background-image:
+                radial-gradient(ellipse at top left, rgba(62,147,100,0.05) 0%, transparent 45%),
+                radial-gradient(ellipse at bottom right, rgba(212,168,83,0.05) 0%, transparent 45%);
+        }
+        .admin-sidebar > * { position:relative; z-index:1; }
+        .admin-sidebar-header { padding:26px 24px 22px; border-bottom:1px solid var(--line-soft); }
+        .admin-sidebar-header .logo-line { display:flex; align-items:center; gap:12px; }
+        .admin-sidebar-header h1 { font-family:'Playfair Display', serif; font-weight:700; font-size:1.25rem; color:var(--ink); letter-spacing:0.02em; line-height:1.1; }
+        .admin-sidebar-header .subtitle { font-size:0.66rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold-deep); margin-top:3px; }
+
+        .admin-sidebar-nav { padding:20px 16px; flex:1; overflow-y:auto; }
+        .admin-sidebar-footer {
+            padding:18px 20px; border-top:1px solid var(--line-soft);
+            background: rgba(247,244,236,0.5);
+        }
+
+        .sidebar-link {
+            display:flex; align-items:center; gap:13px; width:100%;
+            padding:11px 14px; border-radius:10px; font-size:0.89rem; font-weight:500;
+            color:var(--muted); background:transparent; border:none; cursor:pointer;
+            transition:all 0.18s; text-align:left; position:relative; margin-bottom:2px;
+        }
+        .sidebar-link svg { width:18px; height:18px; flex-shrink:0; opacity:0.8; }
+        .sidebar-link:hover { background:rgba(11,20,32,0.04); color:var(--ink); }
+        .sidebar-link.active {
+            background: linear-gradient(90deg, rgba(62,147,100,0.10), rgba(212,168,83,0.04));
+            color:var(--cedrus-700); font-weight:600;
+        }
+        .sidebar-link.active::before {
+            content:''; position:absolute; left:-16px; top:10px; bottom:10px; width:3px;
+            background: linear-gradient(180deg, var(--gold) 0%, var(--cedrus-500) 100%);
+            border-radius:0 4px 4px 0;
+        }
+        .sidebar-link.active svg { opacity:1; color:var(--cedrus-600); }
+        .sidebar-section {
+            padding:18px 14px 6px; font-size:0.66rem; font-weight:700; letter-spacing:0.14em;
+            text-transform:uppercase; color:var(--muted-soft);
+        }
+
+        .sidebar-user-name { color:var(--ink); font-weight:500; font-size:0.85rem; }
+        .sidebar-logout { color:var(--muted); font-size:0.72rem; transition:color 0.15s; }
+        .sidebar-logout:hover { color:var(--ink); }
+
+        /* ===== Main column ===== */
+        .admin-main { flex:1; min-width:0; display:flex; flex-direction:column; }
+        .admin-topbar {
+            height:72px; background:rgba(255,255,255,0.85); backdrop-filter:blur(10px);
+            border-bottom:1px solid var(--line);
+            padding:0 36px; display:flex; align-items:center; justify-content:space-between;
+            position:sticky; top:0; z-index:20;
+        }
+        .admin-topbar::after {
+            content:''; position:absolute; left:36px; right:36px; bottom:-1px; height:2px;
+            background: linear-gradient(90deg, var(--gold) 0%, transparent 40%);
+            pointer-events:none;
+        }
+        .page-title { font-family:'Playfair Display', serif; font-weight:600; font-size:1.5rem; color:var(--ink); letter-spacing:-0.01em; }
+        .admin-content { padding:36px 36px 56px; max-width:1320px; width:100%; margin:0 auto; }
+
+        @media (max-width: 1023px) {
+            .admin-sidebar { position:fixed; top:0; left:0; transform:translateX(-100%); transition:transform 0.28s ease; box-shadow:var(--shadow-lg); }
+            .admin-sidebar.open { transform:translateX(0); }
+            .admin-sidebar-backdrop { position:fixed; inset:0; background:rgba(11,20,32,0.6); z-index:25; opacity:0; pointer-events:none; transition:opacity 0.2s; backdrop-filter:blur(3px); }
+            .admin-sidebar-backdrop.show { opacity:1; pointer-events:auto; }
+            .admin-content { padding:24px 20px 40px; }
+            .admin-topbar { padding:0 20px; height:64px; }
+            .admin-topbar::after { left:20px; right:20px; }
+        }
+
+        /* ===== Hero welcome ===== */
+        .hero-welcome {
+            position:relative; border-radius:20px; overflow:hidden;
+            background: linear-gradient(135deg, #0D1624 0%, #1E4A34 55%, #357A56 100%);
+            color:white; padding:36px 40px; margin-bottom:32px;
+            box-shadow: 0 20px 40px -20px rgba(11,20,32,0.35);
+        }
+        .hero-welcome::before {
+            content:''; position:absolute; inset:0;
+            background-image:
+                radial-gradient(circle at 85% 20%, rgba(212,168,83,0.28) 0%, transparent 45%),
+                radial-gradient(circle at 10% 90%, rgba(255,255,255,0.06) 0%, transparent 45%);
+            pointer-events:none;
+        }
+        .hero-welcome::after {
+            content:''; position:absolute; top:28px; right:36px; width:80px; height:80px;
+            border-radius:50%;
+            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+            opacity:0.4; filter:blur(20px);
+            pointer-events:none;
+        }
+        .hero-welcome > * { position:relative; z-index:1; }
+        .hero-welcome .greeting { font-size:0.8rem; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+        .hero-welcome .headline { font-family:'Playfair Display', serif; font-size:2.1rem; font-weight:600; line-height:1.15; margin-bottom:10px; letter-spacing:-0.01em; }
+        .hero-welcome .subline { font-size:0.95rem; color:rgba(255,255,255,0.72); max-width:600px; }
+        .hero-welcome .hero-stats { display:flex; gap:32px; margin-top:26px; flex-wrap:wrap; }
+        .hero-welcome .hero-stat { }
+        .hero-welcome .hero-stat .v { font-family:'Playfair Display', serif; font-size:1.7rem; font-weight:700; color:white; line-height:1; }
+        .hero-welcome .hero-stat .l { font-size:0.74rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-top:4px; }
+
+        /* ===== Section titles ===== */
+        .section-title {
+            font-family:'Playfair Display', serif; font-size:1.15rem; font-weight:600;
+            color:var(--ink); margin-bottom:16px; display:flex; align-items:center; gap:10px;
+        }
+        .section-title::before {
+            content:''; width:3px; height:16px;
+            background: linear-gradient(180deg, var(--gold), var(--cedrus-500));
+            border-radius:2px;
+        }
+
+        /* ===== Inline tabs ===== */
+        .tab-btn { padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:500; transition:all 0.15s; cursor:pointer; border:1px solid transparent; background:transparent; color:var(--muted); }
+        .tab-btn:hover { background:rgba(11,20,32,0.05); color:var(--ink); }
+        .tab-btn.active { background:var(--ink); color:white; border-color:var(--ink); }
+
+        /* ===== KPI cards (icon + trend + big number) ===== */
+        .stat-card {
+            background:white; border-radius:16px; padding:22px 24px;
+            border:1px solid var(--line);
+            transition:all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+            position:relative; overflow:hidden;
+        }
+        .stat-card:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); border-color:transparent; }
+        .stat-card .kpi-icon {
+            width:40px; height:40px; border-radius:10px;
+            display:inline-flex; align-items:center; justify-content:center;
+            margin-bottom:16px;
+        }
+        .stat-card .kpi-icon svg { width:20px; height:20px; }
+        .kpi-icon-cedrus { background: linear-gradient(135deg, rgba(62,147,100,0.12), rgba(62,147,100,0.04)); color:var(--cedrus-700); }
+        .kpi-icon-gold { background: linear-gradient(135deg, rgba(212,168,83,0.15), rgba(212,168,83,0.04)); color:var(--gold-deep); }
+        .kpi-icon-ink { background: linear-gradient(135deg, rgba(11,20,32,0.08), rgba(11,20,32,0.02)); color:var(--ink); }
+        .kpi-icon-blue { background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.03)); color:#2563EB; }
+
+        .kpi-label { font-size:0.72rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+        .kpi-number { font-family:'Playfair Display', serif; font-weight:700; line-height:1; letter-spacing:-0.02em; font-size:2.4rem; color:var(--ink); }
+
+        /* ===== Panels ===== */
+        .panel {
+            background:white; border-radius:16px; border:1px solid var(--line);
+            transition:all 0.2s;
+        }
+        .panel:hover { box-shadow:var(--shadow-sm); }
+        .panel-header { padding:18px 24px; border-bottom:1px solid var(--line-soft); display:flex; align-items:center; justify-content:space-between; }
+        .panel-header-title { font-family:'Playfair Display', serif; font-weight:600; font-size:1rem; color:var(--ink); }
+        .panel-body { padding:22px 24px; }
+
+        .list-line { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line-soft); }
+        .list-line:last-child { border-bottom:none; }
+        .list-line-label { color:var(--muted); font-size:0.88rem; }
+        .list-line-value { font-family:'Playfair Display', serif; font-weight:600; font-size:1.15rem; color:var(--ink); }
+
+        /* ===== Data rows ===== */
+        .data-row {
+            background:white; border-radius:14px; border:1px solid var(--line); padding:18px 22px;
+            transition:all 0.18s; cursor:pointer;
+        }
+        .data-row:hover { border-color:transparent; box-shadow:var(--shadow-md); transform:translateY(-2px); }
+
+        /* ===== Badges ===== */
+        .badge { display:inline-flex; align-items:center; gap:5px; padding:3px 11px; border-radius:999px; font-size:0.7rem; font-weight:600; letter-spacing:0.02em; }
+        .badge::before { content:''; width:5px; height:5px; border-radius:50%; background:currentColor; opacity:0.8; }
+        .badge-new, .badge-pending { background:var(--gold-soft); color:#8F6614; }
+        .badge-contacted, .badge-invited { background:#DDEAFC; color:#1E40AF; }
+        .badge-signed, .badge-active { background:#D6EFE0; color:#0F6B42; }
+        .badge-activated { background:#E0E7FF; color:#3730A3; }
+        .badge-rejected, .badge-suspended { background:#FDE3E3; color:#8F1E1E; }
+
+        /* ===== Modals ===== */
+        .modal-overlay { position:fixed; inset:0; background:rgba(11,20,32,0.6); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:100; padding:20px; animation:fadeIn 0.15s ease; }
+        .modal-panel {
+            background: linear-gradient(180deg, #FFFFFF 0%, #FDFBF5 100%);
+            border-radius: 20px;
+            max-width: 720px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg), 0 0 0 1px rgba(11,20,32,0.04);
+            animation: slideUp 0.22s cubic-bezier(0.4,0,0.2,1);
+            position: relative;
+        }
+        .modal-panel::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--cedrus-500) 70%, transparent 100%);
+            border-radius: 20px 20px 0 0;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .modal-panel > div:first-child {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== Forms ===== */
+        .field-label { display:block; font-size:0.78rem; font-weight:600; color:var(--ink); margin-bottom:6px; letter-spacing:0.04em; text-transform:uppercase; }
+        .field-input { width:100%; padding:11px 14px; border:1.5px solid var(--line); border-radius:10px; font-size:0.93rem; background:white; transition:all 0.15s; color:var(--ink); }
+        .field-input:focus { outline:none; border-color:var(--cedrus-600); box-shadow: 0 0 0 3px rgba(62,147,100,0.10); }
+        .field-input::placeholder { color:var(--muted-soft); }
+
+        /* Select premium : appearance customisée avec chevron or */
+        select.field-input {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23B8902F' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 14px;
+            padding-right: 36px;
+            cursor: pointer;
+        }
+        select.field-input:hover {
+            border-color: var(--cedrus-500);
+        }
+
+        /* ===== Buttons ===== */
+        .btn-primary {
+            background:var(--ink); color:white; padding:11px 22px; border-radius:10px;
+            font-weight:500; font-size:0.88rem; cursor:pointer; border:none;
+            transition:all 0.2s cubic-bezier(0.4,0,0.2,1);
+            display:inline-flex; align-items:center; gap:7px;
+            box-shadow: 0 1px 2px rgba(11,20,32,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+        .btn-primary:hover { background:var(--ink-soft); transform:translateY(-1px); box-shadow: 0 4px 12px rgba(11,20,32,0.25); }
+        .btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+        .btn-secondary {
+            background:white; color:var(--ink); padding:11px 20px; border-radius:10px;
+            font-weight:500; font-size:0.88rem; cursor:pointer; border:1.5px solid var(--line);
+            transition:all 0.15s;
+        }
+        .btn-secondary:hover { border-color:var(--ink); background:var(--paper-warm); transform:translateY(-1px); }
+        .btn-success { background:linear-gradient(135deg, var(--cedrus-500), var(--cedrus-700)); color:white; padding:11px 22px; border-radius:10px; font-weight:500; font-size:0.88rem; cursor:pointer; border:none; transition:all 0.2s; box-shadow: 0 1px 2px rgba(62,147,100,0.3); }
+        .btn-success:hover { transform:translateY(-1px); box-shadow: 0 6px 14px rgba(62,147,100,0.35); }
+        .btn-gold {
+            background:linear-gradient(135deg, var(--gold), var(--gold-deep));
+            color:white; padding:11px 22px; border-radius:10px; font-weight:500; font-size:0.88rem;
+            cursor:pointer; border:none; transition:all 0.2s;
+            box-shadow: 0 1px 2px rgba(184,144,47,0.3);
+        }
+        .btn-gold:hover { transform:translateY(-1px); box-shadow: 0 6px 14px rgba(184,144,47,0.4); }
+        .btn-ghost { background:transparent; color:var(--muted); padding:8px 12px; border-radius:8px; font-size:0.85rem; border:none; cursor:pointer; transition:all 0.15s; }
+        .btn-ghost:hover { background:var(--line-soft); color:var(--ink); }
+
+        .icon-btn {
+            width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center;
+            border-radius:10px; border:1px solid var(--line); background:white; cursor:pointer;
+            color:var(--muted); transition:all 0.15s;
+        }
+        .icon-btn:hover { color:var(--ink); border-color:var(--ink); background:var(--paper-warm); }
+
+        /* ===== User avatar ===== */
+        .user-avatar {
+            width:38px; height:38px; border-radius:12px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+            color:white; display:inline-flex; align-items:center; justify-content:center;
+            font-family:'Playfair Display', serif; font-weight:700; font-size:0.9rem; letter-spacing:0.02em;
+            box-shadow: 0 2px 8px rgba(184,144,47,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        /* ===== Date pill in topbar ===== */
+        .date-pill {
+            font-size:0.78rem; color:var(--muted); padding:6px 12px;
+            background:var(--paper-warm); border-radius:999px; border:1px solid var(--line);
+            font-variant-caps:all-small-caps; letter-spacing:0.04em;
+        }
+
+        /* ===== Entity avatar (initials) ===== */
+        .entity-avatar {
+            width:44px; height:44px; border-radius:12px; flex-shrink:0;
+            display:inline-flex; align-items:center; justify-content:center;
+            font-family:'Playfair Display', serif; font-weight:700; font-size:0.95rem;
+            color:white; letter-spacing:0.02em;
+            box-shadow: 0 2px 6px rgba(11,20,32,0.10), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+        .entity-avatar-cedrus { background: linear-gradient(135deg, var(--cedrus-500), var(--cedrus-700)); }
+        .entity-avatar-gold { background: linear-gradient(135deg, var(--gold), var(--gold-deep)); }
+        .entity-avatar-ink { background: linear-gradient(135deg, #374151, var(--ink)); }
+        .entity-avatar-blue { background: linear-gradient(135deg, #60A5FA, #2563EB); }
+        .entity-avatar-slate { background: linear-gradient(135deg, #94A3B8, #475569); }
+
+        /* ===== Integration chips (Pennylane, Silae, etc.) ===== */
+        .chip {
+            display:inline-flex; align-items:center; gap:5px; padding:3px 9px;
+            border-radius:8px; font-size:0.72rem; font-weight:500;
+            background: var(--line-soft); color: var(--ink);
+            border:1px solid transparent;
+        }
+        .chip svg { width:12px; height:12px; }
+        .chip-pennylane { background:#F0FBF4; color:#0F6B42; border-color:#D6EFE0; }
+        .chip-silae { background:#FAF3E7; color:#8F6614; border-color:#F5E8C7; }
+        .chip-sirene { background:#EEF2FF; color:#3730A3; border-color:#E0E7FF; }
+        .chip-email { background:#EEF7F9; color:#1E5B73; border-color:#CCE6ED; }
+        .chip-mission { background: white; color: var(--cedrus-700); border-color: var(--cedrus-200); }
+        .chip-missing { background:#FEF1F1; color:#991B1B; border-color:#FDE3E3; }
+
+        /* ===== Row with avatar + meta + actions ===== */
+        .entity-row {
+            background:white; border-radius:14px; border:1px solid var(--line);
+            padding:18px 20px; display:flex; align-items:center; gap:16px;
+            transition:all 0.18s cubic-bezier(0.4,0,0.2,1); cursor:pointer;
+        }
+        .entity-row:hover { border-color:transparent; box-shadow:var(--shadow-md); transform:translateY(-1px); }
+        .entity-row .grow { flex:1; min-width:0; }
+        .entity-row .title { font-weight:600; color:var(--ink); font-size:0.95rem; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+        .entity-row .meta { color:var(--muted); font-size:0.8rem; margin-top:4px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+        .entity-row .timestamp { color:var(--muted-soft); font-size:0.72rem; white-space:nowrap; }
+
+        /* ===== Search bar ===== */
+        .search-bar {
+            position:relative; width:100%; max-width:360px;
+        }
+        .search-bar input {
+            width:100%; padding:10px 14px 10px 40px;
+            border:1.5px solid var(--line); border-radius:10px; background:white;
+            font-size:0.9rem; color:var(--ink); transition:all 0.15s;
+        }
+        .search-bar input:focus { outline:none; border-color:var(--cedrus-600); box-shadow: 0 0 0 3px rgba(62,147,100,0.08); }
+        .search-bar svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--muted); }
+
+        /* ===== Toasts ===== */
+        .toast-stack { position:fixed; top:24px; right:24px; z-index:200; display:flex; flex-direction:column; gap:10px; pointer-events:none; }
+        .toast {
+            padding:14px 18px; border-radius:12px; background:white; color:var(--ink);
+            box-shadow:var(--shadow-lg); display:flex; align-items:center; gap:12px;
+            min-width:260px; max-width:440px; font-size:0.88rem;
+            animation: toastIn 0.25s cubic-bezier(0.4,0,0.2,1);
+            border-left:3px solid var(--cedrus-600); pointer-events:auto;
+        }
+        .toast.success { border-left-color:var(--cedrus-600); }
+        .toast.error { border-left-color:#DC2626; }
+        .toast.info { border-left-color:#2563EB; }
+        .toast.warn { border-left-color:var(--gold-deep); }
+        .toast-icon { flex-shrink:0; width:20px; height:20px; }
+        .toast.leaving { animation: toastOut 0.2s forwards; }
+
+        @keyframes toastIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+        @keyframes toastOut { to { opacity:0; transform:translateX(20px); } }
+
+        /* ===== Empty states ===== */
+        .empty-state {
+            text-align:center; padding:64px 20px;
+            background:white; border-radius:16px; border:1px dashed var(--line);
+        }
+        .empty-state-icon {
+            width:56px; height:56px; border-radius:14px; margin:0 auto 16px;
+            background: linear-gradient(135deg, var(--paper-warm), var(--cream));
+            display:inline-flex; align-items:center; justify-content:center;
+            color:var(--gold-deep);
+        }
+        .empty-state-title { font-family:'Playfair Display', serif; font-size:1.2rem; font-weight:600; color:var(--ink); margin-bottom:6px; }
+        .empty-state-subtitle { color:var(--muted); font-size:0.88rem; }
+
+        /* ===== Filter chips (leads) ===== */
+        .filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; padding:6px; background:white; border-radius:12px; border:1px solid var(--line); width:fit-content; }
+        .filter-bar .tab-btn { padding:7px 14px; font-size:0.84rem; border-radius:8px; }
+        .filter-bar .tab-btn.active { background:var(--ink); color:white; }
+
+        /* ===== Loading skeleton ===== */
+        .skeleton {
+            background: linear-gradient(90deg, #F3F4F6 0%, #E5E7EB 50%, #F3F4F6 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius:8px;
+        }
+        @keyframes shimmer { 0% { background-position:200% 0; } 100% { background-position:-200% 0; } }
+
+        /* ===== KPI cards cliquables (overview) ===== */
+        .stat-card-clickable {
+            position: relative;
+            text-align: left;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+            cursor: pointer;
+            background: white;
+            display: block;
+        }
+        .stat-card-clickable:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+            border-color: transparent;
+        }
+        .stat-card-clickable:hover .stat-card-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .stat-card-arrow {
+            position: absolute;
+            top: 22px; right: 22px;
+            color: var(--cedrus-600);
+            font-size: 1.1rem;
+            opacity: 0;
+            transform: translateX(-6px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        /* ===== Sections du modal client : header avec accent or ===== */
+        #modalClientDetailPanel > div > div.border-t {
+            border-top: 1px solid var(--line-soft) !important;
+            position: relative;
+            padding-top: 22px !important;
+        }
+        #modalClientDetailPanel > div > div.border-t::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: 0;
+            width: 40px; height: 2px;
+            background: linear-gradient(90deg, var(--gold), transparent);
+            border-radius: 2px;
+        }
+        #modalClientDetailPanel p.font-medium {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.02rem;
+            font-weight: 600;
+            letter-spacing: -0.005em;
+            color: var(--ink);
+        }
+
+        /* ===== Upload card admin (déposer doc pour client) ===== */
+        .admin-upload-card {
+            margin-top: 16px;
+            padding: 22px 24px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #FAFBFC 100%);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow:
+                0 1px 2px rgba(11,20,32,0.04),
+                0 4px 16px -4px rgba(11,20,32,0.04);
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.22s;
+        }
+        .admin-upload-card:hover {
+            box-shadow:
+                0 1px 2px rgba(11,20,32,0.04),
+                0 8px 24px -8px rgba(11,20,32,0.08);
+        }
+        .admin-upload-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--gold), var(--cedrus-500), var(--gold));
+            opacity: 0.5;
+        }
+        .admin-upload-card::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(212,168,83,0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .admin-upload-card > * { position: relative; z-index: 1; }
+
+        .admin-upload-header {
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+            margin-bottom: 18px;
+        }
+        .admin-upload-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem; font-weight: 600; color: var(--ink); margin: 0;
+        }
+        .admin-upload-subtitle {
+            font-size: 0.78rem; color: var(--muted); margin-top: 4px;
+        }
+        .admin-upload-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(62,147,100,0.12), rgba(212,168,83,0.06));
+            color: var(--cedrus-700);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .admin-upload-icon svg { width: 20px; height: 20px; }
+
+        .admin-upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        @media (max-width: 600px) {
+            .admin-upload-grid { grid-template-columns: 1fr; }
+        }
+        .admin-upload-label {
+            display: block;
+            font-size: 0.7rem; font-weight: 600; color: var(--ink);
+            text-transform: uppercase; letter-spacing: 0.06em;
+            margin-bottom: 5px;
+        }
+        .admin-upload-optional {
+            font-weight: 400; text-transform: none; letter-spacing: 0;
+            color: var(--muted); margin-left: 4px; font-size: 0.66rem;
+        }
+
+        .admin-upload-dropzone {
+            display: flex; align-items: center; gap: 14px;
+            padding: 16px 18px;
+            border: 2px dashed var(--line);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+        }
+        .admin-upload-dropzone:hover {
+            border-color: var(--cedrus-500);
+            background: rgba(62,147,100,0.03);
+            transform: translateY(-1px);
+        }
+        .admin-upload-dropzone.has-file {
+            border-style: solid;
+            border-color: var(--cedrus-600);
+            background: linear-gradient(135deg, rgba(62,147,100,0.04), rgba(212,168,83,0.02));
+        }
+        .admin-upload-dropicon {
+            width: 28px; height: 28px;
+            color: var(--muted-soft);
+            flex-shrink: 0;
+        }
+        .admin-upload-dropzone.has-file .admin-upload-dropicon { color: var(--cedrus-600); }
+        .admin-upload-dropmain { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .admin-upload-droptitle {
+            font-size: 0.88rem; font-weight: 500; color: var(--ink);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .admin-upload-droptip {
+            font-size: 0.72rem; color: var(--muted);
+        }
+
+        /* ===== Animations ===== */
+        @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .fade-in { animation: fadeIn 0.3s ease forwards; }
+        .tab-content:not(.hidden) { animation: fadeIn 0.25s ease; }
+
+        /* ===== Scrollbar ===== */
+        .admin-sidebar-nav::-webkit-scrollbar { width:6px; }
+        .admin-sidebar-nav::-webkit-scrollbar-thumb { background:#D6D8DB; border-radius:4px; }
+        .admin-sidebar-nav::-webkit-scrollbar-thumb:hover { background:#B5B8BC; }
+    </style>
+</head>
+<body class="bg-paper font-inter text-ink min-h-screen">
+
+<!-- ============= LOGIN ============= -->
+<div id="loginScreen" class="min-h-screen flex">
+    <!-- Colonne gauche : branding visuel -->
+    <div class="hidden lg:flex flex-1 relative overflow-hidden" style="background: linear-gradient(135deg, #0D1624 0%, #1E4A34 55%, #357A56 100%);">
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle at 75% 20%, rgba(212,168,83,0.22) 0%, transparent 50%), radial-gradient(circle at 15% 85%, rgba(255,255,255,0.05) 0%, transparent 50%);"></div>
+        <div class="absolute top-12 right-12 w-32 h-32 rounded-full" style="background: radial-gradient(circle, var(--gold) 0%, transparent 70%); opacity:0.35; filter:blur(24px);"></div>
+        <div class="relative z-10 flex flex-col justify-between p-16 text-white w-full max-w-2xl">
+            <div>
+                <img src="cedrus.png" alt="CEDRUS" class="h-12 mb-4" style="filter:brightness(0) invert(1);">
+                <p class="text-xs font-semibold tracking-[0.24em] uppercase" style="color:var(--gold)">Administration du cabinet</p>
+            </div>
+            <div>
+                <h1 class="font-playfair font-semibold leading-tight" style="font-size:2.8rem; letter-spacing:-0.01em">
+                    L'expertise comptable,<br>
+                    <span style="color:var(--gold)">au service de vos ambitions.</span>
+                </h1>
+                <p class="text-lg mt-6" style="color:rgba(255,255,255,0.72); max-width:520px; line-height:1.6">
+                    Tableau de bord exclusif — gérez vos prospects, vos dossiers clients et vos connexions Pennylane en un seul endroit.
+                </p>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex -space-x-2">
+                    <div class="w-10 h-10 rounded-full border-2 border-white/20" style="background:linear-gradient(135deg, var(--gold), var(--gold-deep));"></div>
+                    <div class="w-10 h-10 rounded-full border-2 border-white/20" style="background:linear-gradient(135deg, var(--cedrus-500), var(--cedrus-700));"></div>
+                    <div class="w-10 h-10 rounded-full border-2 border-white/20" style="background:linear-gradient(135deg, #94A3B8, #475569);"></div>
+                </div>
+                <p class="text-sm" style="color:rgba(255,255,255,0.6)">55 dossiers suivis quotidiennement</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Colonne droite : formulaire -->
+    <div class="flex-1 flex items-center justify-center p-6 lg:p-12">
+        <div class="w-full max-w-sm">
+            <div class="lg:hidden text-center mb-8">
+                <img src="cedrus.png" alt="CEDRUS" class="h-12 mx-auto mb-3">
+                <p class="text-xs font-semibold tracking-[0.2em] uppercase" style="color:var(--gold-deep)">Administration</p>
+            </div>
+            <div class="mb-8 hidden lg:block">
+                <h2 class="font-playfair font-semibold text-ink" style="font-size:1.75rem; letter-spacing:-0.01em">Bon retour</h2>
+                <p class="text-muted text-sm mt-1">Connectez-vous à votre espace d'administration.</p>
+            </div>
+            <form onsubmit="adminLogin(event)">
+                <div class="mb-4">
+                    <label class="field-label">Email</label>
+                    <input type="email" class="login-input" id="adminEmail" placeholder="email@cedrus-expertise.fr" required autofocus>
+                </div>
+                <div class="mb-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="field-label mb-0">Mot de passe</label>
+                        <a href="#" onclick="openForgotModal(event)" class="text-xs font-medium" style="color:var(--cedrus-600)">Mot de passe oublié&nbsp;?</a>
+                    </div>
+                    <input type="password" class="login-input" id="adminPass" placeholder="••••••••" required>
+                </div>
+                <div id="loginError" class="hidden text-sm text-red-500 mb-4 text-center"></div>
+                <button type="submit" class="w-full btn-primary" style="padding:14px 20px; font-size:0.95rem; justify-content:center">Se connecter</button>
+            </form>
+            <div class="mt-10 text-center">
+                <a href="index.html" class="text-sm text-muted hover:text-ink transition-colors">← Retour au site</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============= DASHBOARD ============= -->
+<div id="adminDashboard" class="hidden">
+    <div class="admin-shell">
+
+        <!-- Sidebar (nav principale) -->
+        <div class="admin-sidebar-backdrop" onclick="toggleSidebar(false)"></div>
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-header">
+                <div class="logo-line">
+                    <img src="cedrus.png" alt="" class="h-9">
+                    <div>
+                        <h1>CEDRUS</h1>
+                        <div class="subtitle">Administration</div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="admin-sidebar-nav">
+                <div class="sidebar-section">Activité</div>
+                <button class="sidebar-link active tab-btn" data-tab="overview" onclick="switchTab('overview'); toggleSidebar(false)">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13l2-2 4 4 8-8 4 4v10H3z"/></svg>
+                    Vue d'ensemble
+                </button>
+                <button class="sidebar-link tab-btn" data-tab="leads" onclick="switchTab('leads'); toggleSidebar(false)">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h6m-3-3v6M3 19c0-3.314 2.686-6 6-6s6 2.686 6 6M12 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Prospects
+                </button>
+                <button class="sidebar-link tab-btn" data-tab="clients" onclick="switchTab('clients'); toggleSidebar(false)">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21V7l6-4 6 4v14M3 21h18M9 21v-6h6v6M12 9h.01"/></svg>
+                    Clients
+                </button>
+                <button class="sidebar-link tab-btn" data-tab="documents" onclick="switchTab('documents'); toggleSidebar(false)">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Documents
+                </button>
+
+                <div class="sidebar-section">Outils</div>
+                <button class="sidebar-link tab-btn" data-tab="silae" onclick="switchTab('silae'); toggleSidebar(false)">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+                    Import Silae
+                </button>
+                <button class="sidebar-link tab-btn" data-tab="settings" onclick="switchTab('settings'); toggleSidebar(false)">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Paramètres
+                </button>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                <div class="flex items-center gap-3">
+                    <div class="user-avatar" id="adminAvatar">—</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="sidebar-user-name truncate" id="adminName">Admin</div>
+                        <button onclick="logout()" class="sidebar-logout">Déconnexion</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main : topbar + content -->
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div class="flex items-center gap-3">
+                    <button class="icon-btn lg:hidden" onclick="toggleSidebar(true)" aria-label="Menu">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                    <h1 class="page-title" id="pageTitle">Vue d'ensemble</h1>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="hidden md:inline date-pill" id="currentDateLabel"></span>
+                </div>
+            </header>
+
+            <main class="admin-content">
+
+        <!-- ======= OVERVIEW ======= -->
+        <div id="tab-overview" class="tab-content">
+
+            <!-- Hero welcome -->
+            <div class="hero-welcome">
+                <p class="greeting" id="heroDayLabel">Tableau de bord</p>
+                <h1 class="headline" id="heroHeadline">Bonjour</h1>
+                <p class="subline" id="heroSubline">Voici l'activité de votre cabinet aujourd'hui.</p>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="v" id="heroStatClients">—</div>
+                        <div class="l">Dossiers suivis</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="v" id="heroStatLeads">—</div>
+                        <div class="l">Prospects en cours</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="v" id="heroStatDocs">—</div>
+                        <div class="l">Documents déposés</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPIs (icônes + chiffres) -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <button class="stat-card stat-card-clickable" onclick="goToTab('leads', 'all')" type="button">
+                    <div class="kpi-icon kpi-icon-ink">
+                        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h6m-3-3v6M3 19c0-3.314 2.686-6 6-6s6 2.686 6 6M12 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </div>
+                    <p class="kpi-label">Prospects</p>
+                    <p class="kpi-number" id="kLeadsTotal">0</p>
+                    <span class="stat-card-arrow">→</span>
+                </button>
+                <button class="stat-card stat-card-clickable" onclick="goToTab('leads', 'new')" type="button">
+                    <div class="kpi-icon kpi-icon-gold">
+                        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3"/></svg>
+                    </div>
+                    <p class="kpi-label">Nouveaux</p>
+                    <p class="kpi-number" style="color:var(--gold-deep)" id="kLeadsNew">0</p>
+                    <span class="stat-card-arrow">→</span>
+                </button>
+                <button class="stat-card stat-card-clickable" onclick="goToTab('clients', 'active')" type="button">
+                    <div class="kpi-icon kpi-icon-cedrus">
+                        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21V7l6-4 6 4v14M3 21h18M9 21v-6h6v6"/></svg>
+                    </div>
+                    <p class="kpi-label">Clients actifs</p>
+                    <p class="kpi-number" style="color:var(--cedrus-700)" id="kClientsActive">0</p>
+                    <span class="stat-card-arrow">→</span>
+                </button>
+                <button class="stat-card stat-card-clickable" onclick="goToTab('clients', 'invited')" type="button">
+                    <div class="kpi-icon kpi-icon-blue">
+                        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8l-9 6-9-6m18 0v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8m18 0l-9-6-9 6"/></svg>
+                    </div>
+                    <p class="kpi-label">Invitations en attente</p>
+                    <p class="kpi-number text-blue-600" id="kClientsInvited">0</p>
+                    <span class="stat-card-arrow">→</span>
+                </button>
+            </div>
+
+            <!-- Graphiques -->
+            <h3 class="section-title">Analyse</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-10">
+                <!-- Donut : Répartition dossiers clients -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-header-title">Dossiers clients</span>
+                        <span class="text-xs text-muted" id="chartClientsTotal">—</span>
+                    </div>
+                    <div class="panel-body">
+                        <div style="position:relative; height:220px;"><canvas id="chartClientsDonut"></canvas></div>
+                        <div class="mt-4 space-y-2 text-sm" id="chartClientsLegend"></div>
+                    </div>
+                </div>
+
+                <!-- Funnel : pipeline prospects -->
+                <div class="panel lg:col-span-2">
+                    <div class="panel-header">
+                        <span class="panel-header-title">Pipeline commercial</span>
+                        <span class="text-xs text-muted">Progression des prospects</span>
+                    </div>
+                    <div class="panel-body">
+                        <div style="position:relative; height:220px;"><canvas id="chartLeadsFunnel"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ======= LEADS ======= -->
+        <div id="tab-leads" class="tab-content hidden">
+            <div class="flex items-center justify-between mb-6">
+                <p class="text-muted text-sm">Pipeline commercial — demandes entrantes et suivi.</p>
+                <button onclick="loadLeads()" class="btn-secondary text-sm">Actualiser</button>
+            </div>
+            <div class="filter-bar" id="leadFilters">
+                <button class="tab-btn active" data-filter="all" onclick="filterLeads('all')">Tous</button>
+                <button class="tab-btn" data-filter="new" onclick="filterLeads('new')">Nouveaux</button>
+                <button class="tab-btn" data-filter="contacted" onclick="filterLeads('contacted')">Contactés</button>
+                <button class="tab-btn" data-filter="signed" onclick="filterLeads('signed')">Signés</button>
+                <button class="tab-btn" data-filter="activated" onclick="filterLeads('activated')">Activés</button>
+                <button class="tab-btn" data-filter="rejected" onclick="filterLeads('rejected')">Rejetés</button>
+            </div>
+            <div id="leadsList" class="space-y-3"></div>
+            <div id="leadsEmpty" class="hidden empty-state">
+                <div class="empty-state-icon">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h6m-3-3v6M3 19c0-3.314 2.686-6 6-6s6 2.686 6 6M12 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </div>
+                <p class="empty-state-title">Aucun prospect</p>
+                <p class="empty-state-subtitle">Les demandes de contact apparaîtront ici dès leur réception.</p>
+            </div>
+        </div>
+
+        <!-- ======= CLIENTS ======= -->
+        <div id="tab-clients" class="tab-content hidden">
+            <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+                <div class="search-bar">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.2-5.2M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" id="clientsSearchInput" placeholder="Rechercher par nom, SIREN, ville…" oninput="onClientsSearch()">
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="loadClients()" class="btn-secondary text-sm">Actualiser</button>
+                    <button onclick="openImportPennylaneModal()" class="btn-secondary text-sm">
+                        <svg class="w-3.5 h-3.5 inline -mt-0.5 mr-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+                        Importer depuis Pennylane
+                    </button>
+                    <button onclick="openBulkImportModal()" class="btn-secondary text-sm">Importer en masse</button>
+                    <button onclick="openCreateClientModal()" class="btn-primary text-sm">+ Nouveau client</button>
+                </div>
+            </div>
+            <div class="filter-bar mb-5" id="clientsFilterBar">
+                <button class="tab-btn active" data-clientfilter="all" onclick="filterClients('all')">Tous <span class="ml-1 text-xs opacity-70" id="cfCountAll">0</span></button>
+                <button class="tab-btn" data-clientfilter="active" onclick="filterClients('active')">Actifs <span class="ml-1 text-xs opacity-70" id="cfCountActive">0</span></button>
+                <button class="tab-btn" data-clientfilter="invited" onclick="filterClients('invited')">Invités <span class="ml-1 text-xs opacity-70" id="cfCountInvited">0</span></button>
+                <button class="tab-btn" data-clientfilter="pending_invitation" onclick="filterClients('pending_invitation')">À inviter <span class="ml-1 text-xs opacity-70" id="cfCountPending">0</span></button>
+                <button class="tab-btn" data-clientfilter="suspended" onclick="filterClients('suspended')">Suspendus <span class="ml-1 text-xs opacity-70" id="cfCountSusp">0</span></button>
+            </div>
+            <p class="text-xs text-muted mb-3" id="clientsResultCount">— dossiers</p>
+            <div id="clientsList" class="space-y-3"></div>
+            <div id="clientsEmpty" class="hidden empty-state">
+                <div class="empty-state-icon">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21V7l6-4 6 4v14M3 21h18M9 21v-6h6v6"/></svg>
+                </div>
+                <p class="empty-state-title">Aucun dossier</p>
+                <p class="empty-state-subtitle">Créez votre premier client ou importez en masse depuis Pennylane.</p>
+            </div>
+        </div>
+
+        <!-- ======= IMPORT SILAE ======= -->
+        <div id="tab-silae" class="tab-content hidden">
+            <p class="text-muted text-sm mb-6">
+                Glisse le ZIP mensuel téléchargé depuis MySilae cabinet. Les bulletins seront automatiquement dispatchés dans les Registres sociaux des espaces clients concernés.
+            </p>
+
+            <div class="bg-white rounded-xl border-2 border-dashed border-gray-200 p-10 text-center hover:border-cedrus-600 transition-colors" id="silaeDropZone">
+                <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
+                <p class="text-ink font-medium mb-1">Glisse ton ZIP Silae ici</p>
+                <p class="text-xs text-muted mb-4">Un fichier .zip contenant les bulletins PDF. 200 Mo max.</p>
+                <input type="file" id="silaeZipInput" accept=".zip" class="hidden" onchange="uploadSilaeZip(this.files[0])">
+                <button onclick="document.getElementById('silaeZipInput').click()" class="btn-primary">Choisir un fichier</button>
+            </div>
+
+            <!-- Preview -->
+            <div id="silaePreview" class="hidden mt-8">
+                <div class="grid grid-cols-5 gap-4 mb-6">
+                    <div class="stat-card"><p class="text-2xl font-playfair font-bold text-ink" id="silStatTotal">0</p><p class="text-xs text-muted mt-1">Fichiers détectés</p></div>
+                    <div class="stat-card"><p class="text-2xl font-playfair font-bold text-cedrus-600" id="silStatAuto">0</p><p class="text-xs text-muted mt-1">Salariés existants</p></div>
+                    <div class="stat-card"><p class="text-2xl font-playfair font-bold text-blue-600" id="silStatCreate">0</p><p class="text-xs text-muted mt-1">Nouveaux salariés à créer</p></div>
+                    <div class="stat-card"><p class="text-2xl font-playfair font-bold text-gold" id="silStatClient">0</p><p class="text-xs text-muted mt-1">Client seul (salarié inconnu)</p></div>
+                    <div class="stat-card"><p class="text-2xl font-playfair font-bold text-red-600" id="silStatUn">0</p><p class="text-xs text-muted mt-1">Non identifiés</p></div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
+                    <div class="flex items-center justify-between p-4 border-b border-gray-100">
+                        <p class="font-medium text-ink">Prévisualisation</p>
+                        <div class="flex gap-2">
+                            <button onclick="resetSilaeImport()" class="btn-secondary text-sm">Annuler</button>
+                            <button onclick="confirmSilaeImport()" class="btn-primary text-sm" id="silaeConfirmBtn">Importer les matchés automatiques</button>
+                        </div>
+                    </div>
+                    <div class="max-h-[500px] overflow-y-auto" id="silaePreviewList"></div>
+                </div>
+            </div>
+
+            <!-- Résultat -->
+            <div id="silaeResult" class="hidden mt-8 bg-green-50 border border-cedrus-200 rounded-xl p-5">
+                <p class="font-medium text-cedrus-700" id="silaeResultTitle">✓ Import terminé</p>
+                <p class="text-sm text-cedrus-600 mt-1" id="silaeResultBody"></p>
+            </div>
+        </div>
+
+        <!-- ======= DOCUMENTS ======= -->
+        <div id="tab-documents" class="tab-content hidden">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                <p class="text-muted text-sm">Tous les fichiers déposés par les clients — bulletins, factures, justificatifs.</p>
+                <button onclick="loadDocuments()" class="btn-secondary text-sm">Actualiser</button>
+            </div>
+            <div id="documentsList" class="space-y-2"></div>
+            <div id="documentsEmpty" class="hidden empty-state">
+                <div class="empty-state-icon">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <p class="empty-state-title">Aucun document</p>
+                <p class="empty-state-subtitle">Les documents déposés par les clients apparaîtront ici.</p>
+            </div>
+        </div>
+
+        <!-- ======= PARAMÈTRES & CONNEXIONS ======= -->
+        <div id="tab-settings" class="tab-content hidden">
+            <p class="text-muted text-sm mb-6">
+                Clés API et identifiants des services tiers (Pennylane, Resend, Pappers…).
+                Les valeurs sont stockées chiffrées côté serveur — jamais exposées au navigateur.
+            </p>
+            <div id="settingsList" class="space-y-4"></div>
+        </div>
+
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- ============= MODAL : Create Client ============= -->
+<div id="modalClient" class="modal-overlay hidden">
+    <div class="modal-panel">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="text-xl font-playfair font-semibold text-ink">Nouveau client</h3>
+            <button onclick="closeModal()" class="text-muted hover:text-ink text-xl">&times;</button>
+        </div>
+        <form onsubmit="submitCreateClient(event)" class="p-6 space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="field-label">Raison sociale *</label>
+                    <input name="raison_sociale" class="field-input" required>
+                </div>
+                <div>
+                    <label class="field-label">Forme juridique</label>
+                    <input name="forme_juridique" class="field-input" placeholder="SAS, SARL…">
+                </div>
+                <div>
+                    <label class="field-label">SIREN</label>
+                    <input name="siren" class="field-input">
+                </div>
+                <div>
+                    <label class="field-label">SIRET</label>
+                    <input name="siret" class="field-input">
+                </div>
+            </div>
+
+            <div class="border-t border-gray-100 pt-4">
+                <p class="text-sm font-medium text-ink mb-3">Contact client</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="field-label">Prénom</label>
+                        <input name="contact_prenom" class="field-input">
+                    </div>
+                    <div>
+                        <label class="field-label">Nom</label>
+                        <input name="contact_nom" class="field-input">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="field-label">Email (reçoit l'invitation) *</label>
+                        <input type="email" name="contact_email" class="field-input" required>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="field-label">Téléphone</label>
+                        <input name="contact_telephone" class="field-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-100 pt-4">
+                <p class="text-sm font-medium text-ink mb-3">Connexion Pennylane</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="field-label">Clé API Pennylane</label>
+                        <input name="pennylane_api_key" class="field-input" placeholder="token du dossier">
+                    </div>
+                    <div>
+                        <label class="field-label">Company ID Pennylane</label>
+                        <input name="pennylane_company_id" class="field-input" placeholder="ex: 22320440">
+                    </div>
+                </div>
+                <p class="text-xs text-muted mt-2">À renseigner pour connecter le dashboard comptable au client. Tu peux le faire plus tard.</p>
+            </div>
+
+            <div class="border-t border-gray-100 pt-4">
+                <p class="text-sm font-medium text-ink mb-3">Mission</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="field-label">Date début</label>
+                        <input type="date" name="date_debut_mission" class="field-input">
+                    </div>
+                    <div>
+                        <label class="field-label">Honoraires HT (€)</label>
+                        <input type="number" step="0.01" name="honoraires_ht" class="field-input">
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-4 mt-3 text-sm">
+                    <label class="flex items-center gap-2"><input type="checkbox" name="mission_compta" class="w-4 h-4 rounded text-cedrus-600"> Comptable</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" name="mission_social" class="w-4 h-4 rounded text-cedrus-600"> Social</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" name="mission_juridique" class="w-4 h-4 rounded text-cedrus-600"> Juridique</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" name="mission_fiscal" class="w-4 h-4 rounded text-cedrus-600"> Fiscal</label>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-100 pt-4">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" name="send_invitation" checked class="w-4 h-4 rounded text-cedrus-600">
+                    <span class="text-sm">Envoyer immédiatement une invitation par email au client</span>
+                </label>
+            </div>
+
+            <div id="modalError" class="hidden text-sm text-red-500 bg-red-50 p-3 rounded-lg"></div>
+
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" onclick="closeModal()" class="btn-secondary">Annuler</button>
+                <button type="submit" class="btn-primary" id="modalSubmitBtn">Créer le dossier</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============= MODAL : Lead detail ============= -->
+<div id="modalLead" class="modal-overlay hidden">
+    <div class="modal-panel" id="modalLeadPanel"></div>
+</div>
+
+<!-- ============= MODAL : Client detail ============= -->
+<div id="modalClientDetail" class="modal-overlay hidden">
+    <div class="modal-panel" id="modalClientDetailPanel"></div>
+</div>
+
+<!-- ============= MODAL : Import depuis Pennylane Firm API ============= -->
+<div id="modalImportPennylane" class="modal-overlay hidden">
+    <div class="modal-panel" style="max-width:680px">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <div>
+                <h3 class="text-xl font-playfair font-semibold text-ink">Importer depuis Pennylane</h3>
+                <p class="text-sm text-muted mt-1" id="importPlHint">Récupération des dossiers du cabinet…</p>
+            </div>
+            <button onclick="closeModal()" class="text-muted hover:text-ink text-xl">&times;</button>
+        </div>
+        <div class="p-6">
+            <div class="search-bar mb-4" style="max-width:none">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.2-5.2M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" id="importPlSearch" placeholder="Filtrer par nom, SIREN…" oninput="renderImportPennylaneList()">
+            </div>
+            <div class="flex items-center gap-3 mb-3 text-xs text-muted">
+                <button onclick="toggleImportPlSelectAll()" class="btn-ghost">Tout sélectionner / désélectionner</button>
+                <span id="importPlStats">—</span>
+            </div>
+            <div id="importPlList" class="space-y-2 max-h-[55vh] overflow-y-auto pr-2"></div>
+        </div>
+        <div class="p-5 border-t border-gray-100 flex items-center justify-between" style="background:var(--paper-warm)">
+            <span class="text-sm text-muted" id="importPlCount">0 dossier sélectionné</span>
+            <div class="flex gap-2">
+                <button onclick="closeModal()" class="btn-secondary text-sm">Annuler</button>
+                <button onclick="submitImportPennylane()" class="btn-primary text-sm" id="importPlSubmit" disabled>
+                    Importer + enrichir Sirene
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============= MODAL : Rattachement multi-sociétés ============= -->
+<div id="modalGroupAttach" class="modal-overlay hidden">
+    <div class="modal-panel" style="max-width:560px">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <div>
+                <h3 class="text-xl font-playfair font-semibold text-ink">Rattacher d'autres sociétés</h3>
+                <p class="text-sm text-muted mt-1" id="groupAttachHint">—</p>
+            </div>
+            <button onclick="closeModal()" class="text-muted hover:text-ink text-xl">&times;</button>
+        </div>
+        <div class="p-6">
+            <div class="search-bar mb-4" style="max-width:none">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.2-5.2M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" id="groupAttachSearch" placeholder="Filtrer par nom, SIREN, ville…" oninput="renderGroupAttachList()">
+            </div>
+            <div id="groupAttachList" class="space-y-2 max-h-[50vh] overflow-y-auto pr-2"></div>
+        </div>
+        <div class="p-5 border-t border-gray-100 flex items-center justify-between bg-paper" style="background:var(--paper-warm)">
+            <span class="text-sm text-muted" id="groupAttachCount">0 société sélectionnée</span>
+            <div class="flex gap-2">
+                <button onclick="closeModal()" class="btn-secondary text-sm">Annuler</button>
+                <button onclick="submitGroupAttach()" class="btn-primary text-sm" id="groupAttachSubmit" disabled>Rattacher</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============= MODAL : Import en masse ============= -->
+<!-- ============= MODAL : Connexion Impôts.gouv (par dirigeant) ============= -->
+<div id="modalImpots" class="modal-overlay hidden">
+    <div class="modal-panel" style="max-width:480px">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <div>
+                <h3 class="text-xl font-playfair font-semibold text-ink">Connexion Impôts.gouv</h3>
+                <p class="text-xs text-muted mt-1" id="impotsModalDirName">—</p>
+            </div>
+            <button onclick="closeModal()" class="text-muted hover:text-ink text-xl">&times;</button>
+        </div>
+        <div class="p-6 space-y-4">
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-start gap-2 text-xs text-amber-900">
+                <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z"/></svg>
+                <p>Données <strong>sensibles</strong> stockées chiffrées. Utilisées uniquement pour faciliter l'accès du cabinet aux comptes fiscaux du dirigeant.</p>
+            </div>
+
+            <div>
+                <label class="field-label">Numéro fiscal (13 chiffres)</label>
+                <div class="flex gap-2">
+                    <input type="text" id="impotsNumeroFiscal" inputmode="numeric" maxlength="13" placeholder="13 chiffres" class="field-input flex-1" autocomplete="off">
+                    <button type="button" onclick="copyImpotsField('impotsNumeroFiscal')" class="btn-secondary text-xs" title="Copier">📋</button>
+                </div>
+            </div>
+
+            <div>
+                <label class="field-label">Mot de passe</label>
+                <div class="flex gap-2">
+                    <input type="password" id="impotsPassword" placeholder="••••••••" class="field-input flex-1" autocomplete="off">
+                    <button type="button" onclick="toggleImpotsPasswordVisibility()" class="btn-secondary text-xs" title="Afficher / masquer">👁</button>
+                    <button type="button" onclick="copyImpotsField('impotsPassword')" class="btn-secondary text-xs" title="Copier">📋</button>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-100 pt-4 flex flex-wrap gap-2 items-center justify-between">
+                <button id="impotsGouvLink" type="button" onclick="openImpotsLoginPage()" class="btn-success text-sm inline-flex items-center gap-2 hidden">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    Ouvrir Impôts.gouv (auto-copie du numéro fiscal)
+                </button>
+                <div class="flex gap-2 ml-auto">
+                    <button onclick="closeModal()" class="btn-secondary text-sm">Fermer</button>
+                    <button onclick="saveImpotsCredentials()" class="btn-primary text-sm" id="impotsSaveBtn">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalBulkImport" class="modal-overlay hidden">
+    <div class="modal-panel">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="text-xl font-playfair font-semibold text-ink">Importer plusieurs clients</h3>
+            <button onclick="closeModal()" class="text-muted hover:text-ink text-xl">&times;</button>
+        </div>
+        <form onsubmit="submitBulkImport(event)" class="p-6 space-y-4">
+            <div class="text-sm text-muted">
+                Collez votre liste ci-dessous. Un client par ligne, format&nbsp;:
+                <code class="bg-gray-100 px-1 rounded text-xs">RAISON SOCIALE ; COMPANY_ID</code>
+                <br>Séparateur accepté&nbsp;: <code>;</code>, <code>|</code>, tabulation ou <code>,</code>
+            </div>
+            <div class="bg-paper p-3 rounded-lg text-xs font-mono text-muted border border-gray-200">
+                Exemple&nbsp;:<br>
+                EXEMPLE SAS ; 11111111<br>
+                EXEMPLE SARL ; 22222222<br>
+                SCI EXEMPLE ; 33333333<br>
+                <span class="text-gray-400"># Les lignes commençant par # sont ignorées</span>
+            </div>
+            <div>
+                <label class="field-label">Votre liste</label>
+                <textarea name="text" id="bulkText" rows="14" class="field-input" style="font-family:monospace;font-size:0.85rem" placeholder="EXEMPLE SAS ; 11111111&#10;EXEMPLE SARL ; 22222222&#10;..." required></textarea>
+            </div>
+            <div class="text-xs text-muted bg-green-50 p-3 rounded-lg border border-cedrus-200">
+                💡 <strong>Enrichissement automatique&nbsp;:</strong> pour chaque ligne avec un <code>company_id</code>, le backend interroge Pennylane et récupère automatiquement le nom officiel et le SIREN. Si vous laissez le nom vide, il sera rempli automatiquement.
+            </div>
+            <div id="bulkImportResult" class="hidden text-sm p-3 rounded-lg"></div>
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" onclick="closeModal()" class="btn-secondary">Annuler</button>
+                <button type="submit" class="btn-primary" id="bulkSubmitBtn">Importer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============= MODAL : Mot de passe oublié ============= -->
+<div id="modalForgot" class="modal-overlay hidden">
+    <div class="modal-panel" style="max-width:440px">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="text-xl font-playfair font-semibold text-ink">Mot de passe oublié</h3>
+            <button onclick="closeModal()" class="text-muted hover:text-ink text-xl">&times;</button>
+        </div>
+        <form onsubmit="submitForgot(event)" class="p-6 space-y-4">
+            <p class="text-sm text-muted">
+                Entrez votre adresse email. Vous recevrez un lien pour définir un nouveau mot de passe.
+            </p>
+            <div>
+                <label class="field-label">Email</label>
+                <input type="email" name="email" id="forgotEmail" class="field-input" required autofocus placeholder="email@cedrus-expertise.fr">
+            </div>
+            <div id="forgotError" class="hidden text-sm text-red-500 bg-red-50 p-3 rounded-lg"></div>
+            <div id="forgotSuccess" class="hidden text-sm text-cedrus-600 bg-green-50 p-3 rounded-lg">
+                Si cette adresse correspond à un compte administrateur, un email vient d'être envoyé. Vérifiez votre boîte de réception (pensez à regarder les spams).
+            </div>
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" onclick="closeModal()" class="btn-secondary">Annuler</button>
+                <button type="submit" class="btn-primary" id="forgotSubmitBtn">Envoyer le lien</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+const API_BASE = '';
+const TOKEN_KEY = 'cedrus_admin_token';
+const ADMIN_KEY = 'cedrus_admin_info';
+
+let currentTab = 'overview';
+let _leads = [];
+let _clients = [];
+let _documents = [];
+
+function saveSession(tok, admin) {
+    localStorage.setItem(TOKEN_KEY, tok);
+    localStorage.setItem(ADMIN_KEY, JSON.stringify(admin));
+}
+function loadSession() {
+    const tok = localStorage.getItem(TOKEN_KEY);
+    const adminRaw = localStorage.getItem(ADMIN_KEY);
+    return tok && adminRaw ? { tok, admin: JSON.parse(adminRaw) } : null;
+}
+function clearSession() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(ADMIN_KEY);
+}
+
+async function api(path, opts = {}) {
+    const sess = loadSession();
+    const headers = Object.assign({}, opts.headers || {});
+    if (!opts.skipAuth && sess) headers.Authorization = 'Bearer ' + sess.tok;
+    if (opts.body && !(opts.body instanceof FormData)) headers['Content-Type'] = 'application/json';
+    const res = await fetch(API_BASE + path, { ...opts, headers });
+    if (res.status === 401 || res.status === 403) {
+        if (!opts.skipAuth) {
+            clearSession();
+            showLogin();
+            throw new Error('unauthorized');
+        }
+    }
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = text; }
+    if (!res.ok) throw Object.assign(new Error(data?.error || 'api_error'), { status: res.status, data });
+    return data;
+}
+
+// ============================= LOGIN / SESSION =============================
+async function adminLogin(e) {
+    e.preventDefault();
+    const err = document.getElementById('loginError');
+    err.classList.add('hidden');
+    const email = document.getElementById('adminEmail').value.trim();
+    const password = document.getElementById('adminPass').value;
+    try {
+        const r = await api('/api/admin/login', {
+            method: 'POST',
+            skipAuth: true,
+            body: JSON.stringify({ email, password })
+        });
+        saveSession(r.access_token, r.admin);
+        showDashboard();
+    } catch (ex) {
+        err.textContent = ex.data?.error === 'invalid_credentials'
+            ? 'Email ou mot de passe incorrect'
+            : ex.data?.error === 'not_admin'
+                ? "Ce compte n'est pas un compte administrateur"
+                : 'Connexion impossible. Réessayez.';
+        err.classList.remove('hidden');
+    }
+}
+
+function logout() {
+    clearSession();
+    showLogin();
+}
+
+// ============================= FORGOT PASSWORD =============================
+function openForgotModal(e) {
+    if (e) e.preventDefault();
+    const email = document.getElementById('adminEmail').value.trim();
+    document.getElementById('forgotEmail').value = email;
+    document.getElementById('forgotError').classList.add('hidden');
+    document.getElementById('forgotSuccess').classList.add('hidden');
+    document.getElementById('modalForgot').classList.remove('hidden');
+    setTimeout(() => document.getElementById('forgotEmail').focus(), 100);
+}
+
+async function submitForgot(e) {
+    e.preventDefault();
+    const email = document.getElementById('forgotEmail').value.trim();
+    const err = document.getElementById('forgotError');
+    const ok = document.getElementById('forgotSuccess');
+    const btn = document.getElementById('forgotSubmitBtn');
+    err.classList.add('hidden');
+    ok.classList.add('hidden');
+    btn.disabled = true;
+    btn.textContent = 'Envoi…';
+    try {
+        await api('/api/admin/request-password-reset', {
+            method: 'POST',
+            skipAuth: true,
+            body: JSON.stringify({ email })
+        });
+        ok.classList.remove('hidden');
+        btn.textContent = 'Envoyé ✓';
+    } catch (ex) {
+        err.textContent = "Erreur technique. Réessayez ou contactez l'administrateur.";
+        err.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Envoyer le lien';
+    }
+}
+
+function showLogin() {
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('adminDashboard').classList.add('hidden');
+}
+
+async function showDashboard() {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminDashboard').classList.remove('hidden');
+    const sess = loadSession();
+    if (sess) {
+        const fullName = ((sess.admin.prenom || '') + ' ' + (sess.admin.nom || '')).trim() || sess.admin.email || 'Admin';
+        document.getElementById('adminName').textContent = fullName;
+        const initials = ((sess.admin.prenom || ' ')[0] + (sess.admin.nom || ' ')[0]).toUpperCase().trim() || 'A';
+        const av = document.getElementById('adminAvatar');
+        if (av) av.textContent = initials;
+    }
+    const dateEl = document.getElementById('currentDateLabel');
+    if (dateEl) dateEl.textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    switchTab('overview');
+    loadStats();
+}
+
+function toggleSidebar(open) {
+    const sb = document.getElementById('adminSidebar');
+    const bd = document.querySelector('.admin-sidebar-backdrop');
+    if (!sb) return;
+    const shouldOpen = open === undefined ? !sb.classList.contains('open') : open;
+    sb.classList.toggle('open', shouldOpen);
+    if (bd) bd.classList.toggle('show', shouldOpen);
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const sess = loadSession();
+    if (!sess) return showLogin();
+    // Vérifie que la session est encore valide
+    try {
+        await api('/api/admin/me');
+        showDashboard();
+    } catch {
+        clearSession();
+        showLogin();
+    }
+});
+
+// ============================= TABS =============================
+const TAB_TITLES = {
+    overview: "Vue d'ensemble",
+    leads: 'Prospects',
+    clients: 'Clients',
+    documents: 'Documents',
+    silae: 'Import Silae',
+    settings: 'Paramètres & Connexions'
+};
+// Navigue vers un onglet et applique un filtre (utilisé par les KPI cards de l'overview)
+function goToTab(name, filter) {
+    switchTab(name);
+    // Applique le filtre après le rendu de la liste (loadClients/loadLeads est async)
+    setTimeout(function() {
+        if (name === 'clients' && typeof filterClients === 'function') {
+            filterClients(filter);
+        } else if (name === 'leads' && typeof filterLeads === 'function') {
+            filterLeads(filter);
+        }
+    }, 100);
+}
+
+function switchTab(name) {
+    currentTab = name;
+    document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    document.getElementById('tab-' + name).classList.remove('hidden');
+    const title = document.getElementById('pageTitle');
+    if (title) title.textContent = TAB_TITLES[name] || '';
+    if (name === 'overview') loadStats();
+    if (name === 'leads') loadLeads();
+    if (name === 'clients') loadClients();
+    if (name === 'documents') loadDocuments();
+    if (name === 'silae') resetSilaeImport();
+    if (name === 'settings') loadSettings();
+}
+
+// ============================= PARAMÈTRES & CONNEXIONS =============================
+async function loadSettings() {
+    const list = document.getElementById('settingsList');
+    list.innerHTML = '<p class="text-muted text-sm">Chargement…</p>';
+    try {
+        const r = await api('/api/admin/secrets');
+        renderSettings(r.items || []);
+    } catch (err) {
+        list.innerHTML = '<p class="text-red-600 text-sm">Erreur de chargement : ' + (err.message || err) + '</p>';
+    }
+}
+
+// Regroupement visuel par service
+const SETTINGS_GROUPS = [
+    { id: 'pennylane', title: 'Pennylane', keys: ['pennylane_firm_token', 'pennylane_company_id'], testable: true },
+    { id: 'smtp',      title: 'Email (SMTP / Resend)', keys: ['smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_from'], testable: true },
+    { id: 'pappers',   title: 'Pappers (recherche SIRET)', keys: ['pappers_api_key'], testable: true }
+];
+
+function renderSettings(items) {
+    const byKey = new Map(items.map(i => [i.key, i]));
+    const list = document.getElementById('settingsList');
+    list.innerHTML = '';
+
+    for (const group of SETTINGS_GROUPS) {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl border border-gray-100 p-6';
+
+        const header = document.createElement('div');
+        header.className = 'flex items-center justify-between mb-4';
+        header.innerHTML = `
+            <h3 class="text-lg font-playfair font-semibold text-ink">${group.title}</h3>
+            <div class="flex items-center gap-2">
+                <span id="testStatus-${group.id}" class="text-xs text-muted"></span>
+                ${group.testable ? `<button onclick="testSecret('${group.id}')" class="btn-secondary text-xs">Tester la connexion</button>` : ''}
+            </div>`;
+        card.appendChild(header);
+
+        for (const key of group.keys) {
+            const item = byKey.get(key);
+            if (!item) continue;
+            const field = document.createElement('div');
+            field.className = 'mb-4 last:mb-0';
+
+            const badge = item.configured
+                ? `<span class="text-xs text-cedrus-700 bg-cedrus-50 px-2 py-0.5 rounded">configuré · •••• ${item.last4 || ''}</span>`
+                : (item.envFallbackPresent
+                    ? `<span class="text-xs text-gold bg-yellow-50 px-2 py-0.5 rounded">lu depuis .env (à migrer)</span>`
+                    : `<span class="text-xs text-red-600 bg-red-50 px-2 py-0.5 rounded">non configuré</span>`);
+
+            const updated = item.updated_at ? `<span class="text-xs text-muted ml-2">màj ${new Date(item.updated_at).toLocaleString('fr-FR')}</span>` : '';
+
+            field.innerHTML = `
+                <label class="field-label flex items-center flex-wrap gap-2">
+                    <span>${item.label}</span>
+                    ${badge}
+                    ${updated}
+                </label>
+                <p class="text-xs text-muted mb-1">${item.description || ''}</p>
+                <div class="flex gap-2">
+                    <input id="sec-${key}" type="${item.type}" class="field-input flex-1" placeholder="${item.configured ? '•••••••• (laisser vide pour ne pas modifier)' : 'Saisir la valeur'}" autocomplete="off">
+                    <button onclick="saveSecret('${key}')" class="btn-primary text-sm">Enregistrer</button>
+                    ${item.configured ? `<button onclick="deleteSecret('${key}')" class="btn-secondary text-sm" title="Supprimer">✕</button>` : ''}
+                </div>
+                <p id="msg-${key}" class="text-xs mt-1"></p>`;
+            card.appendChild(field);
+        }
+
+        list.appendChild(card);
+    }
+}
+
+async function saveSecret(key) {
+    const input = document.getElementById('sec-' + key);
+    const msg = document.getElementById('msg-' + key);
+    const value = input.value;
+    if (!value) {
+        msg.innerHTML = '<span class="text-muted">Valeur vide — aucune modification</span>';
+        return;
+    }
+    msg.innerHTML = '<span class="text-muted">Enregistrement…</span>';
+    try {
+        await api('/api/admin/secrets/' + key, { method: 'POST', body: JSON.stringify({ value }) });
+        msg.innerHTML = '<span class="text-cedrus-700">✓ Enregistré</span>';
+        input.value = '';
+        setTimeout(loadSettings, 500);
+    } catch (err) {
+        msg.innerHTML = '<span class="text-red-600">✗ ' + (err.message || err) + '</span>';
+    }
+}
+
+async function deleteSecret(key) {
+    if (!confirm('Supprimer la valeur de "' + key + '" ? Le backend tombera alors en fallback sur .env (s\'il existe) ou sera inopérant.')) return;
+    try {
+        await api('/api/admin/secrets/' + key, { method: 'POST', body: JSON.stringify({ value: '' }) });
+        loadSettings();
+    } catch (err) {
+        toast('Erreur : ' + (err.message || err));
+    }
+}
+
+async function testSecret(service) {
+    const statusEl = document.getElementById('testStatus-' + service);
+    statusEl.textContent = 'Test en cours…';
+    statusEl.className = 'text-xs text-muted';
+    try {
+        const r = await api('/api/admin/secrets/test/' + service, { method: 'POST', body: '{}' });
+        if (r.ok) {
+            statusEl.textContent = '✓ ' + (r.detail || 'OK');
+            statusEl.className = 'text-xs text-cedrus-700';
+        } else {
+            statusEl.textContent = '✗ ' + (r.detail || r.error || 'Échec');
+            statusEl.className = 'text-xs text-red-600';
+        }
+    } catch (err) {
+        statusEl.textContent = '✗ ' + (err.message || err);
+        statusEl.className = 'text-xs text-red-600';
+    }
+}
+
+// ============================= IMPORT SILAE =============================
+let _silaePreview = null;
+let _silaeTmpPath = null;
+
+function resetSilaeImport() {
+    _silaePreview = null;
+    _silaeTmpPath = null;
+    const prev = document.getElementById('silaePreview'); if (prev) prev.classList.add('hidden');
+    const res = document.getElementById('silaeResult'); if (res) res.classList.add('hidden');
+    const input = document.getElementById('silaeZipInput'); if (input) input.value = '';
+}
+
+async function uploadSilaeZip(file) {
+    if (!file) return;
+    const fd = new FormData();
+    fd.append('zip', file);
+    const zone = document.getElementById('silaeDropZone');
+    zone.innerHTML = '<p class="text-muted">Analyse du ZIP en cours... cela peut prendre 30s à 2min selon la taille.</p>';
+    try {
+        const r = await api('/api/admin/silae/preview', { method: 'POST', body: fd });
+        _silaePreview = r;
+        _silaeTmpPath = r.tmpPath;
+        renderSilaePreview(r);
+    } catch (ex) {
+        toast('Erreur analyse ZIP : ' + (ex.data?.error || ex.message));
+        resetSilaeImport();
+        location.reload();
+    }
+}
+
+function renderSilaePreview(r) {
+    document.getElementById('silStatTotal').textContent = r.totalFiles || 0;
+    document.getElementById('silStatAuto').textContent = r.matched || 0;
+    document.getElementById('silStatCreate').textContent = r.toCreate || 0;
+    document.getElementById('silStatClient').textContent = r.clientOnly || 0;
+    document.getElementById('silStatUn').textContent = r.unmatched || 0;
+
+    const list = document.getElementById('silaePreviewList');
+    list.innerHTML = (r.items || []).map((it) => {
+        let badge, target;
+        if (it.status === 'auto') {
+            badge = '<span class="badge" style="background:#D1FAE5;color:#065F46">✓ Salarié existant</span>';
+            target = `${esc(it.matchedSalarie.prenom)} ${esc(it.matchedSalarie.nom)} (${esc(it.matchedClient?.raison_sociale || '?')})`;
+        } else if (it.status === 'create_salarie') {
+            badge = '<span class="badge" style="background:#DBEAFE;color:#1E40AF">+ Nouveau salarié</span>';
+            target = `<strong>${esc(it.detectedName.prenom)} ${esc(it.detectedName.nom)}</strong> → à créer chez ${esc(it.matchedClient.raison_sociale)}`;
+        } else if (it.status === 'client_only') {
+            badge = '<span class="badge" style="background:#FEF3C7;color:#92400E">⚠ Client seul</span>';
+            target = `Client: ${esc(it.matchedClient.raison_sociale)} — <em>salarié non identifié</em>`;
+        } else {
+            badge = '<span class="badge" style="background:#FEE2E2;color:#991B1B">✗ Non identifié</span>';
+            target = '<em>Client + salarié inconnus</em>';
+        }
+        const period = it.period ? `${it.period.month}/${it.period.year}` : '—';
+        return `
+            <div class="p-3 border-b border-gray-50 flex items-center gap-3 text-sm">
+                <div class="flex-1 min-w-0">
+                    <p class="font-medium text-ink truncate">${esc(it.fileName)}</p>
+                    <p class="text-xs text-muted mt-0.5">${target} · période ${period} · ${Math.round(it.size/1024)} Ko</p>
+                </div>
+                ${badge}
+            </div>
+        `;
+    }).join('');
+
+    document.getElementById('silaePreview').classList.remove('hidden');
+}
+
+async function confirmSilaeImport() {
+    if (!_silaePreview || !_silaeTmpPath) return;
+    // On importe les salariés existants (auto) + les nouveaux salariés détectés (create_salarie)
+    const items = (_silaePreview.items || []).filter(i => i.status === 'auto' || i.status === 'create_salarie');
+    if (items.length === 0) {
+        toast("Aucun fichier importable détecté.", "warn");
+        return;
+    }
+    const toCreate = items.filter(i => i.status === 'create_salarie').length;
+    const msg = toCreate > 0
+        ? `Importer ${items.length} bulletins (dont ${toCreate} nouveaux salariés à créer automatiquement) ?`
+        : `Importer ${items.length} bulletins ?`;
+    if (!confirm(msg)) return;
+    const btn = document.getElementById('silaeConfirmBtn');
+    btn.disabled = true; btn.textContent = 'Import en cours…';
+    try {
+        const r = await api('/api/admin/silae/import', {
+            method: 'POST',
+            body: JSON.stringify({ tmpPath: _silaeTmpPath, items })
+        });
+        document.getElementById('silaePreview').classList.add('hidden');
+        document.getElementById('silaeResult').classList.remove('hidden');
+        document.getElementById('silaeResultTitle').textContent = `✓ ${r.ok} bulletins importés`;
+        let body = r.skipped > 0 ? `${r.skipped} ignorés.` : 'Tous les bulletins ont été dispatchés dans les Registres sociaux des clients.';
+        if (r.errors && r.errors.length) {
+            body += ' Erreurs : ' + r.errors.slice(0, 3).map(e => e.file + ' (' + e.reason + ')').join('; ');
+        }
+        document.getElementById('silaeResultBody').textContent = body;
+    } catch (ex) {
+        toast('Erreur import : ' + (ex.data?.error || ex.message));
+    } finally {
+        btn.disabled = false; btn.textContent = 'Importer les matchés automatiques';
+    }
+}
+
+// ============================= STATS =============================
+// ============================= OVERVIEW / STATS =============================
+let _charts = {};
+
+function heroGreetingText() {
+    const h = new Date().getHours();
+    if (h < 12) return 'Bonjour';
+    if (h < 18) return 'Bon après-midi';
+    return 'Bonsoir';
+}
+
+async function loadStats() {
+    try {
+        const s = await api('/api/admin/stats');
+
+        // Hero — salutation personnalisée
+        const sess = loadSession();
+        const prenom = (sess?.admin?.prenom || '').trim();
+        const nom = (sess?.admin?.nom || '').trim();
+        const fullName = [prenom, nom].filter(Boolean).join(' ') || (sess?.admin?.email || 'Admin');
+        document.getElementById('heroDayLabel').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+        document.getElementById('heroHeadline').textContent = heroGreetingText() + (prenom ? ', ' + prenom : '') + '.';
+        document.getElementById('heroSubline').textContent = 'Voici l’activité de votre cabinet — ' + s.clients.total + ' dossier' + (s.clients.total > 1 ? 's' : '') + ' et ' + s.leads.total + ' prospect' + (s.leads.total > 1 ? 's' : '') + ' suivis.';
+        document.getElementById('heroStatClients').textContent = s.clients.total;
+        document.getElementById('heroStatLeads').textContent = s.leads.total;
+
+        // KPIs
+        document.getElementById('kLeadsTotal').textContent = s.leads.total;
+        document.getElementById('kLeadsNew').textContent = s.leads.new;
+        document.getElementById('kClientsActive').textContent = s.clients.active;
+        document.getElementById('kClientsInvited').textContent = s.clients.invited;
+
+        // Charts
+        renderClientsDonut(s.clients);
+        renderLeadsFunnel(s.leads);
+
+        // Extras en parallèle (peut tomber en douceur si pas encore branché)
+        loadOverviewExtras();
+    } catch (ex) {
+        console.warn('stats failed', ex);
+    }
+}
+
+async function loadOverviewExtras() {
+    try {
+        const r = await api('/api/admin/overview-extras');
+        const docsEl = document.getElementById('heroStatDocs');
+        if (docsEl) docsEl.textContent = r.docsTotal ?? '—';
+    } catch (ex) {
+        console.warn('overview-extras failed', ex);
+    }
+}
+
+function chartFont() { return { family: 'Inter, sans-serif', size: 12 }; }
+
+function renderClientsDonut(c) {
+    const ctx = document.getElementById('chartClientsDonut');
+    if (!ctx) return;
+    const data = [c.active || 0, c.invited || 0, c.pending || 0];
+    const total = data.reduce((a, b) => a + b, 0);
+    document.getElementById('chartClientsTotal').textContent = total + ' dossiers';
+    if (_charts.clientsDonut) _charts.clientsDonut.destroy();
+    _charts.clientsDonut = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Actifs', 'Invités', 'À inviter'],
+            datasets: [{
+                data,
+                backgroundColor: ['#3E9364', '#D4A853', '#E5E7EB'],
+                borderWidth: 0,
+                hoverOffset: 6
+            }]
+        },
+        options: {
+            cutout: '72%',
+            plugins: { legend: { display: false } },
+            responsive: true, maintainAspectRatio: false
+        }
+    });
+    const legendEl = document.getElementById('chartClientsLegend');
+    const labels = ['Actifs', 'Invités', 'À inviter'];
+    const colors = ['#3E9364', '#D4A853', '#9CA3AF'];
+    legendEl.innerHTML = labels.map((lbl, i) => {
+        const pct = total ? Math.round((data[i]/total)*100) : 0;
+        return '<div class="flex items-center justify-between">'
+            + '<span class="flex items-center gap-2 text-muted"><span class="inline-block w-2.5 h-2.5 rounded-full" style="background:' + colors[i] + '"></span>' + lbl + '</span>'
+            + '<span class="font-playfair font-semibold text-ink">' + data[i] + ' <span class="text-muted text-xs font-normal">(' + pct + '%)</span></span>'
+            + '</div>';
+    }).join('');
+}
+
+function renderLeadsFunnel(l) {
+    const ctx = document.getElementById('chartLeadsFunnel');
+    if (!ctx) return;
+    if (_charts.leadsFunnel) _charts.leadsFunnel.destroy();
+    _charts.leadsFunnel = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Nouveaux', 'Contactés', 'Signés', 'Activés'],
+            datasets: [{
+                label: 'Prospects',
+                data: [l.new||0, l.contacted||0, l.signed||0, 0 /* activés: calculé via stats si besoin */],
+                backgroundColor: ['#D4A853', '#60A5FA', '#3E9364', '#1E4A34'],
+                borderRadius: 8,
+                barThickness: 42
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { displayColors: false } },
+            scales: {
+                x: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { font: chartFont() } },
+                y: { grid: { display: false }, ticks: { font: { ...chartFont(), weight: '500' } } }
+            }
+        }
+    });
+}
+
+function renderDocsTrend(trend) {
+    const ctx = document.getElementById('chartDocsTrend');
+    if (!ctx) return;
+    const labels = trend.map(t => {
+        const [y, m] = t.month.split('-');
+        return new Date(Number(y), Number(m)-1, 1).toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' });
+    });
+    const data = trend.map(t => t.count);
+    if (_charts.docsTrend) _charts.docsTrend.destroy();
+    const grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 240);
+    grad.addColorStop(0, 'rgba(62,147,100,0.35)');
+    grad.addColorStop(1, 'rgba(62,147,100,0)');
+    _charts.docsTrend = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Documents',
+                data,
+                borderColor: '#3E9364',
+                backgroundColor: grad,
+                borderWidth: 2.5,
+                tension: 0.35,
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: 'white',
+                pointBorderColor: '#3E9364',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { displayColors: false } },
+            scales: {
+                x: { grid: { display: false }, ticks: { font: chartFont() } },
+                y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { font: chartFont(), precision: 0 } }
+            }
+        }
+    });
+}
+
+function renderActivityFeed(items) {
+    const feedEl = document.getElementById('activityFeed');
+    if (!items.length) { feedEl.innerHTML = '<li class="text-muted text-xs">Aucune activité récente</li>'; return; }
+    const iconFor = (a) => {
+        if (a.startsWith('silae')) return { bg:'#F5E8C7', fg:'#8F6614', ic:'📄' };
+        if (a.startsWith('secrets')) return { bg:'#E0E7FF', fg:'#3730A3', ic:'🔑' };
+        if (a.startsWith('doc')) return { bg:'#D6EFE0', fg:'#0F6B42', ic:'📎' };
+        if (a.startsWith('client')) return { bg:'#DDEAFC', fg:'#1E40AF', ic:'🏢' };
+        return { bg:'#F1F3F5', fg:'#6B7280', ic:'•' };
+    };
+    feedEl.innerHTML = items.map(a => {
+        const st = iconFor(a.action || '');
+        const when = a.created_at ? new Date(a.created_at).toLocaleString('fr-FR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '';
+        const label = ({
+            'silae.bulk_import': 'Import Silae effectué',
+            'secrets.update': 'Clé API mise à jour',
+            'doc.upload': 'Document déposé',
+            'doc.sync_pennylane': 'Document synchronisé Pennylane',
+            'client.create': 'Nouveau client créé',
+            'client.invite': 'Invitation envoyée'
+        })[a.action] || a.action.replace(/\./g, ' → ');
+        return '<li class="flex items-start gap-3">'
+            + '<div class="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xs" style="background:' + st.bg + '; color:' + st.fg + '">' + st.ic + '</div>'
+            + '<div class="flex-1 min-w-0"><div class="font-medium text-ink text-[0.84rem]">' + label + '</div><div class="text-xs text-muted">' + when + (a.actor_role ? ' • ' + a.actor_role : '') + '</div></div>'
+            + '</li>';
+    }).join('');
+}
+
+// ============================= LEADS =============================
+let _leadFilter = 'all';
+async function loadLeads() {
+    try {
+        const r = await api('/api/admin/leads' + (_leadFilter !== 'all' ? '?statut=' + _leadFilter : ''));
+        _leads = r.items || [];
+        renderLeads();
+    } catch (ex) { console.warn(ex); }
+}
+function filterLeads(f) {
+    _leadFilter = f;
+    document.querySelectorAll('#leadFilters [data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+    loadLeads();
+}
+function initialsFrom(firstName, lastName, fallback) {
+    const a = (firstName || '').trim();
+    const b = (lastName || '').trim();
+    if (a || b) return ((a[0] || '') + (b[0] || '')).toUpperCase() || (fallback || '?')[0]?.toUpperCase() || '?';
+    return ((fallback || '?').trim()[0] || '?').toUpperCase();
+}
+function avatarColorFor(seed) {
+    const variants = ['entity-avatar-cedrus', 'entity-avatar-gold', 'entity-avatar-ink', 'entity-avatar-blue', 'entity-avatar-slate'];
+    let h = 0;
+    for (const ch of String(seed || '')) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return variants[h % variants.length];
+}
+
+function renderLeads() {
+    const list = document.getElementById('leadsList');
+    const empty = document.getElementById('leadsEmpty');
+    if (_leads.length === 0) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+    }
+    empty.classList.add('hidden');
+    list.innerHTML = _leads.map(l => {
+        const displayName = ((l.prenom || '') + ' ' + (l.nom || '')).trim() || l.email || '?';
+        const initials = initialsFrom(l.prenom, l.nom, l.email || l.entreprise_nom);
+        const color = avatarColorFor(displayName);
+        const needs = Array.isArray(l.besoins) ? l.besoins : [];
+        return `
+        <div class="entity-row fade-in" onclick="openLeadDetail('${l.id}')">
+            <div class="entity-avatar ${color}">${esc(initials)}</div>
+            <div class="grow">
+                <div class="title">
+                    <span>${esc(displayName)}</span>
+                    <span class="badge badge-${l.statut}">${labelStatutLead(l.statut)}</span>
+                </div>
+                <div class="meta">
+                    ${l.email ? '<span>' + esc(l.email) + '</span>' : ''}
+                    ${l.telephone ? '<span>·</span><span>' + esc(l.telephone) + '</span>' : ''}
+                    ${l.entreprise_nom ? '<span>·</span><span>' + esc(l.entreprise_nom) + '</span>' : ''}
+                    ${needs.slice(0,2).map(b => '<span class="chip chip-sirene">' + esc(b) + '</span>').join('')}
+                </div>
+            </div>
+            <div class="timestamp">${fmtDate(l.created_at)}</div>
+        </div>`;
+    }).join('');
+}
+function labelStatutLead(s) {
+    return { new: 'Nouveau', contacted: 'Contacté', signed: 'Signé', activated: 'Activé', rejected: 'Rejeté' }[s] || s;
+}
+
+async function openLeadDetail(id) {
+    try {
+        const lead = await api('/api/admin/leads/' + id);
+        const panel = document.getElementById('modalLeadPanel');
+        panel.innerHTML = `
+            <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold text-ink">${esc((lead.prenom || '') + ' ' + (lead.nom || '')).trim() || lead.email}</h3>
+                    <p class="text-sm text-muted">${fmtDate(lead.created_at)} · <span class="badge badge-${lead.statut}">${labelStatutLead(lead.statut)}</span></p>
+                </div>
+                <button onclick="closeModal()" class="text-muted hover:text-ink text-xl">&times;</button>
+            </div>
+            <div class="p-6 space-y-4 text-sm">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><span class="text-muted">Email</span><p class="font-medium">${esc(lead.email)}</p></div>
+                    <div><span class="text-muted">Téléphone</span><p class="font-medium">${esc(lead.telephone || '—')}</p></div>
+                    <div><span class="text-muted">Statut entreprise</span><p class="font-medium">${esc(lead.statut_entreprise || '—')}</p></div>
+                    <div><span class="text-muted">Pays / langue</span><p class="font-medium">${esc((lead.pays || '—') + ' · ' + (lead.langue || ''))}</p></div>
+                </div>
+                ${lead.entreprise_nom ? `
+                <div class="border-t border-gray-100 pt-4">
+                    <p class="font-medium mb-2">Entreprise</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><span class="text-muted">Nom</span><p class="font-medium">${esc(lead.entreprise_nom)}</p></div>
+                        <div><span class="text-muted">SIRET</span><p class="font-medium">${esc(lead.siret || '—')}</p></div>
+                        <div><span class="text-muted">Forme</span><p class="font-medium">${esc(lead.forme_juridique || '—')}</p></div>
+                        <div><span class="text-muted">NAF</span><p class="font-medium">${esc(lead.code_naf || '—')}</p></div>
+                        <div class="col-span-2"><span class="text-muted">Adresse</span><p class="font-medium">${esc(lead.adresse || '—')}</p></div>
+                        <div class="col-span-2"><span class="text-muted">Dirigeant</span><p class="font-medium">${esc(lead.dirigeant || '—')}</p></div>
+                    </div>
+                </div>` : ''}
+                ${Array.isArray(lead.besoins) && lead.besoins.length ? `
+                <div class="border-t border-gray-100 pt-4">
+                    <p class="font-medium mb-2">Besoins</p>
+                    <div class="flex flex-wrap gap-2">${lead.besoins.map(b => `<span class="badge badge-contacted">${esc(b)}</span>`).join('')}</div>
+                </div>` : ''}
+                ${lead.message || lead.projet ? `
+                <div class="border-t border-gray-100 pt-4">
+                    <p class="font-medium mb-2">Message / projet</p>
+                    <p class="text-muted whitespace-pre-wrap">${esc(lead.message || lead.projet)}</p>
+                </div>` : ''}
+                <div class="border-t border-gray-100 pt-4">
+                    <p class="font-medium mb-2">Notes internes</p>
+                    <textarea id="leadNotes" rows="3" class="field-input">${esc(lead.notes || '')}</textarea>
+                </div>
+                <div class="border-t border-gray-100 pt-4 flex flex-wrap gap-2">
+                    ${lead.statut !== 'contacted' ? '<button onclick="setLeadStatut(\'' + lead.id + '\',\'contacted\')" class="btn-secondary">Marquer contacté</button>' : ''}
+                    ${lead.statut !== 'signed' ? '<button onclick="setLeadStatut(\'' + lead.id + '\',\'signed\')" class="btn-secondary">Marquer signé</button>' : ''}
+                    ${lead.statut !== 'activated' ? '<button onclick="convertLeadToClient(\'' + lead.id + '\')" class="btn-success">Créer le dossier client</button>' : ''}
+                    ${lead.statut !== 'rejected' ? '<button onclick="setLeadStatut(\'' + lead.id + '\',\'rejected\')" class="btn-secondary">Rejeter</button>' : ''}
+                    <button onclick="saveLeadNotes('${lead.id}')" class="btn-primary ml-auto">Enregistrer notes</button>
+                </div>
+            </div>
+        `;
+        document.getElementById('modalLead').classList.remove('hidden');
+    } catch (ex) { toast('Erreur : ' + ex.message, 'error'); }
+}
+
+async function setLeadStatut(id, statut) {
+    await api('/api/admin/leads/' + id, { method: 'PATCH', body: JSON.stringify({ statut }) });
+    closeModal();
+    loadLeads();
+    loadStats();
+}
+async function saveLeadNotes(id) {
+    const notes = document.getElementById('leadNotes').value;
+    await api('/api/admin/leads/' + id, { method: 'PATCH', body: JSON.stringify({ notes }) });
+    closeModal();
+    loadLeads();
+}
+
+function convertLeadToClient(leadId) {
+    const lead = _leads.find(l => l.id === leadId);
+    closeModal();
+    openCreateClientModal(lead);
+}
+
+// ============================= CLIENTS =============================
+async function loadClients() {
+    try {
+        const r = await api('/api/admin/clients');
+        _clients = r.items || [];
+        renderClients();
+    } catch (ex) { console.warn(ex); }
+}
+let _clientsFilter = 'all';
+let _clientsSearch = '';
+
+function filterClients(status) {
+    _clientsFilter = status;
+    document.querySelectorAll('[data-clientfilter]').forEach(b => b.classList.toggle('active', b.dataset.clientfilter === status));
+    renderClients();
+}
+function onClientsSearch() {
+    _clientsSearch = (document.getElementById('clientsSearchInput').value || '').toLowerCase().trim();
+    renderClients();
+}
+
+function renderClients() {
+    const list = document.getElementById('clientsList');
+    const empty = document.getElementById('clientsEmpty');
+
+    // Compteurs par statut
+    const counts = { all: _clients.length, active:0, invited:0, pending_invitation:0, suspended:0 };
+    for (const c of _clients) if (c.statut in counts) counts[c.statut]++;
+    const ids = { all:'cfCountAll', active:'cfCountActive', invited:'cfCountInvited', pending_invitation:'cfCountPending', suspended:'cfCountSusp' };
+    for (const k in ids) { const el = document.getElementById(ids[k]); if (el) el.textContent = counts[k]; }
+
+    let items = _clients;
+    if (_clientsFilter !== 'all') items = items.filter(c => c.statut === _clientsFilter);
+    if (_clientsSearch) {
+        const q = _clientsSearch;
+        items = items.filter(c =>
+            (c.raison_sociale || '').toLowerCase().includes(q)
+            || (c.siren || '').toLowerCase().includes(q)
+            || (c.siret || '').toLowerCase().includes(q)
+            || (c.ville || '').toLowerCase().includes(q)
+            || (c.contact_email || '').toLowerCase().includes(q)
+        );
+    }
+
+    const resEl = document.getElementById('clientsResultCount');
+    if (resEl) resEl.textContent = items.length + (items.length === 1 ? ' dossier' : ' dossiers');
+
+    if (items.length === 0) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+    }
+    empty.classList.add('hidden');
+
+    list.innerHTML = items.map(c => {
+        const initials = initialsFrom(c.raison_sociale?.split(' ')[0], c.raison_sociale?.split(' ')[1], c.raison_sociale);
+        const color = avatarColorFor(c.raison_sociale);
+        const missions = [];
+        if (c.mission_compta) missions.push('Comptable');
+        if (c.mission_social) missions.push('Social');
+        if (c.mission_juridique) missions.push('Juridique');
+        if (c.mission_fiscal) missions.push('Fiscal');
+        const integrations = [];
+        if (c.pennylane_company_id) integrations.push('<span class="chip chip-pennylane">Pennylane</span>');
+        if (c.pennylane_email_suppliers || c.pennylane_email_customers) integrations.push('<span class="chip chip-email">Import email</span>');
+        if (c.mysilae_dossier_id) integrations.push('<span class="chip chip-silae">Silae</span>');
+        const locationLine = [c.ville, c.siren ? 'SIREN ' + c.siren : null].filter(Boolean).join(' · ');
+
+        return `
+        <div class="entity-row fade-in" onclick="openClientDetail('${c.id}')">
+            <div class="entity-avatar ${color}">${esc(initials)}</div>
+            <div class="grow">
+                <div class="title">
+                    <span>${esc(c.raison_sociale)}</span>
+                    <span class="badge badge-${c.statut.replace('pending_invitation','pending')}">${labelStatutClient(c.statut)}</span>
+                    ${c.forme_juridique ? '<span class="text-xs text-muted font-normal">' + esc(c.forme_juridique) + '</span>' : ''}
+                </div>
+                <div class="meta">
+                    ${locationLine ? '<span>' + esc(locationLine) + '</span>' : ''}
+                    ${c.contact_email ? '<span>·</span><span>' + esc(c.contact_email) + '</span>' : ''}
+                </div>
+                <div class="meta mt-2">
+                    ${integrations.join('')}
+                    ${missions.map(m => '<span class="chip chip-mission">' + esc(m) + '</span>').join('')}
+                </div>
+            </div>
+            <div class="timestamp">${fmtDate(c.created_at)}</div>
+        </div>`;
+    }).join('');
+}
+function labelStatutClient(s) {
+    return { pending_invitation: 'À inviter', invited: 'Invité', active: 'Actif', suspended: 'Suspendu' }[s] || s;
+}
+
+async function openClientDetail(id) {
+    try {
+        const c = await api('/api/admin/clients/' + id);
+        const panel = document.getElementById('modalClientDetailPanel');
+        panel.innerHTML = `
+            <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold text-ink">${esc(c.raison_sociale)}</h3>
+                    <p class="text-sm text-muted">${esc(c.contact_email)} · <span class="badge badge-${c.statut.replace('pending_invitation','pending')}">${labelStatutClient(c.statut)}</span></p>
+                </div>
+                <button onclick="closeModal()" class="text-muted hover:text-ink text-xl">&times;</button>
+            </div>
+            <div class="p-6 space-y-4 text-sm">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><span class="text-muted">SIREN</span><p class="font-medium">${esc(c.siren || '—')}</p></div>
+                    <div><span class="text-muted">SIRET</span><p class="font-medium">${esc(c.siret || '—')}</p></div>
+                    <div><span class="text-muted">Forme</span><p class="font-medium">${esc(c.forme_juridique || '—')}</p></div>
+                    <div><span class="text-muted">NAF</span><p class="font-medium">${esc(c.code_naf || '—')}</p></div>
+                    <div class="col-span-2"><span class="text-muted">Adresse</span><p class="font-medium">${esc(c.adresse || '—')}${c.code_postal ? ', ' + esc(c.code_postal) : ''}${c.ville ? ' ' + esc(c.ville) : ''}</p></div>
+                </div>
+                <div class="border-t border-gray-100 pt-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="font-medium">Informations société</p>
+                        <button onclick="refreshClientInfo('${c.id}')" class="text-xs text-cedrus-600 hover:underline flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                            Rafraîchir depuis Pennylane + Sirene
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div><span class="text-muted">Forme juridique</span><p class="font-medium">${esc(c.forme_juridique || '—')}</p></div>
+                        <div><span class="text-muted">Code NAF</span><p class="font-medium">${esc(c.code_naf || '—')}</p></div>
+                        <div class="col-span-2"><span class="text-muted">Activité</span><p class="font-medium">${esc(c.activite || '—')}</p></div>
+                        <div class="col-span-2"><span class="text-muted">Adresse siège</span><p class="font-medium">${esc([c.adresse, c.code_postal, c.ville].filter(Boolean).join(', ') || '—')}</p></div>
+                    </div>
+                    <div id="refreshResult_${c.id}" class="hidden mt-3 text-xs p-3 rounded-lg"></div>
+                </div>
+
+                <div class="border-t border-gray-100 pt-4">
+                    <p class="font-medium mb-2">Contact principal du dossier</p>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <label class="text-muted text-xs">Email de contact</label>
+                            <input type="email" id="edit_contact_email_${c.id}" value="${esc(c.contact_email || '')}" class="field-input mt-1" placeholder="email@exemple.com">
+                        </div>
+                        <div>
+                            <label class="text-muted text-xs">Téléphone de contact</label>
+                            <input type="tel" id="edit_contact_telephone_${c.id}" value="${esc(c.contact_telephone || '')}" class="field-input mt-1" placeholder="06 XX XX XX XX">
+                        </div>
+                    </div>
+                    <div class="flex justify-end mt-2">
+                        <button onclick="saveClientContact('${c.id}')" class="text-xs text-cedrus-600 hover:underline">Enregistrer les contacts</button>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-100 pt-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="font-medium">Dirigeants &amp; associés</p>
+                        <button onclick="addDirigeant('${c.id}')" class="text-xs text-cedrus-600 hover:underline">+ Ajouter</button>
+                    </div>
+                    <div id="dirigeantsList_${c.id}" class="space-y-2">
+                        <p class="text-xs text-muted italic">Chargement…</p>
+                    </div>
+                </div>
+                <div class="border-t border-gray-100 pt-4">
+                    <p class="font-medium mb-2">Emails Pennylane (import factures)</p>
+                    <div class="grid grid-cols-1 gap-3 text-sm">
+                        <div>
+                            <label class="text-muted text-xs">📥 Factures d'achat (suppliers)</label>
+                            <input type="email" id="edit_pl_email_suppliers_${c.id}" value="${esc(c.pennylane_email_suppliers || '')}" class="field-input mt-1" placeholder="xxx-xxxx@suppliers.pennylane.com">
+                        </div>
+                        <div>
+                            <label class="text-muted text-xs">📤 Factures de vente (customers)</label>
+                            <input type="email" id="edit_pl_email_customers_${c.id}" value="${esc(c.pennylane_email_customers || '')}" class="field-input mt-1" placeholder="xxx-xxxx@customers.pennylane.com">
+                        </div>
+                    </div>
+                    <div class="flex justify-end mt-2">
+                        <button onclick="savePennylaneEmails('${c.id}')" class="text-xs text-cedrus-600 hover:underline">Enregistrer les emails Pennylane</button>
+                    </div>
+                    <p class="text-[11px] text-muted mt-2">
+                        Ces adresses sont fournies par Pennylane dans chaque dossier client (Paramètres → Import email). Les factures uploadées par le client sont automatiquement envoyées ici pour import OCR.
+                    </p>
+                </div>
+
+                <div class="border-t border-gray-100 pt-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="font-medium">Accès espace client</p>
+                        <span class="text-[11px] text-muted">Un utilisateur peut avoir accès à plusieurs dossiers</span>
+                    </div>
+                    <div id="membersList_${c.id}" class="space-y-2 mb-3">
+                        <p class="text-xs text-muted italic">Chargement…</p>
+                    </div>
+                    <div class="flex gap-2 flex-wrap">
+                        <div class="flex gap-2 flex-1 min-w-[240px]">
+                            <input type="email" id="addMemberEmail_${c.id}" class="field-input flex-1" placeholder="email d'un utilisateur existant" style="font-size:0.85rem; padding:8px 12px">
+                            <button onclick="attachMember('${c.id}')" class="btn-secondary text-sm">Rattacher</button>
+                        </div>
+                        <button onclick="openGroupAttachModal('${c.id}')" class="btn-primary text-sm">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                            Ajouter d'autres sociétés au même espace
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-muted mt-2">
+                        Si ton client possède plusieurs sociétés (SCI, holding, exploitation…), rattache-les toutes à <strong>un seul compte espace client</strong> — il basculera entre elles via le sélecteur de dossier.
+                    </p>
+                </div>
+
+                <div class="border-t border-gray-100 pt-4">
+                    <p class="font-medium mb-2">Connexion Pennylane (API)</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <span class="text-muted">Clé API</span>
+                            <p class="font-medium">
+                                ${c.pennylane_api_key
+                                    ? '<span class="text-ink">•••••••• (dédiée)</span>'
+                                    : (c.pennylane_company_id
+                                        ? '<span class="text-cedrus-600">Via clé cabinet</span>'
+                                        : '<span class="text-muted">—</span>')}
+                            </p>
+                        </div>
+                        <div><span class="text-muted">Company ID</span><p class="font-medium">${esc(c.pennylane_company_id || '—')}</p></div>
+                    </div>
+                    ${c.pennylane_company_id ? `
+                    <div class="mt-2 flex items-center gap-2 text-xs text-muted">
+                        <svg class="w-3.5 h-3.5 text-cedrus-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>
+                        Connexion Pennylane active — les données comptables du client sont accessibles depuis cet espace.
+                    </div>
+                    ` : `
+                    <div class="mt-2 flex items-center gap-2 text-xs text-muted">
+                        <svg class="w-3.5 h-3.5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                        Pennylane non connecté — les données comptables ne sont pas accessibles pour ce dossier.
+                    </div>
+                    `}
+                    <div class="mt-2">
+                        <button onclick="editPennylaneKey('${c.id}')" class="text-sm text-cedrus-600 hover:underline">Modifier la connexion Pennylane</button>
+                    </div>
+                </div>
+                <div class="admin-upload-card">
+                    <div class="admin-upload-header">
+                        <div>
+                            <h4 class="admin-upload-title">Déposer un document pour ce client</h4>
+                            <p class="admin-upload-subtitle">Le fichier apparaît instantanément dans son espace client.</p>
+                        </div>
+                        <div class="admin-upload-icon">
+                            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                        </div>
+                    </div>
+
+                    <div class="admin-upload-grid">
+                        <div>
+                            <label class="admin-upload-label">Catégorie</label>
+                            <select id="adminDocCat_${c.id}" class="field-input" onchange="onAdminDocCatChange('${c.id}')">
+                                <option value="juridique">Juridique (registre juridique)</option>
+                                <option value="fiscal">Fiscal (déclarations)</option>
+                                <option value="permanent">Dossier permanent</option>
+                                <option value="bulletin-paie">Bulletin de paie</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="admin-upload-label" id="adminDocSubLabel_${c.id}">Type de document</label>
+                            <select id="adminDocKey_${c.id}" class="field-input">
+                                <option value="ago">AGO — Assemblée Générale Ordinaire</option>
+                                <option value="age">AGE — Assemblée Générale Extraordinaire</option>
+                                <option value="recepisses">Récépissé de dépôt</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="admin-upload-label">Année / période <span class="admin-upload-optional">facultatif</span></label>
+                            <input type="text" id="adminDocPeriod_${c.id}" class="field-input" placeholder="Ex : 2025">
+                        </div>
+                        <div>
+                            <label class="admin-upload-label">Note <span class="admin-upload-optional">facultatif</span></label>
+                            <input type="text" id="adminDocNote_${c.id}" class="field-input" placeholder="Ex : signé le 15/03">
+                        </div>
+                    </div>
+
+                    <label for="adminDocFile_${c.id}" class="admin-upload-dropzone" id="adminDocDropZone_${c.id}">
+                        <svg class="admin-upload-dropicon" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5-13H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V9.414a2 2 0 00-.586-1.414L13 2.586A2 2 0 0011.586 2H7"/></svg>
+                        <div class="admin-upload-dropmain">
+                            <span class="admin-upload-droptitle" id="adminDocFileLabel_${c.id}">Cliquez pour sélectionner un fichier</span>
+                            <span class="admin-upload-droptip">PDF, JPG, PNG, Excel, Word — max 25 Mo</span>
+                        </div>
+                        <input type="file" id="adminDocFile_${c.id}" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.xls,.doc,.docx" onchange="onAdminDocFileChange('${c.id}')" style="display:none">
+                    </label>
+
+                    <div class="flex items-center gap-2 mt-4">
+                        <p id="adminDocStatus_${c.id}" class="text-xs flex-1"></p>
+                        <button onclick="uploadDocForClient('${c.id}')" class="btn-primary text-sm" id="adminDocUploadBtn_${c.id}">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12l5 5L20 7"/></svg>
+                            Déposer
+                        </button>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-100 pt-4">
+                    <p class="font-medium mb-2">Mission</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${c.mission_compta ? '<span class="badge badge-signed">Comptable</span>' : ''}
+                        ${c.mission_social ? '<span class="badge badge-signed">Social</span>' : ''}
+                        ${c.mission_juridique ? '<span class="badge badge-signed">Juridique</span>' : ''}
+                        ${c.mission_fiscal ? '<span class="badge badge-signed">Fiscal</span>' : ''}
+                    </div>
+                    ${c.honoraires_ht ? `<p class="mt-2 text-muted">Honoraires HT : <span class="font-medium text-ink">${Number(c.honoraires_ht).toLocaleString('fr-FR')} €</span></p>` : ''}
+                </div>
+                <div class="border-t border-gray-100 pt-4 flex flex-wrap gap-2">
+                    ${(c.statut === 'pending_invitation' || c.statut === 'invited' || (c.statut === 'active' && !c.auth_user_id))
+                        ? `<button onclick="resendInvitation('${c.id}')" class="btn-success">${c.statut === 'pending_invitation' ? "Envoyer l'invitation" : "Renvoyer l'invitation"}</button>`
+                        : ''}
+                    ${c.auth_user_id ? `<button onclick="resetClientPassword('${c.id}', '${esc(c.raison_sociale).replace(/'/g, '&#39;')}')" class="btn-secondary">Réinitialiser le mot de passe</button>` : ''}
+                    ${c.statut === 'active' ? `<button onclick="suspendClient('${c.id}')" class="btn-secondary">Suspendre</button>` : ''}
+                    ${c.statut === 'suspended' ? `<button onclick="reactivateClient('${c.id}')" class="btn-success">Réactiver</button>` : ''}
+                </div>
+
+                <!-- Zone danger -->
+                <div class="border-t-2 border-red-100 mt-6 pt-4">
+                    <p class="font-medium text-red-700 mb-2 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 3h.01M4.93 19h14.14a2 2 0 001.75-2.99L13.75 4.08a2 2 0 00-3.5 0L3.18 16.01A2 2 0 004.93 19z"/></svg>
+                        Zone danger
+                    </p>
+                    <p class="text-xs text-muted mb-3">La suppression est irréversible : tous les documents, dirigeants, salariés et accès clients seront effacés. Si l'utilisateur n'a plus aucun autre dossier, son compte espace client sera également supprimé.</p>
+                    <button onclick="deleteClientPermanent('${c.id}', '${esc(c.raison_sociale).replace(/'/g, '&#39;')}')" class="text-sm text-red-600 hover:text-red-700 hover:underline" style="background:none; border:none; padding:0; cursor:pointer">
+                        Supprimer définitivement ce dossier
+                    </button>
+                </div>
+            </div>
+        `;
+        document.getElementById('modalClientDetail').classList.remove('hidden');
+        loadDirigeants(c.id);
+        loadMembers(c.id);
+    } catch (ex) { toast('Erreur : ' + ex.message, 'error'); }
+}
+
+async function loadMembers(clientId) {
+    try {
+        const r = await api('/api/admin/clients/' + clientId + '/members');
+        const el = document.getElementById('membersList_' + clientId);
+        if (!el) return;
+        if (!r.items.length) {
+            el.innerHTML = '<p class="text-xs text-muted italic">Aucun utilisateur rattaché. Utilise "Envoyer l\'invitation" pour créer un accès, ou rattache ci-dessous un compte existant.</p>';
+            return;
+        }
+        el.innerHTML = r.items.map(m => {
+            const initials = initialsFrom(null, null, m.email || '?');
+            const color = avatarColorFor(m.email);
+            const lastSeen = m.last_sign_in_at
+                ? 'Dernière connexion : ' + new Date(m.last_sign_in_at).toLocaleDateString('fr-FR')
+                : 'Jamais connecté';
+            const otherTxt = (m.other_clients && m.other_clients.length)
+                ? ' · aussi rattaché à ' + m.other_clients.map(o => esc(o.raison_sociale)).join(', ')
+                : '';
+            return `
+                <div class="flex items-center gap-3 p-3 bg-paper-warm rounded-lg border border-line-soft" style="background:var(--paper-warm); border-color:var(--line-soft)">
+                    <div class="entity-avatar ${color}" style="width:36px;height:36px;font-size:0.75rem;border-radius:10px">${esc(initials)}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-medium text-ink text-sm truncate">${esc(m.email || '—')}</div>
+                        <div class="text-xs text-muted">${esc(m.role || 'owner')} · ${lastSeen}${otherTxt}</div>
+                    </div>
+                    <button onclick="removeMember('${clientId}', '${m.auth_user_id}', '${esc(m.email || '').replace(/'/g, '&#39;')}')" class="btn-ghost text-xs" title="Retirer l'accès">✕</button>
+                </div>
+            `;
+        }).join('');
+    } catch (ex) {
+        const el = document.getElementById('membersList_' + clientId);
+        if (el) el.innerHTML = '<p class="text-xs text-red-500">Erreur : ' + (ex.message || ex) + '</p>';
+    }
+}
+
+async function attachMember(clientId) {
+    const input = document.getElementById('addMemberEmail_' + clientId);
+    const email = (input.value || '').trim();
+    if (!email) return toast('Saisis un email', 'warn');
+    try {
+        const r = await api('/api/admin/clients/' + clientId + '/members', {
+            method: 'POST',
+            body: JSON.stringify({ email })
+        });
+        toast('Dossier rattaché à ' + r.email, 'success');
+        input.value = '';
+        loadMembers(clientId);
+        loadClients(); // refresh la liste pour mettre à jour le statut
+    } catch (ex) {
+        const err = ex.data?.error;
+        if (err === 'user_not_found') toast('Aucun utilisateur avec cet email — envoie d\'abord une invitation.', 'warn', 5000);
+        else if (err === 'invalid_email') toast('Email invalide', 'error');
+        else toast('Erreur : ' + (ex.data?.message || ex.message), 'error');
+    }
+}
+
+async function removeMember(clientId, userId, email) {
+    if (!confirm('Retirer l\'accès de ' + email + ' à ce dossier ?')) return;
+    try {
+        await api('/api/admin/clients/' + clientId + '/members/' + userId, { method: 'DELETE' });
+        toast('Accès retiré', 'success');
+        loadMembers(clientId);
+        loadClients();
+    } catch (ex) {
+        toast('Erreur : ' + (ex.data?.error || ex.message), 'error');
+    }
+}
+
+// ============================= IMPORT DEPUIS PENNYLANE =============================
+let _importPlData = { items: [], selected: new Set() };
+
+async function openImportPennylaneModal() {
+    document.getElementById('modalImportPennylane').classList.remove('hidden');
+    document.getElementById('importPlHint').textContent = 'Récupération des dossiers du cabinet…';
+    document.getElementById('importPlList').innerHTML = '<p class="text-muted text-sm text-center py-8">Chargement Pennylane (peut prendre 5-10s)…</p>';
+    document.getElementById('importPlSearch').value = '';
+    document.getElementById('importPlSubmit').disabled = true;
+    _importPlData = { items: [], selected: new Set() };
+    try {
+        const r = await api('/api/admin/clients/import-from-pennylane/preview');
+        _importPlData.items = r.items || [];
+        document.getElementById('importPlHint').innerHTML =
+            '<strong>' + r.total + '</strong> dossier' + (r.total > 1 ? 's' : '') + ' Pennylane &middot; ' +
+            '<span class="text-cedrus-700">' + r.already + ' déjà importé' + (r.already > 1 ? 's' : '') + '</span>' + ' &middot; ' +
+            '<span class="text-blue-600">' + r.new + ' nouveau' + (r.new > 1 ? 'x' : '') + ' à importer</span>';
+        renderImportPennylaneList();
+    } catch (ex) {
+        const err = ex.data?.error;
+        if (err === 'no_firm_token') {
+            document.getElementById('importPlList').innerHTML = '<p class="text-red-600 text-sm">Aucun firm token Pennylane configuré. Va dans <strong>Paramètres &amp; Connexions</strong> pour le saisir.</p>';
+        } else {
+            document.getElementById('importPlList').innerHTML = '<p class="text-red-600 text-sm">Erreur : ' + (ex.data?.details || ex.message) + '</p>';
+        }
+    }
+}
+
+function renderImportPennylaneList() {
+    const q = (document.getElementById('importPlSearch').value || '').toLowerCase().trim();
+    const items = _importPlData.items.filter(i => {
+        if (i.already_imported) return false;
+        if (!q) return true;
+        return (i.name || '').toLowerCase().includes(q) || (i.siren || '').includes(q) || (i.city || '').toLowerCase().includes(q);
+    });
+
+    const list = document.getElementById('importPlList');
+    if (!items.length) {
+        list.innerHTML = '<p class="text-muted text-sm text-center py-8">Aucun nouveau dossier à importer.</p>';
+        document.getElementById('importPlStats').textContent = '';
+        document.getElementById('importPlCount').textContent = '0 dossier sélectionné';
+        document.getElementById('importPlSubmit').disabled = true;
+        return;
+    }
+
+    document.getElementById('importPlStats').textContent = items.length + (items.length > 1 ? ' dossiers visibles' : ' dossier visible');
+
+    list.innerHTML = items.map(c => {
+        const checked = _importPlData.selected.has(c.id);
+        const initials = initialsFrom(c.name?.split(' ')[0], c.name?.split(' ')[1], c.name);
+        const color = avatarColorFor(c.name);
+        return `
+            <label class="flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all" style="border-color:${checked ? 'var(--cedrus-200)' : 'var(--line-soft)'}; background:${checked ? 'rgba(62,147,100,0.04)' : 'white'}">
+                <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleImportPl(${c.id})" class="w-4 h-4" style="accent-color: var(--cedrus-600)">
+                <div class="entity-avatar ${color}" style="width:36px;height:36px;font-size:0.78rem;border-radius:10px">${esc(initials)}</div>
+                <div class="flex-1 min-w-0">
+                    <div class="font-medium text-ink text-sm truncate">${esc(c.name)}</div>
+                    <div class="text-xs text-muted">${[c.siren ? 'SIREN ' + c.siren : null, c.activity_code, c.city].filter(Boolean).join(' · ') || '—'}</div>
+                </div>
+                <span class="text-xs text-muted">#${c.id}</span>
+            </label>
+        `;
+    }).join('');
+
+    const n = _importPlData.selected.size;
+    document.getElementById('importPlCount').textContent = n + (n === 1 ? ' dossier sélectionné' : ' dossiers sélectionnés');
+    document.getElementById('importPlSubmit').disabled = n === 0;
+}
+
+function toggleImportPl(id) {
+    if (_importPlData.selected.has(id)) _importPlData.selected.delete(id);
+    else _importPlData.selected.add(id);
+    renderImportPennylaneList();
+}
+
+function toggleImportPlSelectAll() {
+    const q = (document.getElementById('importPlSearch').value || '').toLowerCase().trim();
+    const visible = _importPlData.items.filter(i => {
+        if (i.already_imported) return false;
+        if (!q) return true;
+        return (i.name || '').toLowerCase().includes(q) || (i.siren || '').includes(q);
+    });
+    const allSelected = visible.every(v => _importPlData.selected.has(v.id));
+    if (allSelected) visible.forEach(v => _importPlData.selected.delete(v.id));
+    else visible.forEach(v => _importPlData.selected.add(v.id));
+    renderImportPennylaneList();
+}
+
+async function submitImportPennylane() {
+    const ids = [..._importPlData.selected];
+    if (!ids.length) return;
+    const btn = document.getElementById('importPlSubmit');
+    btn.disabled = true;
+    btn.textContent = 'Import en cours…';
+    try {
+        const r = await api('/api/admin/clients/import-from-pennylane', {
+            method: 'POST',
+            body: JSON.stringify({ pennylane_ids: ids })
+        });
+        closeModal();
+        toast(r.created + ' dossier' + (r.created > 1 ? 's importés' : ' importé') + ' &middot; ' + r.enriched + ' enrichi' + (r.enriched > 1 ? 's' : '') + ' Sirene &middot; ' + r.dirigeants + ' dirigeants', 'success', 5000);
+        loadClients();
+        loadStats();
+    } catch (ex) {
+        toast('Erreur : ' + (ex.data?.details || ex.message), 'error');
+        btn.disabled = false;
+        btn.textContent = 'Importer + enrichir Sirene';
+    }
+}
+
+// ============================= RATTACHEMENT MULTI-SOCIÉTÉS =============================
+let _groupAttachContext = { sourceClientId: null, sourceEmail: null, selected: new Set() };
+
+async function openGroupAttachModal(clientId) {
+    // On a besoin d'au moins un membre sur le dossier source pour connaître l'email cible
+    let members = { items: [] };
+    try { members = await api('/api/admin/clients/' + clientId + '/members'); } catch {}
+
+    if (!members.items.length) {
+        toast('Ce dossier n\'a pas encore d\'utilisateur. Envoie d\'abord une invitation pour créer son espace, puis reviens ici pour y rattacher d\'autres sociétés.', 'warn', 6000);
+        return;
+    }
+    // Si plusieurs membres, on prend le premier (majoritairement un seul owner)
+    const src = members.items[0];
+    _groupAttachContext = { sourceClientId: clientId, sourceEmail: src.email, sourceUserId: src.auth_user_id, selected: new Set() };
+
+    // Dossiers déjà rattachés à ce user (pour les cocher ou exclure)
+    const alreadyAttached = new Set([clientId, ...(src.other_clients || []).map(o => o.id)]);
+
+    const source = _clients.find(c => c.id === clientId);
+    const hint = document.getElementById('groupAttachHint');
+    if (hint) hint.innerHTML = 'Sélectionne les sociétés à rattacher à l\'espace de <strong>' + esc(src.email) + '</strong>.' + (source ? ' Dossier actuel : <em>' + esc(source.raison_sociale) + '</em>.' : '');
+
+    // Stocke en variable module pour le rendu
+    _groupAttachContext.alreadyAttached = alreadyAttached;
+    document.getElementById('groupAttachSearch').value = '';
+    renderGroupAttachList();
+    document.getElementById('modalGroupAttach').classList.remove('hidden');
+}
+
+function renderGroupAttachList() {
+    const q = (document.getElementById('groupAttachSearch').value || '').toLowerCase().trim();
+    const already = _groupAttachContext.alreadyAttached || new Set();
+    const list = document.getElementById('groupAttachList');
+    const items = _clients
+        .filter(c => !already.has(c.id))
+        .filter(c => !q || (c.raison_sociale || '').toLowerCase().includes(q) || (c.siren || '').includes(q) || (c.ville || '').toLowerCase().includes(q));
+
+    if (!items.length) {
+        list.innerHTML = '<p class="text-sm text-muted text-center py-8">Aucune société disponible à rattacher.</p>';
+        return;
+    }
+
+    list.innerHTML = items.map(c => {
+        const checked = _groupAttachContext.selected.has(c.id);
+        const initials = initialsFrom(c.raison_sociale?.split(' ')[0], c.raison_sociale?.split(' ')[1], c.raison_sociale);
+        const color = avatarColorFor(c.raison_sociale);
+        return `
+            <label class="flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${checked ? 'border-cedrus-200' : 'border-gray-100 hover:border-gray-200'}" style="background:${checked ? 'rgba(62,147,100,0.04)' : 'white'}">
+                <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleGroupAttach('${c.id}')" class="w-4 h-4" style="accent-color: var(--cedrus-600)">
+                <div class="entity-avatar ${color}" style="width:36px;height:36px;font-size:0.78rem;border-radius:10px">${esc(initials)}</div>
+                <div class="flex-1 min-w-0">
+                    <div class="font-medium text-ink text-sm truncate">${esc(c.raison_sociale)}</div>
+                    <div class="text-xs text-muted">${[c.siren ? 'SIREN ' + c.siren : null, c.ville].filter(Boolean).join(' · ') || '—'}</div>
+                </div>
+                <span class="badge badge-${(c.statut || '').replace('pending_invitation', 'pending')}" style="font-size:0.66rem">${labelStatutClient(c.statut)}</span>
+            </label>
+        `;
+    }).join('');
+
+    const n = _groupAttachContext.selected.size;
+    document.getElementById('groupAttachCount').textContent = n + (n === 1 ? ' société sélectionnée' : ' sociétés sélectionnées');
+    document.getElementById('groupAttachSubmit').disabled = n === 0;
+}
+
+function toggleGroupAttach(clientId) {
+    if (_groupAttachContext.selected.has(clientId)) _groupAttachContext.selected.delete(clientId);
+    else _groupAttachContext.selected.add(clientId);
+    renderGroupAttachList();
+}
+
+async function submitGroupAttach() {
+    const { sourceEmail, selected } = _groupAttachContext;
+    if (!sourceEmail || selected.size === 0) return;
+    const btn = document.getElementById('groupAttachSubmit');
+    btn.disabled = true;
+    btn.textContent = 'Rattachement…';
+
+    let ok = 0, failed = 0;
+    for (const cid of selected) {
+        try {
+            await api('/api/admin/clients/' + cid + '/members', {
+                method: 'POST',
+                body: JSON.stringify({ email: sourceEmail })
+            });
+            ok++;
+        } catch (ex) {
+            failed++;
+        }
+    }
+
+    btn.textContent = 'Rattacher';
+    btn.disabled = false;
+    closeModal();
+    toast(ok + ' société' + (ok > 1 ? 's' : '') + ' rattachée' + (ok > 1 ? 's' : '') + ' à ' + sourceEmail + (failed ? ' (' + failed + ' échec' + (failed > 1 ? 's' : '') + ')' : ''), failed ? 'warn' : 'success', 5000);
+    loadClients();
+    loadMembers(_groupAttachContext.sourceClientId);
+}
+
+async function savePennylaneEmails(clientId) {
+    const suppliers = document.getElementById('edit_pl_email_suppliers_' + clientId).value.trim();
+    const customers = document.getElementById('edit_pl_email_customers_' + clientId).value.trim();
+    try {
+        await api('/api/admin/clients/' + clientId, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                pennylane_email_suppliers: suppliers || null,
+                pennylane_email_customers: customers || null
+            })
+        });
+        toast('Emails Pennylane enregistrés', 'success');
+        await loadClients();
+    } catch (ex) {
+        toast('Erreur : ' + (ex.data?.error || ex.message));
+    }
+}
+
+async function saveClientContact(clientId) {
+    const email = document.getElementById('edit_contact_email_' + clientId).value.trim();
+    const telephone = document.getElementById('edit_contact_telephone_' + clientId).value.trim();
+    try {
+        await api('/api/admin/clients/' + clientId, {
+            method: 'PATCH',
+            body: JSON.stringify({ contact_email: email || null, contact_telephone: telephone || null })
+        });
+        await loadClients();
+        toast('Contacts mis à jour', 'success');
+    } catch (ex) {
+        toast('Erreur : ' + (ex.data?.error || ex.message));
+    }
+}
+
+async function loadDirigeants(clientId) {
+    const list = document.getElementById('dirigeantsList_' + clientId);
+    if (!list) return;
+    try {
+        const r = await api('/api/admin/clients/' + clientId + '/dirigeants');
+        const items = r.items || [];
+        if (items.length === 0) {
+            list.innerHTML = '<p class="text-xs text-muted italic">Aucun dirigeant enregistré. Cliquez "Rafraîchir depuis Sirene" pour les détecter automatiquement, ou "+ Ajouter" pour saisir à la main.</p>';
+            return;
+        }
+        list.innerHTML = items.map(d => {
+            const dirName = esc((d.prenom || '') + ' ' + (d.nom || '')).trim() || '—';
+            const impotsBtn = d.has_impots_credentials
+                ? `<button onclick="openImpotsAccess('${clientId}','${d.id}','${esc(d.prenom || '').replace(/'/g, '&#39;')} ${esc(d.nom || '').replace(/'/g, '&#39;')}')" class="text-xs px-2.5 py-1 rounded-md bg-cedrus-600 text-white hover:bg-cedrus-700 inline-flex items-center gap-1" title="Voir les identifiants enregistrés">
+                       <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                       Accès Impôts.gouv
+                   </button>`
+                : `<button onclick="openImpotsAccess('${clientId}','${d.id}','${esc(d.prenom || '').replace(/'/g, '&#39;')} ${esc(d.nom || '').replace(/'/g, '&#39;')}')" class="text-xs px-2.5 py-1 rounded-md border border-gray-200 text-muted hover:border-ink hover:text-ink inline-flex items-center gap-1" title="Configurer les identifiants Impôts.gouv">
+                       <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0-1.105.895-2 2-2s2 .895 2 2-.895 2-2 2-2-.895-2-2zM12 11V9a4 4 0 10-8 0v2m12 10H4a2 2 0 01-2-2v-7a2 2 0 012-2h16a2 2 0 012 2v7a2 2 0 01-2 2z"/></svg>
+                       Connexion Impôts.gouv
+                   </button>`;
+            return `
+            <div class="bg-paper rounded-lg p-3 border border-gray-100" id="dirig_${d.id}">
+                <div class="flex items-start justify-between gap-2">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-medium text-ink text-sm">${dirName}</span>
+                            ${d.qualite ? `<span class="badge badge-activated">${esc(d.qualite)}</span>` : ''}
+                            ${d.source === 'sirene' ? '<span class="text-[10px] uppercase tracking-wider text-muted">Sirene</span>' : '<span class="text-[10px] uppercase tracking-wider text-cedrus-600">Saisi</span>'}
+                            ${impotsBtn}
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <input type="email" value="${esc(d.email || '')}" id="dir_email_${d.id}" placeholder="email@exemple.com" class="field-input text-xs" style="padding:6px 10px">
+                            <input type="tel" value="${esc(d.telephone || '')}" id="dir_tel_${d.id}" placeholder="06 XX XX XX XX" class="field-input text-xs" style="padding:6px 10px">
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1 shrink-0">
+                        <button onclick="saveDirigeant('${clientId}','${d.id}')" class="text-xs text-cedrus-600 hover:underline">Enregistrer</button>
+                        <button onclick="deleteDirigeant('${clientId}','${d.id}')" class="text-xs text-red-500 hover:underline">Supprimer</button>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    } catch (ex) {
+        list.innerHTML = '<p class="text-xs text-red-500">Erreur de chargement des dirigeants.</p>';
+    }
+}
+
+// ============================= IMPÔTS.GOUV (par dirigeant) =============================
+let _impotsContext = { clientId: null, dirId: null };
+
+async function openImpotsAccess(clientId, dirId, dirName) {
+    _impotsContext = { clientId, dirId };
+    document.getElementById('impotsModalDirName').textContent = (dirName || '').trim() || 'Dirigeant';
+    document.getElementById('impotsNumeroFiscal').value = '';
+    document.getElementById('impotsPassword').value = '';
+    document.getElementById('impotsPassword').type = 'password';
+    document.getElementById('impotsGouvLink').classList.add('hidden');
+    document.getElementById('modalImpots').classList.remove('hidden');
+
+    // Tente de charger les credentials existants
+    try {
+        const r = await api('/api/admin/clients/' + clientId + '/dirigeants/' + dirId + '/impots');
+        const numEl = document.getElementById('impotsNumeroFiscal');
+        const pwEl = document.getElementById('impotsPassword');
+        numEl.value = r.numero_fiscal || '';
+        pwEl.value = r.password || '';
+        if (r.numero_fiscal && r.password) {
+            document.getElementById('impotsGouvLink').classList.remove('hidden');
+        }
+    } catch (ex) {
+        // 404 = pas de creds enregistrés, c'est OK
+        if (ex.status !== 404) {
+            toast('Erreur de chargement : ' + (ex.data?.error || ex.message), 'error');
+        }
+    }
+}
+
+async function saveImpotsCredentials() {
+    const numFiscal = document.getElementById('impotsNumeroFiscal').value.trim();
+    const password = document.getElementById('impotsPassword').value;
+    const { clientId, dirId } = _impotsContext;
+    if (!clientId || !dirId) return;
+
+    if (numFiscal && !/^\d{13}$/.test(numFiscal)) {
+        toast('Le numéro fiscal doit contenir exactement 13 chiffres.', 'warn');
+        return;
+    }
+
+    const btn = document.getElementById('impotsSaveBtn');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement…';
+    try {
+        await api('/api/admin/clients/' + clientId + '/dirigeants/' + dirId, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                impots_numero_fiscal: numFiscal || null,
+                impots_password: password || null
+            })
+        });
+        toast(numFiscal && password ? 'Identifiants Impôts.gouv enregistrés' : 'Identifiants effacés', 'success');
+        // Bouton "Ouvrir Impôts.gouv" si tout est rempli
+        if (numFiscal && password) {
+            document.getElementById('impotsGouvLink').classList.remove('hidden');
+        } else {
+            document.getElementById('impotsGouvLink').classList.add('hidden');
+        }
+        // Recharge la liste pour faire passer le bouton en vert
+        loadDirigeants(clientId);
+    } catch (ex) {
+        toast('Erreur : ' + (ex.data?.error || ex.message), 'error');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Enregistrer';
+}
+
+async function openImpotsLoginPage() {
+    const numFiscal = document.getElementById('impotsNumeroFiscal').value.trim();
+    const password = document.getElementById('impotsPassword').value;
+    if (!numFiscal || !password) {
+        toast('Identifiants manquants — saisis-les d\'abord.', 'warn');
+        return;
+    }
+    // Étape 1 — Copier le numéro fiscal au clipboard
+    try {
+        await navigator.clipboard.writeText(numFiscal);
+    } catch {
+        // Fallback en cas d'échec
+        const tmp = document.createElement('textarea');
+        tmp.value = numFiscal;
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand('copy');
+        document.body.removeChild(tmp);
+    }
+    toast('Numéro fiscal copié — colle-le sur Impôts.gouv (Cmd+V). Reviens ici copier le mot de passe.', 'success', 6000);
+    // Étape 2 — Ouvrir la page de connexion (la modale CEDRUS reste ouverte
+    // pour que l'utilisateur puisse cliquer 📋 sur le mot de passe ensuite)
+    window.open('https://cfspart.impots.gouv.fr/', '_blank', 'noopener');
+}
+
+function toggleImpotsPasswordVisibility() {
+    const el = document.getElementById('impotsPassword');
+    el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+async function copyImpotsField(id) {
+    const el = document.getElementById(id);
+    if (!el || !el.value) { toast('Champ vide', 'warn'); return; }
+    try {
+        await navigator.clipboard.writeText(el.value);
+        toast('Copié dans le presse-papier', 'success', 2000);
+    } catch {
+        // Fallback : sélection manuelle
+        el.type = 'text';
+        el.select();
+        document.execCommand('copy');
+        if (id === 'impotsPassword') el.type = 'password';
+        toast('Copié', 'success', 2000);
+    }
+}
+
+// ============================================================================
+// Upload de document admin → espace client
+// ============================================================================
+const ADMIN_DOC_KEYS = {
+    juridique: [
+        { value: 'ago', label: 'AGO — Assemblée Générale Ordinaire' },
+        { value: 'age', label: 'AGE — Assemblée Générale Extraordinaire' },
+        { value: 'recepisses', label: 'Récépissé de dépôt' }
+    ],
+    fiscal: [
+        { value: 'bilans', label: 'Bilan & compte de résultat' },
+        { value: 'liasses', label: 'Liasse fiscale' },
+        { value: 'plaquettes', label: 'Plaquette comptable' },
+        { value: 'attestations', label: 'Attestation' }
+    ],
+    permanent: [
+        { value: 'kbis', label: 'Extrait K-Bis' },
+        { value: 'statuts', label: 'Statuts' },
+        { value: 'id-dirigeants', label: 'Pièces d\'identité dirigeants' },
+        { value: 'dbe', label: 'Bénéficiaires effectifs (DBE)' },
+        { value: 'baux', label: 'Baux commerciaux' },
+        { value: 'rib', label: 'RIB' }
+    ]
+};
+
+function onAdminDocFileChange(clientId) {
+    const input = document.getElementById('adminDocFile_' + clientId);
+    const label = document.getElementById('adminDocFileLabel_' + clientId);
+    const zone = document.getElementById('adminDocDropZone_' + clientId);
+    const file = input.files[0];
+    if (file) {
+        label.textContent = file.name + ' · ' + Math.round(file.size / 1024) + ' Ko';
+        zone.classList.add('has-file');
+    } else {
+        label.textContent = 'Cliquez pour sélectionner un fichier';
+        zone.classList.remove('has-file');
+    }
+}
+
+function onAdminDocCatChange(clientId) {
+    const cat = document.getElementById('adminDocCat_' + clientId).value;
+    const keySel = document.getElementById('adminDocKey_' + clientId);
+    const label = document.getElementById('adminDocSubLabel_' + clientId);
+    if (ADMIN_DOC_KEYS[cat]) {
+        keySel.disabled = false;
+        keySel.style.opacity = '1';
+        label.textContent = 'Type';
+        keySel.innerHTML = ADMIN_DOC_KEYS[cat].map(k => `<option value="${k.value}">${esc(k.label)}</option>`).join('');
+    } else {
+        keySel.disabled = true;
+        keySel.style.opacity = '0.4';
+        label.textContent = 'Type (non requis)';
+        keySel.innerHTML = '<option value="">—</option>';
+    }
+}
+
+async function uploadDocForClient(clientId) {
+    const file = document.getElementById('adminDocFile_' + clientId).files[0];
+    const cat = document.getElementById('adminDocCat_' + clientId).value;
+    const keySel = document.getElementById('adminDocKey_' + clientId);
+    const permKey = (ADMIN_DOC_KEYS[cat] && !keySel.disabled) ? keySel.value : '';
+    const period = document.getElementById('adminDocPeriod_' + clientId).value.trim();
+    const note = document.getElementById('adminDocNote_' + clientId).value.trim();
+    const status = document.getElementById('adminDocStatus_' + clientId);
+    const btn = document.getElementById('adminDocUploadBtn_' + clientId);
+
+    if (!file) {
+        status.innerHTML = '<span class="text-red-500">Sélectionne un fichier d\'abord.</span>';
+        return;
+    }
+    if (file.size > 25 * 1024 * 1024) {
+        status.innerHTML = '<span class="text-red-500">Fichier trop gros (max 25 Mo).</span>';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Dépôt…';
+    status.innerHTML = '<span class="text-muted">Upload en cours…</span>';
+
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('category', cat);
+    if (permKey) fd.append('permanent_key', permKey);
+    if (period) fd.append('period', period);
+    if (note) fd.append('note', note);
+
+    try {
+        await api('/api/admin/clients/' + clientId + '/documents', { method: 'POST', body: fd });
+        status.innerHTML = '<span class="text-cedrus-700">✓ Document déposé — visible dans l\'espace client.</span>';
+        document.getElementById('adminDocFile_' + clientId).value = '';
+        document.getElementById('adminDocPeriod_' + clientId).value = '';
+        document.getElementById('adminDocNote_' + clientId).value = '';
+        const labelEl = document.getElementById('adminDocFileLabel_' + clientId);
+        if (labelEl) labelEl.textContent = 'Cliquez pour sélectionner un fichier';
+        const zoneEl = document.getElementById('adminDocDropZone_' + clientId);
+        if (zoneEl) zoneEl.classList.remove('has-file');
+        toast('Document déposé pour ce client', 'success');
+        setTimeout(() => { status.innerHTML = ''; }, 5000);
+    } catch (ex) {
+        const msg = ex.data?.details || ex.data?.error || ex.message;
+        status.innerHTML = '<span class="text-red-500">Erreur : ' + esc(msg) + '</span>';
+    }
+    btn.disabled = false;
+    btn.textContent = 'Déposer';
+}
+
+async function saveDirigeant(clientId, dirId) {
+    const email = document.getElementById('dir_email_' + dirId).value.trim();
+    const telephone = document.getElementById('dir_tel_' + dirId).value.trim();
+    try {
+        await api('/api/admin/clients/' + clientId + '/dirigeants/' + dirId, {
+            method: 'PATCH',
+            body: JSON.stringify({ email: email || null, telephone: telephone || null })
+        });
+        const el = document.getElementById('dirig_' + dirId);
+        if (el) {
+            el.style.borderColor = '#3E9364';
+            setTimeout(() => el.style.borderColor = '', 1200);
+        }
+    } catch (ex) {
+        toast('Erreur : ' + (ex.data?.error || ex.message));
+    }
+}
+
+async function deleteDirigeant(clientId, dirId) {
+    if (!confirm('Supprimer ce dirigeant ?')) return;
+    try {
+        await api('/api/admin/clients/' + clientId + '/dirigeants/' + dirId, { method: 'DELETE' });
+        await loadDirigeants(clientId);
+    } catch (ex) {
+        toast('Erreur : ' + (ex.data?.error || ex.message));
+    }
+}
+
+async function addDirigeant(clientId) {
+    const prenom = prompt('Prénom :');
+    if (prenom === null) return;
+    const nom = prompt('Nom :');
+    if (nom === null) return;
+    if (!prenom && !nom) return;
+    const qualite = prompt('Qualité (ex: Associé, Gérant, DG...) :') || '';
+    const email = prompt('Email (optionnel) :') || '';
+    const telephone = prompt('Téléphone (optionnel) :') || '';
+    try {
+        await api('/api/admin/clients/' + clientId + '/dirigeants', {
+            method: 'POST',
+            body: JSON.stringify({ prenom, nom, qualite, email, telephone })
+        });
+        await loadDirigeants(clientId);
+    } catch (ex) {
+        toast('Erreur : ' + (ex.data?.error || ex.message));
+    }
+}
+
+async function refreshClientInfo(clientId) {
+    const box = document.getElementById('refreshResult_' + clientId);
+    if (box) {
+        box.className = 'mt-3 text-xs p-3 rounded-lg bg-blue-50 text-blue-700 border border-blue-200';
+        box.textContent = 'Récupération en cours…';
+        box.classList.remove('hidden');
+    }
+    try {
+        const r = await api('/api/admin/clients/' + clientId + '/refresh-info', { method: 'POST' });
+        if (box) {
+            if (r.ok === false) {
+                box.className = 'mt-3 text-xs p-3 rounded-lg bg-yellow-50 text-yellow-800 border border-yellow-200';
+                box.textContent = 'Aucune nouvelle information disponible. Vérifiez le SIREN ou le company_id Pennylane.';
+            } else {
+                box.className = 'mt-3 text-xs p-3 rounded-lg bg-green-50 text-cedrus-700 border border-cedrus-200';
+                let html = '✓ Infos mises à jour : ' + (Object.keys(r.client || {}).length ? 'synchronisé avec Pennylane + Sirene.' : '');
+                if (r.dirigeants && r.dirigeants.length) {
+                    html += '<div class="mt-2"><strong>Dirigeants détectés :</strong><ul class="list-disc list-inside mt-1">';
+                    r.dirigeants.forEach(d => {
+                        html += '<li>' + esc((d.prenom + ' ' + d.nom).trim()) + (d.qualite ? ' — ' + esc(d.qualite) : '') + '</li>';
+                    });
+                    html += '</ul></div>';
+                }
+                box.innerHTML = html;
+            }
+        }
+        // Reload et ré-ouvre
+        await loadClients();
+        setTimeout(() => openClientDetail(clientId), 300);
+    } catch (ex) {
+        if (box) {
+            box.className = 'mt-3 text-xs p-3 rounded-lg bg-red-50 text-red-700 border border-red-200';
+            box.textContent = 'Erreur : ' + (ex.data?.error || ex.message);
+        }
+    }
+}
+
+async function editPennylaneKey(clientId) {
+    const companyId = prompt("Pennylane Company ID\n\n(chiffre que tu trouves dans l'URL Pennylane du dossier)\n\nLaisse vide pour ne pas changer :");
+    const apiKey = prompt("Clé API dédiée au dossier (optionnel)\n\nPar défaut, la clé Firm du cabinet est utilisée (recommandé).\nNe renseigne cette clé QUE si ce dossier doit avoir une clé isolée.\n\nLaisse vide pour utiliser la clé du cabinet :");
+    const patch = {};
+    if (companyId !== null && companyId.trim() !== '') patch.pennylane_company_id = companyId.trim();
+    if (apiKey !== null && apiKey.trim() !== '') patch.pennylane_api_key = apiKey.trim();
+    if (!Object.keys(patch).length) return;
+    await api('/api/admin/clients/' + clientId, { method: 'PATCH', body: JSON.stringify(patch) });
+    closeModal();
+    loadClients();
+}
+async function resendInvitation(id) {
+    const client = _clients.find(c => c.id === id);
+    let email = client?.contact_email || '';
+    if (!email) {
+        email = prompt("Aucun email sur cette fiche.\n\nEmail du contact client (il recevra l'invitation) :");
+        if (!email) return;
+        email = email.trim();
+    } else {
+        const ok = confirm('Envoyer l\'invitation à :\n' + email + ' ?\n\nCliquez OK pour envoyer, Annuler pour modifier l\'email.');
+        if (!ok) {
+            const newEmail = prompt('Nouvel email :', email);
+            if (!newEmail) return;
+            email = newEmail.trim();
+        }
+    }
+    try {
+        await api('/api/admin/clients/' + id + '/resend-invitation', {
+            method: 'POST',
+            body: JSON.stringify({ email })
+        });
+        toast('Invitation envoyée à ' + email);
+        closeModal();
+        loadClients();
+    } catch (ex) {
+        const err = ex.data?.error || ex.message;
+        if (err === 'missing_email') toast("Il faut un email.", "warn");
+        else if (err === 'invalid_email') toast("Email invalide.", "warn");
+        else toast('Erreur : ' + err, 'error');
+    }
+}
+async function resetClientPassword(clientId, raisonSociale) {
+    const choice = prompt(
+        'Réinitialiser le mot de passe pour "' + raisonSociale + '" ?\n\n' +
+        '1 = Envoyer un mail de récupération au client (il choisit son mot de passe)\n' +
+        '2 = Générer un mot de passe temporaire (à communiquer manuellement)\n\n' +
+        'Tape 1 ou 2 :'
+    );
+    if (choice !== '1' && choice !== '2') return;
+    const mode = choice === '2' ? 'temp_password' : 'email_link';
+    try {
+        const r = await api('/api/admin/clients/' + clientId + '/reset-password', {
+            method: 'POST',
+            body: JSON.stringify({ mode })
+        });
+        if (mode === 'email_link') {
+            toast('Mail de récupération envoyé à ' + r.email, 'success', 5000);
+        } else {
+            // Affiche le mot de passe temporaire dans une boîte de dialogue
+            window.prompt(
+                'Mot de passe temporaire pour ' + r.email + ' (copie-le, il ne sera plus affiché ensuite) :',
+                r.temp_password
+            );
+            toast('Mot de passe temporaire généré — communique-le au client en sécurité.', 'warn', 6000);
+        }
+    } catch (ex) {
+        const err = ex.data?.error;
+        if (err === 'no_user_linked') toast('Ce client n\'a pas encore d\'espace. Envoie-lui d\'abord une invitation.', 'warn', 5000);
+        else toast('Erreur : ' + (ex.data?.details || ex.message), 'error');
+    }
+}
+
+async function deleteClientPermanent(clientId, raisonSociale) {
+    const typed = prompt(
+        'SUPPRESSION DÉFINITIVE\n\n' +
+        'Cette action est irréversible. Tous les documents, dirigeants, salariés et accès seront effacés.\n\n' +
+        'Pour confirmer, tape exactement le nom du client :\n\n' +
+        raisonSociale
+    );
+    if (typed === null) return;
+    if (typed.trim() !== raisonSociale) {
+        toast('Le nom saisi ne correspond pas. Suppression annulée.', 'warn');
+        return;
+    }
+    try {
+        const r = await api('/api/admin/clients/' + clientId, {
+            method: 'DELETE',
+            body: JSON.stringify({ confirm_name: typed.trim() })
+        });
+        closeModal();
+        toast(
+            '✓ ' + r.raison_sociale + ' supprimé · ' +
+            r.docs_removed + ' doc' + (r.docs_removed > 1 ? 's' : '') + ' · ' +
+            r.users_deleted + ' user' + (r.users_deleted > 1 ? 's' : '') + ' déconnecté' + (r.users_deleted > 1 ? 's' : ''),
+            'success', 6000
+        );
+        loadClients();
+        loadStats();
+    } catch (ex) {
+        const err = ex.data?.error;
+        if (err === 'name_mismatch') toast('Nom incorrect. Suppression annulée.', 'error');
+        else toast('Erreur : ' + (ex.data?.details || ex.message), 'error');
+    }
+}
+
+async function suspendClient(id) {
+    if (!confirm('Suspendre ce client ? Il ne pourra plus se connecter.')) return;
+    await api('/api/admin/clients/' + id, { method: 'PATCH', body: JSON.stringify({ statut: 'suspended' }) });
+    closeModal();
+    loadClients();
+}
+async function reactivateClient(id) {
+    await api('/api/admin/clients/' + id, { method: 'PATCH', body: JSON.stringify({ statut: 'active' }) });
+    closeModal();
+    loadClients();
+}
+
+// ============================= CREATE CLIENT MODAL =============================
+function openCreateClientModal(leadToConvert = null) {
+    const form = document.querySelector('#modalClient form');
+    form.reset();
+    document.getElementById('modalError').classList.add('hidden');
+    if (leadToConvert) {
+        form.dataset.leadId = leadToConvert.id;
+        form.elements.raison_sociale.value = leadToConvert.entreprise_nom || '';
+        form.elements.siren.value = leadToConvert.siren || '';
+        form.elements.siret.value = leadToConvert.siret || '';
+        form.elements.forme_juridique.value = leadToConvert.forme_juridique || '';
+        form.elements.contact_email.value = leadToConvert.email || '';
+        form.elements.contact_prenom.value = leadToConvert.prenom || '';
+        form.elements.contact_nom.value = leadToConvert.nom || '';
+        form.elements.contact_telephone.value = leadToConvert.telephone || '';
+    } else {
+        delete form.dataset.leadId;
+    }
+    document.getElementById('modalClient').classList.remove('hidden');
+}
+
+// ============================= BULK IMPORT =============================
+function openBulkImportModal() {
+    document.getElementById('bulkText').value = '';
+    document.getElementById('bulkImportResult').classList.add('hidden');
+    document.getElementById('modalBulkImport').classList.remove('hidden');
+    setTimeout(() => document.getElementById('bulkText').focus(), 100);
+}
+
+async function submitBulkImport(e) {
+    e.preventDefault();
+    const text = document.getElementById('bulkText').value.trim();
+    if (!text) return;
+    const btn = document.getElementById('bulkSubmitBtn');
+    const result = document.getElementById('bulkImportResult');
+    btn.disabled = true;
+    btn.textContent = 'Import en cours…';
+    result.classList.add('hidden');
+    try {
+        const r = await api('/api/admin/clients/import', {
+            method: 'POST',
+            body: JSON.stringify({ text })
+        });
+        result.classList.remove('hidden');
+        result.className = 'text-sm p-3 rounded-lg bg-green-50 text-cedrus-700 border border-cedrus-200';
+        let msg = `✓ ${r.ok} client${r.ok > 1 ? 's' : ''} importé${r.ok > 1 ? 's' : ''}.`;
+        if (r.skipped > 0) {
+            msg += ` ${r.skipped} ligne${r.skipped > 1 ? 's' : ''} ignorée${r.skipped > 1 ? 's' : ''}.`;
+        }
+        result.textContent = msg;
+        if (r.errors && r.errors.length) {
+            const details = document.createElement('div');
+            details.className = 'mt-2 text-xs text-red-700';
+            details.innerHTML = '<strong>Détails :</strong><br>' + r.errors.slice(0, 5).map(er => `• ${esc(er.raison_sociale || 'ligne inconnue')} : ${esc(er.reason)}`).join('<br>');
+            result.appendChild(details);
+        }
+        loadClients();
+        loadStats();
+    } catch (ex) {
+        result.classList.remove('hidden');
+        result.className = 'text-sm p-3 rounded-lg bg-red-50 text-red-700 border border-red-200';
+        result.textContent = 'Erreur : ' + (ex.data?.error || ex.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Importer';
+    }
+}
+
+async function submitCreateClient(e) {
+    e.preventDefault();
+    const form = e.target;
+    const fd = new FormData(form);
+    const body = {};
+    fd.forEach((v, k) => body[k] = v);
+    body.mission_compta = form.elements.mission_compta.checked;
+    body.mission_social = form.elements.mission_social.checked;
+    body.mission_juridique = form.elements.mission_juridique.checked;
+    body.mission_fiscal = form.elements.mission_fiscal.checked;
+    body.send_invitation = form.elements.send_invitation.checked;
+    if (form.dataset.leadId) body.lead_id = form.dataset.leadId;
+
+    const errEl = document.getElementById('modalError');
+    errEl.classList.add('hidden');
+    const btn = document.getElementById('modalSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Création...';
+    try {
+        await api('/api/admin/clients', { method: 'POST', body: JSON.stringify(body) });
+        closeModal();
+        loadClients();
+        loadStats();
+    } catch (ex) {
+        errEl.textContent = 'Erreur : ' + (ex.data?.error || ex.message);
+        errEl.classList.remove('hidden');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Créer le dossier';
+    }
+}
+
+function closeModal() {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+}
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+// ============================= DOCUMENTS =============================
+async function loadDocuments() {
+    try {
+        const r = await api('/api/admin/documents');
+        _documents = r.items || [];
+        renderDocuments();
+    } catch (ex) { console.warn(ex); }
+}
+function fmtBytes(b) {
+    if (!b || b < 0) return '—';
+    if (b < 1024) return b + ' o';
+    if (b < 1024*1024) return Math.round(b/1024) + ' Ko';
+    return (b/(1024*1024)).toFixed(1) + ' Mo';
+}
+function docIconFor(name, mime) {
+    const n = (name || '').toLowerCase();
+    if (n.endsWith('.pdf') || (mime||'').includes('pdf')) {
+        return '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 3h7l5 5v13a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v5h5"/><text x="12" y="18" text-anchor="middle" font-size="6" stroke-width="0" fill="currentColor">PDF</text></svg>';
+    }
+    return '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 3h7l5 5v13a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v5h5"/></svg>';
+}
+
+function renderDocuments() {
+    const list = document.getElementById('documentsList');
+    const empty = document.getElementById('documentsEmpty');
+    if (_documents.length === 0) { list.innerHTML=''; empty.classList.remove('hidden'); return; }
+    empty.classList.add('hidden');
+    list.innerHTML = _documents.map(d => {
+        const plStatus = d.pennylane_status || 'not_applicable';
+        let plChip = '';
+        let plBtn = '';
+        if (plStatus === 'synced') {
+            plChip = '<span class="chip chip-pennylane">✓ Pennylane' + (d.storage_deleted_at ? ' · archivé' : '') + '</span>';
+        } else if (plStatus === 'pending' || plStatus === 'syncing') {
+            plChip = '<span class="chip" style="background:#DBEAFE;color:#1E40AF;border-color:#BFDBFE">⏳ En cours</span>';
+        } else if (plStatus === 'failed') {
+            plChip = '<span class="chip chip-missing" title="' + esc(d.pennylane_error || '') + '">⚠ Échec</span>';
+            plBtn = `<button onclick="event.stopPropagation(); retryPennylaneSync('${d.id}')" class="btn-ghost text-xs ml-2">Réessayer</button>`;
+        }
+        const catLabel = {
+            'facture-achat': 'Facture achat',
+            'facture-vente': 'Facture vente',
+            'fiche_paie': 'Fiche de paie',
+            'social': 'Social',
+            'attestation': 'Attestation'
+        }[d.category] || d.category || '—';
+        return `
+            <div class="entity-row fade-in" style="cursor:default">
+                <div class="entity-avatar entity-avatar-slate" style="width:40px;height:40px;border-radius:10px">
+                    ${docIconFor(d.name, d.mime_type)}
+                </div>
+                <div class="grow">
+                    <div class="title">
+                        <span class="truncate">${esc(d.name)}</span>
+                        ${plChip}
+                    </div>
+                    <div class="meta">
+                        <span>${esc(d.clients?.raison_sociale || '—')}</span>
+                        <span>·</span>
+                        <span>${esc(catLabel)}</span>
+                        <span>·</span>
+                        <span>${fmtBytes(d.size_bytes)}</span>
+                        ${plBtn}
+                    </div>
+                </div>
+                <div class="timestamp">${fmtDate(d.uploaded_at)}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function retryPennylaneSync(docId) {
+    try {
+        await api('/api/admin/documents/' + docId + '/sync-pennylane', { method: 'POST' });
+        toast('Sync relancée — rafraîchis dans quelques secondes pour voir le résultat', 'success');
+        setTimeout(loadDocuments, 3000);
+    } catch (ex) {
+        toast('Erreur : ' + (ex.data?.error || ex.message));
+    }
+}
+
+// ============================= HELPERS =============================
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function fmtDate(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+// ============================= TOAST =============================
+function toast(message, type = 'info', duration = 4000) {
+    let stack = document.getElementById('toastStack');
+    if (!stack) {
+        stack = document.createElement('div');
+        stack.id = 'toastStack';
+        stack.className = 'toast-stack';
+        document.body.appendChild(stack);
+    }
+    const el = document.createElement('div');
+    el.className = 'toast ' + type;
+    const icon = {
+        success: '<svg class="toast-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" style="color:var(--cedrus-600)"/></svg>',
+        error: '<svg class="toast-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#DC2626"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 3h.01M12 21a9 9 0 110-18 9 9 0 010 18z"/></svg>',
+        warn: '<svg class="toast-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--gold-deep)"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 3h.01M4.93 19h14.14a2 2 0 001.75-2.99L13.75 4.08a2 2 0 00-3.5 0L3.18 16.01A2 2 0 004.93 19z"/></svg>',
+        info: '<svg class="toast-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#2563EB"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 21a9 9 0 110-18 9 9 0 010 18z"/></svg>'
+    }[type] || '';
+    el.innerHTML = icon + '<span>' + esc(message) + '</span>';
+    stack.appendChild(el);
+    setTimeout(() => {
+        el.classList.add('leaving');
+        setTimeout(() => el.remove(), 200);
+    }, duration);
+}
+</script>
+
+</body>
+</html>

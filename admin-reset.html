@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEDRUS — Réinitialisation du mot de passe admin</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-weight='bold' fill='%233E9364'>C</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/styles.css">
+    <script>
+        tailwind.config = { theme: { extend: { colors: {
+            'cedrus': { 700:'#357A56', 600:'#3E9364', 500:'#4FA36F', 200:'#BFE6AE' },
+            'ink':'#0B1420', 'muted':'#6B7280', 'paper':'#F8FAF9', 'gold':'#D4A853'
+        }, fontFamily: { 'playfair':['Playfair Display','serif'], 'inter':['Inter','sans-serif'] } } } }
+    </script>
+    <style>
+        .login-input { width:100%; padding:14px 20px; border:2px solid #E5E7EB; border-radius:12px; font-size:1rem; transition:border-color 0.3s; background:white; }
+        .login-input:focus { outline:none; border-color:#3E9364; box-shadow:0 0 0 3px rgba(62,147,100,.1); }
+        .btn-primary { background:#0B1420; color:white; padding:14px; border-radius:12px; font-weight:500; cursor:pointer; border:none; width:100%; transition:all .2s; }
+        .btn-primary:hover { background:#1F2937; }
+        .btn-primary:disabled { opacity:.5; cursor:not-allowed; }
+    </style>
+</head>
+<body class="font-inter text-ink min-h-screen bg-paper flex items-center justify-center p-6">
+
+<div class="w-full max-w-sm">
+    <div class="text-center mb-8">
+        <img src="cedrus.png" alt="CEDRUS" class="h-14 mx-auto mb-6">
+        <h1 class="text-2xl font-playfair font-bold text-ink mb-2">Nouveau mot de passe</h1>
+        <p class="text-muted text-sm">Définissez un nouveau mot de passe pour votre compte administrateur.</p>
+    </div>
+
+    <!-- État : formulaire -->
+    <form id="resetForm" onsubmit="submitReset(event)" class="space-y-5 hidden">
+        <div>
+            <label class="block text-sm font-medium text-ink mb-2">Nouveau mot de passe</label>
+            <input type="password" class="login-input" id="pw1" placeholder="Au moins 8 caractères" minlength="8" required autofocus>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-ink mb-2">Confirmer</label>
+            <input type="password" class="login-input" id="pw2" placeholder="Retapez le mot de passe" minlength="8" required>
+        </div>
+        <div id="errBox" class="hidden text-center text-sm text-red-500 bg-red-50 p-3 rounded-lg"></div>
+        <button type="submit" class="btn-primary" id="submitBtn">Définir le nouveau mot de passe</button>
+    </form>
+
+    <!-- État : succès -->
+    <div id="successBox" class="hidden text-center">
+        <div class="bg-green-50 border border-cedrus-200 text-cedrus-700 p-5 rounded-xl mb-4">
+            <p class="font-medium mb-1">Mot de passe mis à jour ✓</p>
+            <p class="text-sm">Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.</p>
+        </div>
+        <a href="admin.html" class="inline-block btn-primary" style="text-decoration:none;display:block;text-align:center;">
+            Aller à la connexion
+        </a>
+    </div>
+
+    <!-- État : erreur lien -->
+    <div id="invalidBox" class="hidden text-center">
+        <div class="bg-red-50 border border-red-200 text-red-700 p-5 rounded-xl mb-4">
+            <p class="font-medium mb-1">Lien invalide ou expiré</p>
+            <p class="text-sm" id="invalidDetail">
+                Le lien de réinitialisation n'est plus valable. Veuillez en demander un nouveau depuis la page de connexion.
+            </p>
+        </div>
+        <a href="admin.html" class="text-sm text-cedrus-600 hover:underline">← Retour à la connexion</a>
+    </div>
+
+    <div class="mt-8 text-center">
+        <a href="admin.html" class="text-sm text-muted hover:text-ink transition-colors">← Retour à la connexion</a>
+    </div>
+</div>
+
+<script>
+// Parse le hash (#access_token=…) et le query (?token_hash=…&type=recovery) depuis Supabase
+function parseAuthParams() {
+    var out = { access_token: null, token_hash: null, type: null, error: null, error_description: null };
+
+    // Hash fragment (#access_token=..., legacy implicit flow)
+    if (location.hash && location.hash.length > 1) {
+        var h = {};
+        location.hash.slice(1).split('&').forEach(function(kv) {
+            var p = kv.split('='); h[p[0]] = decodeURIComponent(p[1] || '');
+        });
+        if (h.access_token) out.access_token = h.access_token;
+        if (h.type) out.type = h.type;
+        if (h.error) { out.error = h.error; out.error_description = h.error_description; }
+    }
+
+    // Query string (?token_hash=…, template custom ou ?error=… )
+    var params = new URLSearchParams(location.search);
+    if (params.has('token_hash')) out.token_hash = params.get('token_hash');
+    if (params.has('type')) out.type = params.get('type');
+    if (params.has('error')) { out.error = params.get('error'); out.error_description = params.get('error_description'); }
+    if (params.has('error_code')) { out.error = params.get('error_code'); out.error_description = params.get('error_description'); }
+
+    return out;
+}
+
+var authParams = parseAuthParams();
+console.log('[admin-reset] auth params:', authParams);
+
+// Nettoie l'URL pour ne plus afficher les tokens dans la barre
+if (location.hash || location.search) {
+    history.replaceState(null, '', location.pathname);
+}
+
+(function init() {
+    if (authParams.error) {
+        document.getElementById('invalidBox').classList.remove('hidden');
+        var msg = authParams.error_description || authParams.error;
+        document.getElementById('invalidDetail').textContent = 'Erreur : ' + msg + '. Demandez un nouveau lien depuis la page de connexion.';
+        return;
+    }
+    if (authParams.token_hash) {
+        window.__resetPayload = { token_hash: authParams.token_hash, type: authParams.type || 'recovery' };
+        document.getElementById('resetForm').classList.remove('hidden');
+        return;
+    }
+    if (authParams.access_token) {
+        window.__resetPayload = { access_token: authParams.access_token };
+        document.getElementById('resetForm').classList.remove('hidden');
+        return;
+    }
+    // Ni hash ni query → peut-être rechargement sur cette page sans token
+    document.getElementById('invalidBox').classList.remove('hidden');
+})();
+
+async function submitReset(e) {
+    e.preventDefault();
+    var err = document.getElementById('errBox');
+    err.classList.add('hidden');
+    var pw1 = document.getElementById('pw1').value;
+    var pw2 = document.getElementById('pw2').value;
+    if (pw1 !== pw2) {
+        err.textContent = 'Les deux mots de passe ne correspondent pas.';
+        err.classList.remove('hidden');
+        return;
+    }
+    if (!window.__resetPayload) {
+        document.getElementById('resetForm').classList.add('hidden');
+        document.getElementById('invalidBox').classList.remove('hidden');
+        return;
+    }
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Enregistrement…';
+    try {
+        var payload = Object.assign({}, window.__resetPayload, { new_password: pw1 });
+        var res = await fetch('/api/admin/set-new-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        var data = await res.json();
+        if (!res.ok) {
+            if (data.error === 'invalid_or_expired_token' || data.error === 'missing_token') {
+                document.getElementById('resetForm').classList.add('hidden');
+                document.getElementById('invalidBox').classList.remove('hidden');
+                return;
+            }
+            throw new Error(data.error || 'unexpected');
+        }
+        document.getElementById('resetForm').classList.add('hidden');
+        document.getElementById('successBox').classList.remove('hidden');
+    } catch (ex) {
+        err.textContent = 'Erreur : ' + (ex.message || ex);
+        err.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Définir le nouveau mot de passe';
+    }
+}
+</script>
+</body>
+</html>

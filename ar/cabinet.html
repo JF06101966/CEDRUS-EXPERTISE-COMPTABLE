@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&#1605;&#1603;&#1578;&#1576;&#1606;&#1575; - CEDRUS Expertise Comptable & Conseils</title>
+    <meta name="description" content="&#1575;&#1603;&#1578;&#1588;&#1601; &#1605;&#1603;&#1578;&#1576;&#1606;&#1575; &#1608;&#1601;&#1585;&#1610;&#1602; CEDRUS. &#1571;&#1603;&#1579;&#1585; &#1605;&#1606; 30 &#1593;&#1575;&#1605;&#1611;&#1575; &#1605;&#1606; &#1575;&#1604;&#1582;&#1576;&#1585;&#1577; &#1601;&#1610; &#1575;&#1604;&#1605;&#1581;&#1575;&#1587;&#1576;&#1577; &#1576;&#1606;&#1607;&#1580; &#1585;&#1575;&#1587;&#1582; &#1608;&#1605;&#1585;&#1606;.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="&#1605;&#1603;&#1578;&#1576;&#1606;&#1575; - CEDRUS Expertise Comptable & Conseils">
+    <meta property="og:description" content="&#1575;&#1603;&#1578;&#1588;&#1601; &#1605;&#1603;&#1578;&#1576;&#1606;&#1575; &#1608;&#1601;&#1585;&#1610;&#1602; CEDRUS. &#1571;&#1603;&#1579;&#1585; &#1605;&#1606; 30 &#1593;&#1575;&#1605;&#1611;&#1575; &#1605;&#1606; &#1575;&#1604;&#1582;&#1576;&#1585;&#1577; &#1601;&#1610; &#1575;&#1604;&#1605;&#1581;&#1575;&#1587;&#1576;&#1577;.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cedrus-expertise.fr/ar/cabinet.html">
+
+    <!-- Favicon SVG inline -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-weight='bold' fill='%233E9364'>C</text></svg>">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="../assets/styles.css">
+
+    <!-- Tailwind config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cedrus': {
+                            700: '#357A56',
+                            600: '#3E9364',
+                            500: '#4FA36F',
+                            200: '#BFE6AE'
+                        },
+                        'ink': '#0B1420',
+                        'muted': '#6B7280',
+                        'paper': '#F8FAF9',
+                        'gold': '#D4A853'
+                    },
+                    fontFamily: {
+                        'playfair': ['Playfair Display', 'serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "CEDRUS EXPERTISE COMPTABLE & CONSEILS",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "8 AVENUE DES TERRASSES",
+            "addressLocality": "MARNES-LA-COQUETTE",
+            "postalCode": "92430",
+            "addressCountry": "FR"
+        },
+        "url": "https://cedrus-expertise.fr",
+        "description": "&#1605;&#1603;&#1578;&#1576; &#1605;&#1581;&#1575;&#1587;&#1576;&#1577; &#1605;&#1606; &#1575;&#1604;&#1580;&#1610;&#1604; &#1575;&#1604;&#1580;&#1583;&#1610;&#1583; &#1601;&#1610; &#1582;&#1583;&#1605;&#1577; &#1602;&#1575;&#1583;&#1577; &#1575;&#1604;&#1594;&#1583;"
+    }
+    </script>
+
+    <style>
+        .parallax-bg { background-attachment: fixed; background-size: cover; background-position: center; }
+        @media (max-width: 768px) { .parallax-bg { background-attachment: scroll; } }
+        .gold-sep { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #D4A853, transparent); margin: 0 auto; }
+        .gold-sep-wide { width: 200px; height: 1px; background: linear-gradient(90deg, transparent, #D4A853, #D4A853, transparent); margin: 0 auto; }
+        .gold-sep-left { width: 60px; height: 2px; background: linear-gradient(270deg, #D4A853, transparent); }
+        .img-zoom-wrapper { overflow: hidden; }
+        .img-zoom-wrapper img { transition: transform 0.6s ease; }
+        .img-zoom-wrapper:hover img { transform: scale(1.05); }
+        .lang-menu { display: none; position: absolute; top: 100%; left: 0; background: white; border-radius: 0.5rem; box-shadow: 0 4px 24px rgba(0,0,0,0.12); min-width: 150px; z-index: 50; overflow: hidden; }
+        .lang-menu.open { display: block; }
+        .lang-menu a { display: block; padding: 0.5rem 1rem; color: #6B7280; font-size: 0.875rem; transition: background 0.2s; }
+        .lang-menu a:hover { background: #F8FAF9; }
+        .lang-menu a.active { font-weight: 600; color: #0B1420; }
+
+        /* RTL overrides */
+        .gold-sep-left { margin-right: 0; margin-left: auto; }
+        .promesse-card .flex.items-start svg { margin-left: 0.75rem; margin-right: 0; }
+    </style>
+</head>
+<body class="bg-paper font-inter text-ink">
+    <!-- Navigation -->
+    <nav id="mainNav" class="fixed top-0 z-40 w-full transition-all duration-500" style="background:transparent;">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-5 transition-all duration-500" id="navInner">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <img src="../cedrus.png" alt="CEDRUS" class="h-10 w-auto opacity-90 group-hover:opacity-100 transition-opacity" id="navLogo">
+                <div class="hidden sm:flex flex-col">
+                    <span dir="ltr" lang="en" class="text-lg font-playfair font-bold tracking-wider nav-text transition-colors duration-500" style="color:white;">CEDRUS</span>
+                    <span class="text-xs tracking-widest uppercase nav-text transition-colors duration-500" style="color:rgba(255,255,255,0.7);">Expertise Comptable</span>
+                </div>
+            </a>
+            <div class="hidden md:flex items-center gap-x-8">
+                <a href="index.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">&#1575;&#1604;&#1585;&#1574;&#1610;&#1587;&#1610;&#1577;</a>
+                <a href="cabinet.html" data-nav-link class="text-sm font-medium tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:white;">&#1575;&#1604;&#1605;&#1603;&#1578;&#1576;</a>
+                <a href="missions.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">&#1582;&#1583;&#1605;&#1575;&#1578;&#1606;&#1575;</a>
+                <a href="honoraires.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">&#1575;&#1604;&#1571;&#1578;&#1593;&#1575;&#1576;</a>
+                <a href="contact.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">&#1575;&#1578;&#1589;&#1604; &#1576;&#1606;&#1575;</a>
+                <a href="../espace-client.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">&#1601;&#1590;&#1575;&#1569; &#1575;&#1604;&#1593;&#1605;&#1610;&#1604;</a>
+                <!-- Language selector -->
+                <div class="relative">
+                    <button onclick="toggleLangMenu()" class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100 flex items-center gap-1" style="color:rgba(255,255,255,0.7);">
+                        &#1593;&#1585;&#1576;&#1610;
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="langMenu" class="lang-menu">
+                        <a href="../cabinet.html">EN</a>
+                        <a href="../fr/cabinet.html">Fran&ccedil;ais</a>
+                        <a href="#" class="active">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</a>
+                    </div>
+                </div>
+                <a href="onboarding.html" class="text-sm font-medium px-6 py-2.5 rounded-full border border-white/40 hover:bg-white hover:text-ink transition-all duration-300 nav-cta" style="color:white;">&#1575;&#1576;&#1583;&#1571;</a>
+            </div>
+            <button data-mobile-menu class="md:hidden p-2 rounded-lg nav-text transition-colors duration-500" style="color:white;" aria-label="&#1575;&#1604;&#1602;&#1575;&#1574;&#1605;&#1577;" aria-expanded="false">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 9h16.5m-16.5 6.75h16.5"></path></svg>
+            </button>
+        </div>
+        <div data-mobile-menu-panel class="hidden md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg border-b border-gray-100 shadow-xl">
+            <div class="px-6 py-8 space-y-5">
+                <a href="index.html" class="block text-muted hover:text-ink transition-colors">&#1575;&#1604;&#1585;&#1574;&#1610;&#1587;&#1610;&#1577;</a>
+                <a href="cabinet.html" class="block text-ink font-medium">&#1575;&#1604;&#1605;&#1603;&#1578;&#1576;</a>
+                <a href="missions.html" class="block text-muted hover:text-ink transition-colors">&#1582;&#1583;&#1605;&#1575;&#1578;&#1606;&#1575;</a>
+                <a href="honoraires.html" class="block text-muted hover:text-ink transition-colors">&#1575;&#1604;&#1571;&#1578;&#1593;&#1575;&#1576;</a>
+                <a href="contact.html" class="block text-muted hover:text-ink transition-colors">&#1575;&#1578;&#1589;&#1604; &#1576;&#1606;&#1575;</a>
+                <a href="../espace-client.html" class="block text-muted hover:text-ink transition-colors">&#1601;&#1590;&#1575;&#1569; &#1575;&#1604;&#1593;&#1605;&#1610;&#1604;</a>
+                <div class="flex items-center gap-4 pt-2 text-sm text-muted">
+                    <a href="../cabinet.html" class="hover:text-ink transition-colors">EN</a>
+                    <a href="../fr/cabinet.html" class="hover:text-ink transition-colors">Fran&ccedil;ais</a>
+                    <span class="font-semibold text-ink">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</span>
+                </div>
+                <div class="pt-2"><a href="onboarding.html" class="block bg-ink text-white px-6 py-3.5 rounded-full font-medium text-center text-sm tracking-wide">&#1575;&#1576;&#1583;&#1571;</a></div>
+            </div>
+        </div>
+        <div data-mobile-menu-overlay class="hidden md:hidden fixed inset-0 bg-black/20 z-30"></div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="parallax-bg absolute inset-0" style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2070&q=80');"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="gold-sep mb-8"></div>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-playfair font-bold text-white mb-8 animate-on-scroll">
+                &#1605;&#1603;&#1578;&#1576;&#1606;&#1575;
+            </h1>
+            <p class="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto animate-on-scroll font-light leading-relaxed">
+                &#1601;&#1585;&#1610;&#1602; &#1584;&#1608; &#1582;&#1576;&#1585;&#1577; &#1608;&#1575;&#1576;&#1578;&#1603;&#1575;&#1585; &#1605;&#1603;&#1585;&#1617;&#1587; &#1604;&#1606;&#1580;&#1575;&#1581;&#1603;&#1605; &#1575;&#1604;&#1585;&#1610;&#1575;&#1583;&#1610;
+            </p>
+            <div class="gold-sep mt-8"></div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+            <svg class="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7"></path></svg>
+        </div>
+    </section>
+
+    <!-- Portrait Section -->
+    <section class="py-24 lg:py-32 bg-paper">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Portrait -->
+                <div class="animate-on-scroll">
+                    <div class="img-zoom-wrapper rounded-2xl shadow-xl mx-auto lg:mx-0 w-72 md:w-80">
+                        <img src="../PHOTO-2025-11-22-11-56-21.jpg" alt="&#1580;&#1575;&#1606;-&#1601;&#1585;&#1575;&#1606;&#1587;&#1608;&#1575; &#1604;&#1608; &#1594;&#1575;&#1604; - &#1582;&#1576;&#1610;&#1585; &#1605;&#1581;&#1575;&#1587;&#1576;" class="w-full h-auto rounded-2xl">
+                    </div>
+                </div>
+
+                <!-- Introduction -->
+                <div class="animate-on-scroll">
+                    <div class="gold-sep-left mb-6"></div>
+                    <h2 class="text-3xl md:text-4xl font-playfair font-bold text-ink mb-8">
+                        &#1571;&#1603;&#1579;&#1585; &#1605;&#1606; 30 &#1593;&#1575;&#1605;&#1611;&#1575; &#1605;&#1606; &#1575;&#1604;&#1582;&#1576;&#1585;&#1577; &#1601;&#1610; &#1575;&#1604;&#1587;&#1593;&#1610; &#1606;&#1581;&#1608; &#1575;&#1604;&#1578;&#1605;&#1610;&#1617;&#1586;
+                    </h2>
+                    <p class="text-lg text-muted leading-relaxed mb-8">
+                        &#1576;&#1582;&#1576;&#1585;&#1577; &#1578;&#1578;&#1580;&#1575;&#1608;&#1586; 30 &#1593;&#1575;&#1605;&#1611;&#1575; &#1603;&#1582;&#1576;&#1610;&#1585; &#1605;&#1581;&#1575;&#1587;&#1576;&#1548; &#1571;&#1585;&#1575;&#1583; &#1580;&#1575;&#1606;-&#1601;&#1585;&#1575;&#1606;&#1587;&#1608;&#1575; &#1604;&#1608; &#1594;&#1575;&#1604; &#1575;&#1604;&#1584;&#1607;&#1575;&#1576; &#1571;&#1576;&#1593;&#1583; &#1605;&#1606; &#1582;&#1604;&#1575;&#1604; &#1573;&#1606;&#1588;&#1575;&#1569; &#1605;&#1603;&#1578;&#1576; &#1605;&#1578;&#1582;&#1589;&#1589; &#1593;&#1606;&#1583; &#1605;&#1604;&#1578;&#1602;&#1609; &#1575;&#1604;&#1605;&#1581;&#1575;&#1587;&#1576;&#1577; &#1575;&#1604;&#1578;&#1602;&#1604;&#1610;&#1583;&#1610;&#1577; &#1608;&#1575;&#1604;&#1575;&#1576;&#1578;&#1603;&#1575;&#1585; &#1575;&#1604;&#1585;&#1610;&#1575;&#1583;&#1610;: CEDRUS Expertise Comptable & Conseils.
+                    </p>
+                    <p class="text-lg text-muted leading-relaxed">
+                        &#1589;&#1615;&#1605;&#1617;&#1605; CEDRUS &#1603;&#1605;&#1603;&#1578;&#1576; &#1605;&#1606; &#1575;&#1604;&#1580;&#1610;&#1604; &#1575;&#1604;&#1580;&#1583;&#1610;&#1583;&#1548; &#1608;&#1610;&#1578;&#1605;&#1610;&#1617;&#1586; &#1576;&#1602;&#1583;&#1585;&#1578;&#1607; &#1593;&#1604;&#1609; &#1578;&#1604;&#1576;&#1610;&#1577; &#1575;&#1604;&#1578;&#1608;&#1602;&#1593;&#1575;&#1578; &#1575;&#1604;&#1605;&#1578;&#1591;&#1608;&#1585;&#1577; &#1604;&#1585;&#1608;&#1575;&#1583; &#1575;&#1604;&#1571;&#1593;&#1605;&#1575;&#1604; &#1608;&#1575;&#1604;&#1605;&#1583;&#1610;&#1585;&#1610;&#1606; &#1608;&#1605;&#1572;&#1587;&#1587;&#1610; &#1575;&#1604;&#1588;&#1585;&#1603;&#1575;&#1578; &#1601;&#1610; &#1576;&#1610;&#1574;&#1577; &#1575;&#1602;&#1578;&#1589;&#1575;&#1583;&#1610;&#1577; &#1605;&#1578;&#1586;&#1575;&#1610;&#1583;&#1577; &#1575;&#1604;&#1578;&#1593;&#1602;&#1610;&#1583; &#1608;&#1575;&#1604;&#1594;&#1605;&#1608;&#1590;&#1548; &#1604;&#1603;&#1606;&#1607;&#1575; &#1594;&#1606;&#1610;&#1577; &#1576;&#1575;&#1604;&#1601;&#1585;&#1589;.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Philosophy Section -->
+    <section class="py-24 lg:py-32 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 animate-on-scroll">
+                <div class="gold-sep mb-8"></div>
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold text-ink mb-8">&#1606;&#1607;&#1580;&#1606;&#1575;: &#1585;&#1575;&#1587;&#1582; &#1608;&#1605;&#1585;&#1606;</h2>
+                <p class="text-lg text-muted max-w-4xl mx-auto leading-relaxed">
+                    &#1606;&#1581;&#1606; &#1585;&#1575;&#1587;&#1582;&#1608;&#1606; &#1601;&#1610; &#1571;&#1587;&#1575;&#1587;&#1610;&#1575;&#1578; &#1575;&#1604;&#1605;&#1607;&#1606;&#1577;: &#1575;&#1604;&#1583;&#1602;&#1577; &#1608;&#1575;&#1604;&#1575;&#1605;&#1578;&#1579;&#1575;&#1604; &#1608;&#1575;&#1604;&#1575;&#1604;&#1578;&#1586;&#1575;&#1605; &#1576;&#1575;&#1604;&#1605;&#1608;&#1575;&#1593;&#1610;&#1583; &#1608;&#1575;&#1604;&#1582;&#1576;&#1585;&#1577; &#1575;&#1604;&#1578;&#1606;&#1592;&#1610;&#1605;&#1610;&#1577;. &#1604;&#1603;&#1606;&#1606;&#1575; &#1571;&#1610;&#1590;&#1611;&#1575; &#1605;&#1585;&#1606;&#1608;&#1606;&#1548; &#1602;&#1575;&#1583;&#1585;&#1608;&#1606; &#1593;&#1604;&#1609; &#1573;&#1593;&#1575;&#1583;&#1577; &#1575;&#1576;&#1578;&#1603;&#1575;&#1585; &#1571;&#1587;&#1575;&#1604;&#1610;&#1576;&#1606;&#1575; &#1608;&#1578;&#1576;&#1606;&#1610; &#1575;&#1604;&#1575;&#1576;&#1578;&#1603;&#1575;&#1585; &#1575;&#1604;&#1578;&#1603;&#1606;&#1608;&#1604;&#1608;&#1580;&#1610; &#1608;&#1578;&#1602;&#1583;&#1610;&#1605; &#1606;&#1605;&#1575;&#1584;&#1580; &#1578;&#1606;&#1592;&#1610;&#1605;&#1610;&#1577; &#1571;&#1603;&#1579;&#1585; &#1587;&#1604;&#1575;&#1587;&#1577; &#1608;&#1578;&#1593;&#1575;&#1608;&#1606;&#1611;&#1575; &#1608;&#1571;&#1583;&#1575;&#1569;&#1611;.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Rooted -->
+                <div class="animate-on-scroll group">
+                    <div class="img-zoom-wrapper rounded-t-2xl">
+                        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80" alt="&#1585;&#1575;&#1587;&#1582; &#1601;&#1610; &#1575;&#1604;&#1582;&#1576;&#1585;&#1577;" class="w-full h-56 object-cover rounded-t-2xl">
+                    </div>
+                    <div class="bg-paper rounded-b-2xl p-8 shadow-lg border border-gray-100">
+                        <h3 class="text-2xl font-playfair font-semibold text-ink mb-6 text-center">&#1585;&#1575;&#1587;&#1582;</h3>
+                        <div class="gold-sep mb-6"></div>
+                        <ul class="text-muted space-y-4">
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-cedrus-600 ml-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>&#1575;&#1604;&#1583;&#1602;&#1577; &#1608;&#1575;&#1604;&#1575;&#1605;&#1578;&#1579;&#1575;&#1604; &#1601;&#1610; &#1580;&#1605;&#1610;&#1593; &#1571;&#1593;&#1605;&#1575;&#1604;&#1606;&#1575;</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-cedrus-600 ml-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>&#1575;&#1604;&#1575;&#1604;&#1578;&#1586;&#1575;&#1605; &#1575;&#1604;&#1589;&#1575;&#1585;&#1605; &#1576;&#1575;&#1604;&#1605;&#1608;&#1575;&#1593;&#1610;&#1583; &#1575;&#1604;&#1606;&#1607;&#1575;&#1574;&#1610;&#1577;</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-cedrus-600 ml-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>&#1573;&#1578;&#1602;&#1575;&#1606; &#1588;&#1575;&#1605;&#1604; &#1604;&#1604;&#1605;&#1578;&#1591;&#1604;&#1576;&#1575;&#1578; &#1575;&#1604;&#1578;&#1606;&#1592;&#1610;&#1605;&#1610;&#1577;</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-cedrus-600 ml-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>&#1582;&#1576;&#1585;&#1577; &#1578;&#1602;&#1606;&#1610;&#1577; &#1605;&#1593;&#1578;&#1585;&#1601; &#1576;&#1607;&#1575;</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Agile -->
+                <div class="animate-on-scroll group">
+                    <div class="img-zoom-wrapper rounded-t-2xl">
+                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80" alt="&#1605;&#1585;&#1606; &#1608;&#1605;&#1576;&#1578;&#1603;&#1585;" class="w-full h-56 object-cover rounded-t-2xl">
+                    </div>
+                    <div class="bg-paper rounded-b-2xl p-8 shadow-lg border border-gray-100">
+                        <h3 class="text-2xl font-playfair font-semibold text-ink mb-6 text-center">&#1605;&#1585;&#1606;</h3>
+                        <div class="gold-sep mb-6"></div>
+                        <ul class="text-muted space-y-4">
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-cedrus-500 ml-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>&#1575;&#1576;&#1578;&#1603;&#1575;&#1585; &#1578;&#1603;&#1606;&#1608;&#1604;&#1608;&#1580;&#1610; &#1605;&#1587;&#1578;&#1605;&#1585;</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-cedrus-500 ml-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>&#1571;&#1587;&#1575;&#1604;&#1610;&#1576; &#1593;&#1605;&#1604; &#1578;&#1603;&#1610;&#1617;&#1601;&#1610;&#1577;</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-cedrus-500 ml-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>&#1578;&#1606;&#1592;&#1610;&#1605; &#1578;&#1593;&#1575;&#1608;&#1606;&#1610; &#1608;&#1587;&#1604;&#1587;</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-cedrus-500 ml-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>&#1575;&#1587;&#1578;&#1580;&#1575;&#1576;&#1577; &#1608;&#1605;&#1585;&#1608;&#1606;&#1577; &#1602;&#1589;&#1608;&#1609;</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Details Section -->
+    <section class="py-24 lg:py-32 bg-paper">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 animate-on-scroll">
+                <div class="gold-sep mb-8"></div>
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold text-ink mb-4">&#1576;&#1610;&#1575;&#1606;&#1575;&#1578; &#1575;&#1604;&#1575;&#1578;&#1589;&#1575;&#1604;</h2>
+                <p class="text-lg text-muted">&#1578;&#1580;&#1583;&#1608;&#1606;&#1606;&#1575; &#1601;&#1610; &#1605;&#1575;&#1585;&#1606;-&#1604;&#1575;-&#1603;&#1608;&#1603;&#1610;&#1578;</p>
+            </div>
+            <div class="bg-white rounded-2xl p-8 md:p-12 shadow-xl border border-gray-100 animate-on-scroll">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4 space-x-reverse">
+                            <div class="bg-cedrus-600/10 text-cedrus-600 w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-ink mb-1">&#1575;&#1604;&#1593;&#1606;&#1608;&#1575;&#1606;</h3>
+                                <p class="text-muted">8 AVENUE DES TERRASSES<br>92430 MARNES-LA-COQUETTE</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4 space-x-reverse">
+                            <div class="bg-cedrus-600/10 text-cedrus-600 w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-ink mb-1">&#1587;&#1575;&#1593;&#1575;&#1578; &#1575;&#1604;&#1593;&#1605;&#1604;</h3>
+                                <p class="text-muted">&#1575;&#1604;&#1575;&#1579;&#1606;&#1610;&#1606; - &#1575;&#1604;&#1580;&#1605;&#1593;&#1577;: 9:00 - 18:00<br>&#1575;&#1604;&#1587;&#1576;&#1578;: 9:00 - 12:00</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4 space-x-reverse">
+                            <div class="bg-cedrus-600/10 text-cedrus-600 w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-ink mb-1">&#1575;&#1604;&#1576;&#1585;&#1610;&#1583; &#1575;&#1604;&#1573;&#1604;&#1603;&#1578;&#1585;&#1608;&#1606;&#1610;</h3>
+                                <p class="text-muted">contact@cedrus-expertise.fr</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-paper rounded-xl p-6 border border-gray-100">
+                            <h3 class="font-semibold text-ink mb-3">&#1603;&#1610;&#1601; &#1578;&#1589;&#1604; &#1573;&#1604;&#1610;&#1606;&#1575;</h3>
+                            <p class="text-muted text-sm mb-4">
+                                &#1610;&#1602;&#1593; &#1605;&#1603;&#1578;&#1576;&#1606;&#1575; &#1601;&#1610; &#1605;&#1606;&#1591;&#1602;&#1577; &#1587;&#1603;&#1606;&#1610;&#1577; &#1607;&#1575;&#1583;&#1574;&#1577;&#1548; &#1610;&#1587;&#1607;&#1604; &#1575;&#1604;&#1608;&#1589;&#1608;&#1604; &#1573;&#1604;&#1610;&#1607;&#1575; &#1576;&#1575;&#1604;&#1587;&#1610;&#1575;&#1585;&#1577; &#1608;&#1608;&#1587;&#1575;&#1574;&#1604; &#1575;&#1604;&#1606;&#1602;&#1604; &#1575;&#1604;&#1593;&#1575;&#1605;.
+                            </p>
+                            <a href="https://maps.google.com/?q=8+AVENUE+DES+TERRASSES+92430+MARNES+LA+COQUETTE"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="inline-flex items-center text-cedrus-600 hover:text-cedrus-500 font-medium transition-colors text-sm">
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                                &#1593;&#1585;&#1590; &#1593;&#1604;&#1609; &#1582;&#1585;&#1575;&#1574;&#1591; &#1580;&#1608;&#1580;&#1604;
+                            </a>
+                        </div>
+
+                        <div class="bg-paper rounded-xl p-6 border border-gray-100">
+                            <h3 class="font-semibold text-ink mb-3">&#1575;&#1604;&#1605;&#1608;&#1575;&#1593;&#1610;&#1583;</h3>
+                            <p class="text-muted text-sm mb-4">
+                                &#1606;&#1587;&#1578;&#1602;&#1576;&#1604; &#1593;&#1605;&#1604;&#1575;&#1569;&#1606;&#1575; &#1576;&#1605;&#1608;&#1593;&#1583; &#1605;&#1587;&#1576;&#1602; &#1604;&#1590;&#1605;&#1575;&#1606; &#1583;&#1593;&#1605; &#1588;&#1582;&#1589;&#1610; &#1608;&#1593;&#1575;&#1604;&#1610; &#1575;&#1604;&#1580;&#1608;&#1583;&#1577;.
+                            </p>
+                            <a href="onboarding.html"
+                               class="inline-flex items-center bg-cedrus-600 hover:bg-cedrus-500 text-ink px-5 py-2.5 rounded-full font-medium transition-colors text-sm tracking-wide">
+                                &#1581;&#1580;&#1586; &#1605;&#1608;&#1593;&#1583;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="relative py-24 lg:py-32 overflow-hidden">
+        <div class="parallax-bg absolute inset-0" style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2070&q=80');"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+        <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="gold-sep mb-8"></div>
+            <h2 class="text-3xl md:text-4xl font-playfair font-bold text-white mb-8 animate-on-scroll">
+                &#1607;&#1604; &#1571;&#1606;&#1578;&#1605; &#1605;&#1587;&#1578;&#1593;&#1583;&#1608;&#1606; &#1604;&#1604;&#1602;&#1575;&#1574;&#1606;&#1575;&#1567;
+            </h2>
+            <p class="text-xl text-white/90 mb-10 animate-on-scroll font-light">
+                &#1575;&#1603;&#1578;&#1588;&#1601;&#1608;&#1575; &#1603;&#1610;&#1601; &#1610;&#1605;&#1603;&#1606; &#1604;&#1606;&#1607;&#1580;&#1606;&#1575; &#1571;&#1606; &#1610;&#1581;&#1608;&#1617;&#1604; &#1571;&#1593;&#1605;&#1575;&#1604;&#1603;&#1605;
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-on-scroll">
+                <a href="missions.html" class="bg-white text-ink hover:bg-gray-100 px-8 py-4 rounded-full font-medium transition-all duration-300 tracking-wide text-sm">
+                    &#1575;&#1587;&#1578;&#1603;&#1588;&#1601; &#1582;&#1583;&#1605;&#1575;&#1578;&#1606;&#1575;
+                </a>
+                <a href="onboarding.html" class="border border-white/40 text-white hover:bg-white hover:text-cedrus-600 px-8 py-4 rounded-full font-medium transition-all duration-300 tracking-wide text-sm">
+                    &#1581;&#1580;&#1586; &#1605;&#1608;&#1593;&#1583;
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-white py-16" style="background: linear-gradient(180deg, #3C4B5F 0%, #1E2D41 50%, #08121F 100%);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <!-- Contact info -->
+                <div>
+                    <h3 dir="ltr" lang="en" class="text-xl font-playfair font-semibold mb-4">CEDRUS</h3>
+                    <p class="text-gray-300 mb-2">8 AVENUE DES TERRASSES</p>
+                    <p class="text-gray-300 mb-4">92430 MARNES-LA-COQUETTE</p>
+                    <p class="text-gray-300">contact@cedrus-expertise.fr</p>
+                </div>
+
+                <!-- Quick links -->
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">&#1585;&#1608;&#1575;&#1576;&#1591; &#1587;&#1585;&#1610;&#1593;&#1577;</h3>
+                    <ul class="space-y-2">
+                        <li><a href="cabinet.html" class="text-gray-300 hover:text-white transition-colors">&#1575;&#1604;&#1605;&#1603;&#1578;&#1576;</a></li>
+                        <li><a href="missions.html" class="text-gray-300 hover:text-white transition-colors">&#1582;&#1583;&#1605;&#1575;&#1578;&#1606;&#1575;</a></li>
+                        <li><a href="honoraires.html" class="text-gray-300 hover:text-white transition-colors">&#1575;&#1604;&#1571;&#1578;&#1593;&#1575;&#1576;</a></li>
+                        <li><a href="contact.html" class="text-gray-300 hover:text-white transition-colors">&#1575;&#1578;&#1589;&#1604; &#1576;&#1606;&#1575;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Social media -->
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">&#1578;&#1575;&#1576;&#1593;&#1608;&#1606;&#1575;</h3>
+                    <div class="flex space-x-4 space-x-reverse">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="LinkedIn">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legal bar -->
+            <div class="border-t border-gray-700 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                    <p class="text-gray-300 text-sm">
+                        &copy; 2024 CEDRUS EXPERTISE COMPTABLE & CONSEILS. &#1580;&#1605;&#1610;&#1593; &#1575;&#1604;&#1581;&#1602;&#1608;&#1602; &#1605;&#1581;&#1601;&#1608;&#1592;&#1577;.
+                    </p>
+                    <div class="flex space-x-6 space-x-reverse text-sm">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">&#1575;&#1604;&#1573;&#1588;&#1593;&#1575;&#1585;&#1575;&#1578; &#1575;&#1604;&#1602;&#1575;&#1606;&#1608;&#1606;&#1610;&#1577;</a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">&#1587;&#1610;&#1575;&#1587;&#1577; &#1575;&#1604;&#1582;&#1589;&#1608;&#1589;&#1610;&#1577;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main script -->
+    <script src="../assets/main.js"></script>
+
+    <!-- Language menu toggle -->
+    <script>
+    function toggleLangMenu() {
+        var menu = document.getElementById('langMenu');
+        menu.classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+        var menu = document.getElementById('langMenu');
+        if (menu && !e.target.closest('.relative')) {
+            menu.classList.remove('open');
+        }
+    });
+    </script>
+
+    <!-- Nav scroll behavior -->
+    <script>
+    (function() {
+        var nav = document.getElementById('mainNav');
+        var navInner = document.getElementById('navInner');
+        var scrolled = false;
+        function updateNav() {
+            var shouldBeScrolled = window.scrollY > 80;
+            if (shouldBeScrolled === scrolled) return;
+            scrolled = shouldBeScrolled;
+            if (scrolled) {
+                nav.style.background = 'rgba(255,255,255,0.97)';
+                nav.style.boxShadow = '0 1px 20px rgba(0,0,0,0.06)';
+                navInner.style.paddingTop = '12px';
+                navInner.style.paddingBottom = '12px';
+                document.querySelectorAll('.nav-text').forEach(function(el) { el.style.color = '#0B1420'; });
+                document.querySelectorAll('.nav-link').forEach(function(el) {
+                    el.style.color = el.classList.contains('font-medium') ? '#3E9364' : '#6B7280';
+                });
+                var cta = document.querySelector('.nav-cta');
+                if (cta) { cta.style.color = '#0B1420'; cta.style.borderColor = '#0B1420'; }
+            } else {
+                nav.style.background = 'transparent';
+                nav.style.boxShadow = 'none';
+                navInner.style.paddingTop = '20px';
+                navInner.style.paddingBottom = '20px';
+                document.querySelectorAll('.nav-text').forEach(function(el) { el.style.color = 'white'; });
+                    document.querySelectorAll('.nav-link').forEach(function(el) {
+                        el.style.color = el.classList.contains('font-medium') ? 'white' : 'rgba(255,255,255,0.7)';
+                    });
+                    var cta = document.querySelector('.nav-cta');
+                    if (cta) { cta.style.color = 'white'; cta.style.borderColor = 'rgba(255,255,255,0.4)'; }
+            }
+        }
+        window.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+    })();
+    </script>
+</body>
+</html>

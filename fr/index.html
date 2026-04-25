@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEDRUS Expertise Comptable & Conseils - Un cabinet d'expertise comptable nouvelle génération</title>
+    <meta name="description" content="Un cabinet d'expertise comptable nouvelle génération au service des dirigeants de demain. Plus de 30 ans d'expérience, une approche innovante et un conseil stratégique.">
+
+    <meta property="og:title" content="CEDRUS Expertise Comptable & Conseils">
+    <meta property="og:description" content="Un cabinet d'expertise comptable nouvelle génération au service des dirigeants de demain">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cedrus-expertise.fr/fr/">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-weight='bold' fill='%233E9364'>C</text></svg>">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/styles.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cedrus': { 700: '#357A56', 600: '#3E9364', 500: '#4FA36F', 200: '#BFE6AE' },
+                        'ink': '#0B1420',
+                        'muted': '#6B7280',
+                        'paper': '#F8FAF9',
+                        'gold': '#D4A853'
+                    },
+                    fontFamily: {
+                        'playfair': ['Playfair Display', 'serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "CEDRUS EXPERTISE COMPTABLE & CONSEILS",
+        "address": { "@type": "PostalAddress", "streetAddress": "8 AVENUE DES TERRASSES", "addressLocality": "MARNES-LA-COQUETTE", "postalCode": "92430", "addressCountry": "FR" },
+        "url": "https://cedrus-expertise.fr"
+    }
+    </script>
+
+    <style>
+        .parallax-bg { background-attachment: fixed; background-size: cover; background-position: center; }
+        @media (max-width: 768px) { .parallax-bg { background-attachment: scroll; } }
+
+        .gold-sep { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #D4A853, transparent); margin: 0 auto; }
+        .gold-sep-wide { width: 200px; height: 1px; background: linear-gradient(90deg, transparent, #D4A853, #D4A853, transparent); margin: 0 auto; }
+        .gold-sep-left { width: 60px; height: 2px; background: linear-gradient(90deg, #D4A853, transparent); }
+
+        .img-zoom-wrapper { overflow: hidden; }
+        .img-zoom-wrapper img { transition: transform 0.6s ease; }
+        .img-zoom-wrapper:hover img { transform: scale(1.05); }
+
+        /* Engagements - premium horizontal style */
+        .engagement-row { border-bottom: 1px solid rgba(62,147,100,0.08); }
+        .engagement-row:last-child { border-bottom: none; }
+        .engagement-row .eng-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3E9364, #D4A853);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        /* Promise cards */
+        .promesse-card {
+            position: relative;
+            padding-left: 24px;
+            border-left: 2px solid #D4A853;
+        }
+    </style>
+</head>
+<body class="bg-paper font-inter text-ink">
+    <!-- Splash -->
+    <div id="splash" style="position:fixed;inset:0;z-index:9999;background:#F8FAF9;display:flex;align-items:center;justify-content:center;opacity:1;transition:opacity 0.8s ease;">
+        <div id="splash-logo" style="opacity:0;transform:scale(0.92);transition:opacity 1s ease, transform 1s ease;">
+            <img src="../cedrus.png" alt="CEDRUS" style="width:680px;height:auto;max-width:80vw;filter:drop-shadow(0 8px 28px rgba(62,147,100,0.32)) drop-shadow(0 2px 6px rgba(11,20,32,0.18)) contrast(1.08) saturate(1.15);">
+        </div>
+    </div>
+
+    <!-- Nav -->
+    <nav id="mainNav" class="fixed top-0 z-40 w-full transition-all duration-500" style="background:transparent;">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-5 transition-all duration-500" id="navInner">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center gap-3 group">
+                <img src="../cedrus.png" alt="CEDRUS" class="h-10 w-auto opacity-90 group-hover:opacity-100 transition-opacity" id="navLogo">
+                <div class="hidden sm:flex flex-col">
+                    <span class="text-lg font-playfair font-bold tracking-wider nav-text transition-colors duration-500" style="color:white;">CEDRUS</span>
+                    <span class="text-xs tracking-widest uppercase nav-text transition-colors duration-500" style="color:rgba(255,255,255,0.7);">Expertise Comptable</span>
+                </div>
+            </a>
+
+            <!-- Desktop links -->
+            <div class="hidden md:flex items-center gap-x-8">
+                <a href="index.html" data-nav-link class="text-sm font-medium tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:white;">Accueil</a>
+                <a href="cabinet.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">Cabinet</a>
+                <a href="missions.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">Missions</a>
+                <a href="honoraires.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">Honoraires</a>
+                <a href="contact.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">Contact</a>
+                <a href="espace-client.html" data-nav-link class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100" style="color:rgba(255,255,255,0.7);">Espace Client</a>
+                <div class="relative" id="langSwitcher">
+                    <button onclick="toggleLangMenu()" class="text-sm tracking-wide nav-link transition-all duration-300 hover:opacity-100 flex items-center gap-1" style="color:rgba(255,255,255,0.7);">
+                        FR <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                    </button>
+                    <div id="langMenu" class="hidden absolute top-full right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden min-w-[120px] z-50">
+                        <a href="../index.html" class="block px-4 py-2.5 text-sm text-muted hover:bg-gray-50">English</a>
+                        <a href="index.html" class="block px-4 py-2.5 text-sm text-ink hover:bg-gray-50 font-medium">Fran&ccedil;ais</a>
+                        <a href="../ar/index.html" class="block px-4 py-2.5 text-sm text-muted hover:bg-gray-50">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</a>
+                    </div>
+                </div>
+                <a href="onboarding.html" class="text-sm font-medium px-6 py-2.5 rounded-full border border-white/40 hover:bg-white hover:text-ink transition-all duration-300 nav-cta" style="color:white;">Commencer</a>
+            </div>
+
+            <!-- Mobile menu -->
+            <button data-mobile-menu class="md:hidden p-2 rounded-lg nav-text transition-colors duration-500" style="color:white;" aria-label="Menu" aria-expanded="false">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 9h16.5m-16.5 6.75h16.5"></path></svg>
+            </button>
+        </div>
+
+        <!-- Mobile menu panel -->
+        <div data-mobile-menu-panel class="hidden md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg border-b border-gray-100 shadow-xl">
+            <div class="px-6 py-8 space-y-5">
+                <div class="flex items-center gap-3 pb-4 border-b border-gray-100">
+                    <a href="../index.html" class="text-sm text-muted">EN</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="index.html" class="text-sm font-medium text-ink">FR</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="../ar/index.html" class="text-sm text-muted">AR</a>
+                </div>
+                <a href="index.html" class="block text-ink font-medium">Accueil</a>
+                <a href="cabinet.html" class="block text-muted hover:text-ink transition-colors">Cabinet</a>
+                <a href="missions.html" class="block text-muted hover:text-ink transition-colors">Missions</a>
+                <a href="honoraires.html" class="block text-muted hover:text-ink transition-colors">Honoraires</a>
+                <a href="contact.html" class="block text-muted hover:text-ink transition-colors">Contact</a>
+                <a href="espace-client.html" class="block text-muted hover:text-ink transition-colors">Espace Client</a>
+                <div class="pt-2">
+                    <a href="onboarding.html" class="block bg-ink text-white px-6 py-3.5 rounded-full font-medium text-center text-sm tracking-wide">Commencer</a>
+                </div>
+            </div>
+        </div>
+        <div data-mobile-menu-overlay class="hidden md:hidden fixed inset-0 bg-black/20 z-30"></div>
+    </nav>
+
+    <!-- ======== HERO ======== -->
+    <section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat parallax-bg" style="background-image: url('../assets/img/cedrus-ahmad.png');"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <div class="gold-sep-wide mb-8 animate-on-scroll"></div>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-playfair font-bold text-white mb-6 animate-on-scroll leading-tight">CEDRUS</h1>
+            <p class="text-lg md:text-xl text-gray-200 font-light tracking-[0.3em] uppercase mb-8 animate-on-scroll">Expertise Comptable & Conseils</p>
+            <div class="gold-sep mb-10 animate-on-scroll"></div>
+            <h2 class="text-xl md:text-2xl font-playfair text-white/90 animate-on-scroll max-w-3xl mx-auto leading-relaxed">Votre porte d'entrée pour investir en France.</h2>
+            <div class="mt-12 animate-on-scroll">
+                <a href="onboarding.html" class="inline-block border-2 border-white text-white px-10 py-4 text-sm tracking-widest uppercase hover:bg-white hover:text-white transition-all duration-300">Démarrer mon accompagnement</a>
+            </div>
+        </div>
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <svg class="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </div>
+    </section>
+
+    <!-- ======== VISION ======== -->
+    <section class="py-24 bg-paper">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="img-zoom-wrapper rounded-2xl shadow-xl animate-on-scroll">
+                    <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1000&q=80" alt="Réunion professionnelle" class="w-full h-[450px] object-cover rounded-2xl">
+                </div>
+                <div class="animate-on-scroll">
+                    <div class="gold-sep-left mb-6"></div>
+                    <h2 class="text-3xl md:text-4xl font-playfair font-bold text-ink mb-6">Notre Vision</h2>
+                    <p class="text-lg text-muted leading-relaxed text-justify">
+                        Fondé par Jean-François Le Gall avec plus de 30 ans d'expertise, CEDRUS a été conçu comme une passerelle pour les investisseurs internationaux et les entrepreneurs souhaitant créer ou développer leur activité en France. Nous comprenons les défis liés à la navigation dans le droit fiscal et social français, ainsi qu'au choix nécessaire de structures sociétaires appropriées &mdash; un terrain dense où chaque décision engage la fiscalité, la protection sociale du dirigeant et la pérennité du projet. Notre cabinet fait le lien entre vos ambitions et le paysage économique français, en offrant un accompagnement complet en expertise comptable, conseil fiscal, accompagnement social et stratégie patrimoniale, pour que vous puissiez investir et entreprendre en toute confiance.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== KEY FIGURES ======== -->
+    <section class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2070&q=80');"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="animate-on-scroll">
+                    <p class="text-4xl md:text-5xl font-playfair font-bold text-white mb-2">30+</p>
+                    <div class="gold-sep mb-3"></div>
+                    <p class="text-gray-300 text-sm uppercase tracking-wider">Années d'expérience</p>
+                </div>
+                <div class="animate-on-scroll">
+                    <p class="text-4xl md:text-5xl font-playfair font-bold text-white mb-2">360&deg;</p>
+                    <div class="gold-sep mb-3"></div>
+                    <p class="text-gray-300 text-sm uppercase tracking-wider">Conseil global</p>
+                </div>
+                <div class="animate-on-scroll">
+                    <p class="text-4xl md:text-5xl font-playfair font-bold text-white mb-2">100%</p>
+                    <div class="gold-sep mb-3"></div>
+                    <p class="text-gray-300 text-sm uppercase tracking-wider">Sur mesure</p>
+                </div>
+                <div class="animate-on-scroll">
+                    <p class="text-4xl md:text-5xl font-playfair font-bold text-white mb-2">Global</p>
+                    <div class="gold-sep mb-3"></div>
+                    <p class="text-gray-300 text-sm uppercase tracking-wider">Investisseurs internationaux</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== OUR PROMISE - Responsiveness, Seamless Experience, Availability ======== -->
+    <section class="py-24 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20 animate-on-scroll">
+                <div class="gold-sep mb-6"></div>
+                <h2 class="text-3xl md:text-5xl font-playfair font-bold text-ink mb-4">Nous simplifions la complexite</h2>
+                <p class="text-muted text-lg max-w-2xl mx-auto">Investir en France ne devrait pas être un parcours du combattant. Nous gerons le labyrinthe réglementaire pour vous, avec un accompagnement fluide, reactif et toujours disponible.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="animate-on-scroll">
+                    <div class="promesse-card">
+                        <svg class="w-8 h-8 text-cedrus-600 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+                        <h3 class="text-xl font-playfair font-semibold text-ink mb-3">Reactivite</h3>
+                        <p class="text-muted leading-relaxed">Votre question du matin obtient une réponse le jour même. Pas de délais inutiles, pas de dossiers qui s'accumulent. Nous avançons à votre rythme.</p>
+                    </div>
+                </div>
+                <div class="animate-on-scroll">
+                    <div class="promesse-card">
+                        <svg class="w-8 h-8 text-cedrus-600 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"/></svg>
+                        <h3 class="text-xl font-playfair font-semibold text-ink mb-3">Disponibilite</h3>
+                        <p class="text-muted leading-relaxed">Un interlocuteur dédié qui vous connaît, joignable dès que vous en avez besoin. Vous n'êtes jamais un simple numéro de dossier chez nous.</p>
+                    </div>
+                </div>
+                <div class="animate-on-scroll">
+                    <div class="promesse-card">
+                        <svg class="w-8 h-8 text-cedrus-600 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/></svg>
+                        <h3 class="text-xl font-playfair font-semibold text-ink mb-3">Expérience fluide</h3>
+                        <p class="text-muted leading-relaxed">Des outils modernes, des processus clairs, zero paperasse inutile. Nous simplifions votre quotidien pour que vous puissiez vous concentrer sur l'essentiel.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== YOUR JOURNEY ======== -->
+    <section class="relative py-24 overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=2070&q=80');"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(60,75,95,0.55) 0%, rgba(30,45,65,0.82) 50%, rgba(8,18,32,0.95) 100%);"></div>
+
+        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+            <div class="text-center mb-20 animate-on-scroll">
+                <div class="gold-sep-wide mb-6"></div>
+                <h2 class="text-3xl md:text-5xl font-playfair font-bold text-white mb-4">Comment ca marche</h2>
+                <p class="text-gray-300 text-lg">Un processus simple en 4 étapes, de votre première visite à la gestion au quotidien</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-x-16 gap-y-0">
+                <!-- Step 1 -->
+                <div class="flex gap-6 py-10 animate-on-scroll">
+                    <div class="shrink-0">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cedrus-600 to-cedrus-500 flex items-center justify-center">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gold font-semibold uppercase tracking-widest mb-2">Étape 1</p>
+                        <h3 class="text-xl font-playfair font-semibold text-white mb-3">Decrivez votre situation</h3>
+                        <p class="text-gray-300 leading-relaxed">Repondez a quelques questions simples via notre formulaire. Votre situation, vos besoins, votre activité -- nous nous chargeons de tout comprendre pour vous.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex gap-6 py-10 animate-on-scroll">
+                    <div class="shrink-0">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold to-yellow-600 flex items-center justify-center">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gold font-semibold uppercase tracking-widest mb-2">Étape 2</p>
+                        <h3 class="text-xl font-playfair font-semibold text-white mb-3">Nous vous rappelons sous 24 heures</h3>
+                        <p class="text-gray-300 leading-relaxed">Votre expert-comptable a déjà étudié votre profil avant même de vous parler. Un premier entretien gratuit de 30 minutes, en visioconference, par téléphone ou au cabinet.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex gap-6 py-10 animate-on-scroll">
+                    <div class="shrink-0">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cedrus-600 to-cedrus-500 flex items-center justify-center">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gold font-semibold uppercase tracking-widest mb-2">Étape 3</p>
+                        <h3 class="text-xl font-playfair font-semibold text-white mb-3">Votre espace personnel</h3>
+                        <p class="text-gray-300 leading-relaxed">Accédez à votre portail client sécurisé : déposez vos factures, consultez vos documents, suivez vos chiffres clés. Tout est centralisé, simple et disponible 24h/24.</p>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="flex gap-6 py-10 animate-on-scroll">
+                    <div class="shrink-0">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold to-yellow-600 flex items-center justify-center">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605"/></svg>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gold font-semibold uppercase tracking-widest mb-2">Étape 4</p>
+                        <h3 class="text-xl font-playfair font-semibold text-white mb-3">Accompagnement continu</h3>
+                        <p class="text-gray-300 leading-relaxed">Votre expert-comptable reste disponible et reactif. Bilans, déclarations fiscales, conseil fiscal -- tout est pris en charge. Vous vous concentrez sur votre activité, nous nous occupons du reste.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-10 animate-on-scroll">
+                <a href="onboarding.html" class="inline-block border-2 border-ink text-white px-10 py-4 text-sm tracking-widest uppercase hover:bg-white hover:text-ink transition-all duration-300 rounded-full">Commencer maintenant</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-white py-16" style="background: linear-gradient(180deg, #3C4B5F 0%, #1E2D41 50%, #08121F 100%);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">CEDRUS</h3>
+                    <p class="text-gray-300 mb-2">8 AVENUE DES TERRASSES</p>
+                    <p class="text-gray-300 mb-4">92430 MARNES-LA-COQUETTE</p>
+                    <p class="text-gray-300">contact@cedrus-expertise.fr</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">Liens rapides</h3>
+                    <ul class="space-y-2">
+                        <li><a href="cabinet.html" class="text-gray-300 hover:text-white transition-colors">Le cabinet</a></li>
+                        <li><a href="missions.html" class="text-gray-300 hover:text-white transition-colors">Nos missions</a></li>
+                        <li><a href="honoraires.html" class="text-gray-300 hover:text-white transition-colors">Honoraires</a></li>
+                        <li><a href="contact.html" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-playfair font-semibold mb-4">Suivez-nous</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="LinkedIn">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                    <p class="text-gray-300 text-sm">&copy; 2024 CEDRUS EXPERTISE COMPTABLE & CONSEILS. Tous droits reserves.</p>
+                    <div class="flex space-x-6 text-sm">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">Mentions légales</a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">Politique de confidentialité</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Splash animation -->
+    <script>
+        (function() {
+            var splash = document.getElementById('splash');
+            var logo = document.getElementById('splash-logo');
+            document.body.style.overflow = 'hidden';
+            setTimeout(function() { logo.style.opacity = '1'; logo.style.transform = 'scale(1)'; }, 100);
+            setTimeout(function() { splash.style.opacity = '0'; document.body.style.overflow = ''; }, 2400);
+            setTimeout(function() { splash.remove(); }, 3200);
+        })();
+    </script>
+
+
+    <!-- Nav scroll effect -->
+    <script>
+        (function() {
+            var nav = document.getElementById('mainNav');
+            var navInner = document.getElementById('navInner');
+            var scrolled = false;
+
+            function updateNav() {
+                var shouldBeScrolled = window.scrollY > 80;
+                if (shouldBeScrolled === scrolled) return;
+                scrolled = shouldBeScrolled;
+
+                if (scrolled) {
+                    nav.style.background = 'rgba(255,255,255,0.97)';
+                    nav.style.boxShadow = '0 1px 20px rgba(0,0,0,0.06)';
+                    navInner.style.paddingTop = '12px';
+                    navInner.style.paddingBottom = '12px';
+                    // Dark text
+                    document.querySelectorAll('.nav-text').forEach(function(el) { el.style.color = '#0B1420'; });
+                    document.querySelectorAll('.nav-link').forEach(function(el) {
+                        el.style.color = el.classList.contains('font-medium') ? '#3E9364' : '#6B7280';
+                    });
+                    var cta = document.querySelector('.nav-cta');
+                    if (cta) { cta.style.color = '#0B1420'; cta.style.borderColor = '#0B1420'; }
+                } else {
+                    nav.style.background = 'transparent';
+                    nav.style.boxShadow = 'none';
+                    navInner.style.paddingTop = '20px';
+                    navInner.style.paddingBottom = '20px';
+                    // White text
+                    document.querySelectorAll('.nav-text').forEach(function(el) { el.style.color = 'white'; });
+                    document.querySelectorAll('.nav-link').forEach(function(el) {
+                        el.style.color = el.classList.contains('font-medium') ? 'white' : 'rgba(255,255,255,0.7)';
+                    });
+                    var cta = document.querySelector('.nav-cta');
+                    if (cta) { cta.style.color = 'white'; cta.style.borderColor = 'rgba(255,255,255,0.4)'; }
+                }
+            }
+
+            window.addEventListener('scroll', updateNav, { passive: true });
+            updateNav();
+        })();
+    </script>
+
+    <!-- Language switcher -->
+    <script>
+        function toggleLangMenu() {
+            document.getElementById('langMenu').classList.toggle('hidden');
+        }
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#langSwitcher')) {
+                document.getElementById('langMenu').classList.add('hidden');
+            }
+        });
+    </script>
+
+    <script src="../assets/main.js"></script>
+</body>
+</html>

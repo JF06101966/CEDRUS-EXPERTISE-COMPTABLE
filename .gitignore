@@ -1,0 +1,58 @@
+# ===== SECRETS — NE JAMAIS COMMIT =====
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+**/.env
+**/.env.*
+
+# ===== DEPENDENCIES =====
+node_modules/
+**/node_modules/
+package-lock.json.bak
+
+# ===== LOGS =====
+*.log
+npm-debug.log*
+logs/
+server/logs/
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# ===== EDITORS =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== BUILD / RUNTIME =====
+dist/
+build/
+.cache/
+.parcel-cache/
+.next/
+
+# ===== UPLOADS LOCAUX (signatures, attestations générées) =====
+server/uploads/
+server/tmp/
+
+# ===== AUTRES =====
+*.tmp
+*.bak
+.env.backup
+CEDRUS PILOT.pdf
+attestation*.docx
+PHOTO-*.jpg
+PHOTO-*.jpeg
+localhost.jpeg
+localhost.jpg
+*.screenshot.png
+
+# ===== TEMP HTML EMAIL TEMPLATES =====
+/tmp/invite-template.html
