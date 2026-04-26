@@ -256,6 +256,22 @@ app.get('/api/pennylane/me', async (_req, res) => {
     res.status(r.status).json(r.body);
 });
 
+// Diagnostic temporaire — à supprimer après debug
+app.get('/api/_diag', (_req, res) => {
+    const url = process.env.SUPABASE_URL || '';
+    const anon = process.env.SUPABASE_ANON_KEY || '';
+    const srk = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+    res.json({
+        supabase_url: url,
+        anon_last8: anon.slice(-8),
+        anon_len: anon.length,
+        srk_last8: srk.slice(-8),
+        srk_len: srk.length,
+        node_env: process.env.NODE_ENV || '(non défini)',
+        site_url: process.env.SITE_URL || '(non défini)'
+    });
+});
+
 // Greffe du RCS déduit du code postal (utilisé par l'attestation de CA)
 const RCS_PAR_DEPT = {
     '75': 'Paris',           '77': 'Meaux',        '78': 'Versailles',
