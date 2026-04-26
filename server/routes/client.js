@@ -165,6 +165,62 @@ router.post('/api/client/set-password', async (req, res) => {
 });
 
 // ============================================================================
+// POST /api/client/request-password-reset — envoie un email de reset au client
+// Ne révèle jamais si l'email existe (anti-énumération)
+// ============================================================================
+router.post('/api/client/request-password-reset', async (req, res) => {
+    try {
+        const email = String(req.body?.email || '').trim().toLowerCase();
+        if (!email) return res.status(400).json({ error: 'missing_email' });
+
+        // Vérifie qu'il existe au moins une fiche client liée à cet email
+        // (membership OU contact_email — les deux cas possibles)
+        const { data: usersList } = await supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
+        const authUser = (usersList?.users || []).find(u => u.email === email);
+
+        let hasClientProfile = false;
+        if (authUser) {
+            const { data: members } = await supabase
+                .from('client_members')
+                .select('id')
+                .eq('auth_user_id', authUser.id)
+                .limit(1);
+            hasClientProfile = !!(members && members.length);
+        }
+        if (!hasClientProfile) {
+            // Fallback : fiche client avec contact_email mais pas encore d'auth user
+            const { data: matchingClients } = await supabase
+                .from('clients')
+                .select('id')
+                .eq('contact_email', email)
+                .limit(1);
+            hasClientProfile = !!(matchingClients && matchingClients.length);
+        }
+
+        if (hasClientProfile && authUser) {
+            const siteUrl = process.env.SITE_URL || 'https://www.cedrus-expertisecomptable.com';
+            const redirectTo = siteUrl.replace(/\/$/, '') + '/set-password.html';
+            const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+            if (error) {
+                console.warn('[client.reset] supabase error:', error.message);
+            } else {
+                logActivity({
+                    actorRole: 'system',
+                    action: 'client.password_reset_requested',
+                    details: { email }
+                });
+            }
+        }
+
+        // Toujours 200 pour ne pas révéler si l'email existe
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[client.request-password-reset]', err);
+        res.json({ ok: true });
+    }
+});
+
+// ============================================================================
 // POST /api/client/change-password — change le mot de passe (user déjà connecté)
 // ----------------------------------------------------------------------------
 // 1) Vérifie le token Bearer pour identifier l'user

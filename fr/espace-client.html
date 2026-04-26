@@ -310,13 +310,34 @@
             }
         })();
 
-        function showForgot(e) {
+        async function showForgot(e) {
             e.preventDefault();
             var err = document.getElementById('loginError');
+            var emailField = document.getElementById('loginEmail');
+            var email = (emailField.value || '').trim();
+            if (!email) {
+                err.textContent = 'Veuillez d\'abord saisir votre email ci-dessus, puis cliquer à nouveau sur « Mot de passe oublié ».';
+                err.style.color = '#ef4444'; err.style.background = '#fef2f2';
+                err.classList.remove('hidden');
+                emailField.focus();
+                return;
+            }
+            err.textContent = 'Envoi du lien de réinitialisation…';
+            err.style.color = '#6B7280'; err.style.background = '#F3F4F6';
             err.classList.remove('hidden');
-            err.style.color = '#3E9364';
-            err.style.background = '#F0FDF4';
-            err.textContent = 'Veuillez nous contacter à contact@cedrus-expertise.fr pour réinitialiser votre mot de passe.';
+            try {
+                var res = await fetch('/api/client/request-password-reset', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                if (!res.ok) throw new Error('failed');
+                err.textContent = 'Si cet email est enregistré, un lien de réinitialisation vient d\'être envoyé. Vérifiez votre boîte mail (et les spams).';
+                err.style.color = '#3E9364'; err.style.background = '#F0FDF4';
+            } catch (ex) {
+                err.textContent = 'Impossible d\'envoyer l\'email. Réessayez ou contactez-nous.';
+                err.style.color = '#ef4444'; err.style.background = '#fef2f2';
+            }
         }
 
         function toggleLangMenu() {

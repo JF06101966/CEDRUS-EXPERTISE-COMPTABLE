@@ -298,13 +298,34 @@
             }
         }
 
-        function showForgot(e) {
+        async function showForgot(e) {
             e.preventDefault();
             var err = document.getElementById('loginError');
+            var emailField = document.getElementById('loginEmail');
+            var email = (emailField.value || '').trim();
+            if (!email) {
+                err.textContent = 'Please enter your email above first, then click "Forgot password?" again.';
+                err.style.color = '#ef4444'; err.style.background = '#fef2f2';
+                err.classList.remove('hidden');
+                emailField.focus();
+                return;
+            }
+            err.textContent = 'Sending reset email…';
+            err.style.color = '#6B7280'; err.style.background = '#F3F4F6';
             err.classList.remove('hidden');
-            err.style.color = '#3E9364';
-            err.style.background = '#F0FDF4';
-            err.textContent = 'Please contact us at contact@cedrus-expertise.fr to reset your password.';
+            try {
+                var res = await fetch('/api/client/request-password-reset', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                if (!res.ok) throw new Error('failed');
+                err.textContent = 'If this email is registered, a password reset link has just been sent. Check your inbox (and spam folder).';
+                err.style.color = '#3E9364'; err.style.background = '#F0FDF4';
+            } catch (ex) {
+                err.textContent = 'Unable to send the reset email. Please try again or contact us.';
+                err.style.color = '#ef4444'; err.style.background = '#fef2f2';
+            }
         }
 
         // If arrived from magic link invitation (contains #access_token=...)
