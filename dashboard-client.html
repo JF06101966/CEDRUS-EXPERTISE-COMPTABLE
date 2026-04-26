@@ -1519,7 +1519,7 @@
                             <div>
                                 <p class="text-xs font-medium text-muted uppercase tracking-wider mb-2">Sécurité</p>
                                 <div class="flex flex-wrap gap-2">
-                                    <button class="text-xs px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50" onclick="alert('À implémenter')">Changer mot de passe</button>
+                                    <button class="text-xs px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50" onclick="openChangePasswordModal()">Changer mot de passe</button>
                                     <button class="text-xs px-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50" onclick="alert('À implémenter')">Activer la 2FA</button>
                                 </div>
                             </div>
@@ -3959,6 +3959,107 @@
         }
 
         init();
+    </script>
+
+    <!-- Modale Changer mot de passe -->
+    <div id="cpwdModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4" onclick="closeChangePasswordModal(event)">
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-xl" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-ink">Changer mon mot de passe</h3>
+                <button onclick="closeChangePasswordModal()" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+            </div>
+            <form id="cpwdForm" class="p-6 space-y-4" onsubmit="submitChangePassword(event)">
+                <div>
+                    <label class="text-xs font-medium text-muted uppercase tracking-wider block mb-1">Mot de passe actuel</label>
+                    <input type="password" id="cpwdCurrent" required autocomplete="current-password" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cedrus-600">
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-muted uppercase tracking-wider block mb-1">Nouveau mot de passe</label>
+                    <input type="password" id="cpwdNew" required minlength="8" autocomplete="new-password" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cedrus-600">
+                    <p class="text-xs text-muted mt-1">8 caractères minimum. Privilégiez un mot de passe long et unique.</p>
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-muted uppercase tracking-wider block mb-1">Confirmer le nouveau mot de passe</label>
+                    <input type="password" id="cpwdConfirm" required minlength="8" autocomplete="new-password" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cedrus-600">
+                </div>
+                <div id="cpwdMsg" class="hidden text-sm rounded-lg p-3"></div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeChangePasswordModal()" class="px-4 py-2 rounded-lg border border-gray-200 text-sm hover:bg-gray-50">Annuler</button>
+                    <button type="submit" id="cpwdSubmit" class="px-4 py-2 rounded-lg bg-ink text-white text-sm hover:bg-cedrus-600">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openChangePasswordModal() {
+            document.getElementById('cpwdForm').reset();
+            var msg = document.getElementById('cpwdMsg');
+            msg.className = 'hidden text-sm rounded-lg p-3';
+            msg.textContent = '';
+            var modal = document.getElementById('cpwdModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(function() { document.getElementById('cpwdCurrent').focus(); }, 50);
+        }
+        function closeChangePasswordModal(e) {
+            if (e && e.target && e.target.id !== 'cpwdModal' && e.type === 'click') return;
+            var modal = document.getElementById('cpwdModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        async function submitChangePassword(e) {
+            e.preventDefault();
+            var msg = document.getElementById('cpwdMsg');
+            var btn = document.getElementById('cpwdSubmit');
+            var current = document.getElementById('cpwdCurrent').value;
+            var pw1 = document.getElementById('cpwdNew').value;
+            var pw2 = document.getElementById('cpwdConfirm').value;
+
+            function showMsg(text, kind) {
+                msg.textContent = text;
+                msg.className = 'text-sm rounded-lg p-3 ' + (kind === 'ok' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600');
+            }
+
+            if (pw1 !== pw2) return showMsg('Les deux nouveaux mots de passe ne correspondent pas.', 'err');
+            if (pw1.length < 8) return showMsg('Le nouveau mot de passe doit faire au moins 8 caractères.', 'err');
+            if (pw1 === current) return showMsg('Le nouveau mot de passe doit être différent de l\'actuel.', 'err');
+
+            var token = localStorage.getItem('cedrus_client_token');
+            if (!token) return showMsg('Session expirée. Reconnectez-vous.', 'err');
+
+            btn.disabled = true;
+            var origText = btn.textContent;
+            btn.textContent = 'Enregistrement…';
+            try {
+                var res = await fetch('/api/client/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ current_password: current, new_password: pw1 })
+                });
+                var data = await res.json();
+                if (!res.ok) {
+                    var errMap = {
+                        wrong_current_password: 'Mot de passe actuel incorrect.',
+                        password_too_short: 'Mot de passe trop court (8 caractères minimum).',
+                        same_password: 'Le nouveau mot de passe doit être différent de l\'actuel.',
+                        missing_params: 'Champs manquants.',
+                        password_update_failed: 'Échec de la mise à jour. Réessayez.',
+                    };
+                    return showMsg(errMap[data.error] || 'Erreur. Réessayez.', 'err');
+                }
+                showMsg('Mot de passe changé avec succès ✓', 'ok');
+                setTimeout(function() { closeChangePasswordModal(); }, 1200);
+            } catch (ex) {
+                showMsg('Erreur de connexion. Réessayez.', 'err');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = origText;
+            }
+        }
     </script>
 </body>
 </html>

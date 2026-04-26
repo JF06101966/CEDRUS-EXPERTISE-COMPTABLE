@@ -165,6 +165,47 @@ router.post('/api/client/set-password', async (req, res) => {
 });
 
 // ============================================================================
+// POST /api/client/change-password — change le mot de passe (user déjà connecté)
+// ----------------------------------------------------------------------------
+// 1) Vérifie le token Bearer pour identifier l'user
+// 2) Re-vérifie l'ancien mot de passe via signInWithPassword (sécurité)
+// 3) Met à jour avec le nouveau mot de passe via service_role
+// ============================================================================
+router.post('/api/client/change-password', requireClient, async (req, res) => {
+    try {
+        const { current_password, new_password } = req.body || {};
+        if (!current_password || !new_password) return res.status(400).json({ error: 'missing_params' });
+        if (new_password.length < 8) return res.status(400).json({ error: 'password_too_short' });
+        if (new_password === current_password) return res.status(400).json({ error: 'same_password' });
+
+        // 1) Vérifie l'ancien mot de passe
+        const checkSb = supabaseAuthClient();
+        const { error: checkErr } = await checkSb.auth.signInWithPassword({
+            email: req.user.email,
+            password: current_password
+        });
+        if (checkErr) return res.status(401).json({ error: 'wrong_current_password' });
+
+        // 2) Met à jour le mot de passe
+        const { error: updErr } = await supabase.auth.admin.updateUserById(req.user.id, { password: new_password });
+        if (updErr) return res.status(500).json({ error: 'password_update_failed', details: updErr.message });
+
+        logActivity({
+            actorUserId: req.user.id,
+            actorRole: 'client',
+            action: 'client.password_changed',
+            targetType: 'client',
+            targetId: req.client?.id
+        });
+
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('[change-password]', err);
+        res.status(500).json({ error: 'unexpected' });
+    }
+});
+
+// ============================================================================
 // GET /api/client/me — infos du client connecté (masque la clé API)
 // ============================================================================
 router.get('/api/client/me', requireClient, (req, res) => {
