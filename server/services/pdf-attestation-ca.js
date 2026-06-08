@@ -72,42 +72,34 @@ export async function generateAttestationCA(data) {
     const sigPath = findSignaturePath(signature_path);
 
     // =================================================================
-    // EN-TÊTE — logo + nom cabinet à gauche, coordonnées à droite
+    // EN-TÊTE — logo imposant à gauche, coordonnées discrètes à droite
     // =================================================================
     if (hasLogo) {
-        try { doc.image(LOGO_PATH, LEFT, 60, { width: 48 }); } catch (_) {}
+        try { doc.image(LOGO_PATH, LEFT, 50, { width: 110 }); } catch (_) {}
     }
-    doc.font('Times-Bold').fontSize(13).fillColor(COLORS.primary)
-       .text('CEDRUS', LEFT + 60, 66, { lineBreak: false, characterSpacing: 3 });
-    doc.font('Times-Italic').fontSize(8.5).fillColor(COLORS.muted)
-       .text('Expertise Comptable & Conseils', LEFT + 60, 86, { lineBreak: false });
 
-    // Bloc coordonnées cabinet — à droite, discret
-    doc.font('Helvetica').fontSize(7.5).fillColor(COLORS.muted);
+    // Bloc coordonnées cabinet — à droite, sobre
+    doc.font('Helvetica').fontSize(8).fillColor(COLORS.muted);
     const cabinetLines = [
-        cabinet.adresse || '8 Avenue des Terrasses',
+        cabinet.adresse || '8 avenue des Terrasses',
         `${cabinet.code_postal || '92430'} ${cabinet.ville || 'Marnes-la-Coquette'}`,
         cabinet.email || 'cabinet@cedrus-expertisecomptable.com',
-        'SIREN ' + (cabinet.siren || '805 220 381'),
+        'SIREN ' + (cabinet.siren || '422 362 307'),
     ].filter(Boolean);
-    let infoY = 66;
+    let infoY = 64;
     cabinetLines.forEach(line => {
         doc.text(line, LEFT, infoY, { width: W, align: 'right', lineBreak: false, characterSpacing: 0.2 });
-        infoY += 10;
+        infoY += 11;
     });
 
-    // Simple filet or fin en bas d'en-tête
-    doc.moveTo(LEFT, 125).lineTo(RIGHT, 125).strokeColor(COLORS.gold).lineWidth(0.4).stroke();
+    // Filet or fin en bas d'en-tête (sous le logo)
+    doc.moveTo(LEFT, 175).lineTo(RIGHT, 175).strokeColor(COLORS.gold).lineWidth(0.4).stroke();
 
     // =================================================================
-    // TITRE — sobre, centré
+    // TITRE — sobre, centré, plus d'air
     // =================================================================
-    doc.font('Times-Bold').fontSize(20).fillColor(COLORS.ink)
-       .text('Attestation de chiffre d\'affaires', LEFT, 185, { width: W, align: 'center' });
-
-    // Petit filet or court sous le titre
-    const midX = (LEFT + RIGHT) / 2;
-    doc.moveTo(midX - 30, 220).lineTo(midX + 30, 220).strokeColor(COLORS.gold).lineWidth(0.6).stroke();
+    doc.font('Times-Bold').fontSize(22).fillColor(COLORS.ink)
+       .text('Attestation de chiffre d\'affaires', LEFT, 215, { width: W, align: 'center' });
 
     // =================================================================
     // CORPS
@@ -122,7 +114,7 @@ export async function generateAttestationCA(data) {
     const montantTexte = formatEuros(montant_ca);
 
     // Paragraphe, Times-Roman 12pt, interligne généreux, justifié
-    const bodyY = 265;
+    const bodyY = 295;
     doc.font('Times-Roman').fontSize(12).fillColor(COLORS.ink);
     const p1 =
         'Je soussigné, Monsieur Jean-François LE GALL, Expert-Comptable Diplômé, ' +
@@ -130,15 +122,15 @@ export async function generateAttestationCA(data) {
         `${nomSociete}${adresseLigne ? ', sise ' + adresseLigne : ''}` +
         `${siren ? ', immatriculée au Registre du Commerce et des Sociétés de ' + rcsVille + ' sous le numéro ' + siren : ''}` +
         `, au titre de ${periodeTexte}, s\'est élevé à la somme de :`;
-    doc.text(p1, LEFT, bodyY, { width: W, align: 'justify', lineGap: 4 });
+    doc.text(p1, LEFT, bodyY, { width: W, align: 'justify', lineGap: 5 });
 
     // Montant — centré, Times-Bold, en accent primaire, sans cadre
-    const yAvantMontant = doc.y + 28;
-    doc.font('Times-Bold').fontSize(22).fillColor(COLORS.primary)
+    const yAvantMontant = doc.y + 36;
+    doc.font('Times-Bold').fontSize(24).fillColor(COLORS.primary)
        .text(montantTexte, LEFT, yAvantMontant, { width: W, align: 'center' });
 
     // Clôture — italique, centré
-    const yCloture = doc.y + 32;
+    const yCloture = doc.y + 40;
     doc.font('Times-Italic').fontSize(11).fillColor(COLORS.muted)
        .text('Cette attestation est établie pour servir et faire valoir ce que de droit.',
              LEFT, yCloture, { width: W, align: 'center' });
@@ -146,40 +138,37 @@ export async function generateAttestationCA(data) {
     // =================================================================
     // LIEU / DATE + SIGNATURE — en bas à droite
     // =================================================================
-    const yLieu = yCloture + 60;
+    const yLieu = yCloture + 70;
     doc.font('Times-Roman').fontSize(11).fillColor(COLORS.ink)
        .text(`Fait à ${ville_emission}, le ${formatDateFr(date_emission)}.`,
              LEFT, yLieu, { width: W, align: 'right' });
 
-    // Zone signature — alignée à droite, sans cadre visible, juste l'emplacement
+    // Zone signature — alignée à droite, sans cadre visible
     const sigColX = RIGHT - 220;
     const sigColW = 220;
-    const ySign = yLieu + 28;
+    const ySign = yLieu + 30;
 
-    // Signature (image si fournie, sinon espace vierge)
     if (sigPath) {
         try {
             doc.image(sigPath, sigColX + 30, ySign, { fit: [sigColW - 60, 60], align: 'center' });
         } catch (_) {}
     }
-    // L'espace vierge reste (60px) pour signature manuscrite si pas de PNG
 
     // Petit filet or hairline sous la signature
     const yLigneSig = ySign + 65;
     doc.moveTo(sigColX + 30, yLigneSig).lineTo(sigColX + sigColW - 30, yLigneSig)
        .strokeColor(COLORS.gold).lineWidth(0.4).stroke();
 
-    // Nom & titre sous le filet
-    doc.font('Times-Bold').fontSize(10.5).fillColor(COLORS.primary)
+    doc.font('Times-Bold').fontSize(11).fillColor(COLORS.primary)
        .text('Jean-François LE GALL', sigColX, yLigneSig + 8, { width: sigColW, align: 'center' });
-    doc.font('Times-Italic').fontSize(9).fillColor(COLORS.ink)
+    doc.font('Times-Italic').fontSize(9.5).fillColor(COLORS.ink)
        .text('Expert-Comptable Diplômé', sigColX, yLigneSig + 24, { width: sigColW, align: 'center' });
 
     // =================================================================
     // PIED DE PAGE — légal, très discret
     // =================================================================
     doc.moveTo(LEFT, 790).lineTo(RIGHT, 790).strokeColor(COLORS.hairline).lineWidth(0.3).stroke();
-    doc.font('Helvetica').fontSize(6.5).fillColor(COLORS.muted);
+    doc.font('Helvetica').fontSize(6.8).fillColor(COLORS.muted);
     doc.text(
         'CEDRUS Expertise Comptable & Conseils — Inscrit au Tableau de l\'Ordre des Experts-Comptables',
         LEFT, 797, { width: W, align: 'center', lineBreak: false, characterSpacing: 0.3 }

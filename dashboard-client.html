@@ -18,7 +18,7 @@
             theme: {
                 extend: {
                     colors: {
-                        'cedrus': { 700: '#357A56', 600: '#3E9364', 500: '#4FA36F', 200: '#BFE6AE' },
+                        'cedrus': { 700: '#357A56', 600: '#3E9364', 500: '#4FA36F', 200: '#BFE6AE', 100: '#E3F4EA', 50: '#F1FAF4' },
                         'ink': '#0B1420', 'muted': '#6B7280', 'paper': '#F8FAF9', 'gold': '#D4A853'
                     },
                     fontFamily: {
@@ -35,7 +35,7 @@
         .is-report { font-family: 'Inter', sans-serif; color: #0B1420; }
         .is-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding-bottom: 20px; margin-bottom: 28px; border-bottom: 3px double #0B1420; }
         .is-header-cabinet { display: flex; gap: 18px; flex: 1; min-width: 0; align-items: flex-start; }
-        .is-logo { height: 78px; width: auto; max-width: 140px; object-fit: contain; flex-shrink: 0; }
+        .is-logo { height: 112px; width: auto; max-width: 180px; object-fit: contain; flex-shrink: 0; }
         .is-cabinet-text { min-width: 0; }
         .is-cabinet-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; letter-spacing: 0.04em; color: #0B1420; line-height: 1; }
         .is-cabinet-tag { font-size: 11px; color: #6B7280; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; }
@@ -66,6 +66,12 @@
         .is-block-title { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #3E9364; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #E5E7EB; }
 
         .is-row { display: grid; grid-template-columns: 18px 1fr 62px 140px; gap: 12px; align-items: center; padding: 6px 0; font-size: 13px; }
+        /* Mode comparatif N / N-1 : 5 colonnes (sign | label | N-1 | N | delta%) */
+        .is-row.cmp { grid-template-columns: 18px 1fr 130px 140px 80px; }
+        .is-amount-prev { text-align: right; font-variant-numeric: tabular-nums; color: #9CA3AF; font-weight: 400; font-size: 12px; font-style: italic; }
+        .is-delta { text-align: right; font-variant-numeric: tabular-nums; font-size: 11px; font-weight: 600; }
+        .is-delta.pos { color: #047857; }
+        .is-delta.neg { color: #B91C1C; }
         .is-sign { display: inline-flex; justify-content: center; align-items: center; width: 18px; height: 18px; border-radius: 50%; font-size: 11px; font-weight: 700; color: transparent; }
         .is-sign.plus { background: rgba(62, 147, 100, 0.12); color: #3E9364; }
         .is-sign.minus { background: rgba(220, 38, 38, 0.08); color: #DC2626; }
@@ -135,7 +141,7 @@
                 border-bottom-width: 2px;
             }
             .is-header-cabinet { gap: 12px; }
-            .is-logo { height: 56px; max-width: 100px; }
+            .is-logo { height: 82px; max-width: 130px; }
             .is-cabinet-name { font-size: 18px; }
             .is-cabinet-tag { font-size: 9.5px; }
             .is-cabinet-addr { font-size: 10px; }
@@ -696,7 +702,7 @@
         @media (max-width: 767px) {
             /* Empêcher TOUT overflow horizontal — règle globale */
             html, body { overflow-x: hidden !important; }
-            body, main, .section, #sec-overview, #sec-upload, #sec-permanent, #sec-fiscal, #sec-juridique, #sec-social, #sec-infos {
+            body, main, .section, #sec-overview, #sec-upload, #sec-permanent, #sec-fiscal, #sec-juridique, #sec-social, #sec-infos, #sec-previsionnel {
                 max-width: 100vw !important;
                 overflow-x: clip;
             }
@@ -868,6 +874,34 @@
             color: white; box-shadow: 0 2px 8px rgba(62,147,100,0.25);
         }
         .period-btn:not(.active):hover { color: #0B1420; background: #F3F4F6; }
+
+        /* Previsionnel — onglets internes */
+        .prev-tab-btn {
+            padding: 9px 18px; border-radius: 10px; font-size: 0.85rem; font-weight: 500;
+            color: #6B7280; cursor: pointer; background: #fff; border: 1px solid #E5E7EB;
+            transition: all 0.2s;
+        }
+        .prev-tab-btn:hover { border-color: #3E9364; color: #3E9364; }
+        .prev-tab-btn.active {
+            background: linear-gradient(135deg, #3E9364, #4FA36F);
+            color: #fff; border-color: #3E9364;
+            box-shadow: 0 2px 8px rgba(62,147,100,0.25);
+        }
+        /* Previsionnel — tables */
+        #sec-previsionnel table th, #sec-previsionnel table td { border-bottom: 1px solid #F3F4F6; }
+        #sec-previsionnel tfoot td { border-top: 1px solid #E5E7EB; border-bottom: none; }
+        #sec-previsionnel .row-actual { background: #FBFEFC; }
+        #sec-previsionnel .row-forecast { background: #FFFFFF; }
+        #sec-previsionnel .row-forecast td:not(:last-child) { color: #6B7280; font-style: italic; }
+        #sec-previsionnel .status-pill {
+            display: inline-block; padding: 2px 8px; border-radius: 999px;
+            font-size: 10.5px; font-weight: 600; letter-spacing: 0.02em;
+        }
+        #sec-previsionnel .status-actual { background: #ECFDF5; color: #047857; }
+        #sec-previsionnel .status-forecast { background: #F3F4F6; color: #6B7280; }
+        #sec-previsionnel .num-cell { font-variant-numeric: tabular-nums; }
+        #sec-previsionnel .total-positive { color: #047857; }
+        #sec-previsionnel .total-negative { color: #B91C1C; }
 
         /* Bank account card */
         .bank-card {
@@ -1077,6 +1111,13 @@
                 <div class="nav-item" onclick="showSection('social')" data-section="social">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
                     <span data-i18n="nav.social">Registre social</span>
+                </div>
+
+                <div class="pt-3 pb-1 px-4 text-[10px] font-semibold text-gray-400 tracking-widest uppercase" data-i18n="nav.pilotage_section">Pilotage</div>
+
+                <div class="nav-item" onclick="showSection('previsionnel')" data-section="previsionnel">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+                    <span data-i18n="nav.previsionnel">Prévisionnel</span>
                 </div>
 
                 <div class="pt-3 pb-1 px-4 text-[10px] font-semibold text-gray-400 tracking-widest uppercase" data-i18n="nav.account_section">Compte</div>
@@ -1540,6 +1581,245 @@
                         </div>
                         <div id="activityLogBody">
                             <p class="text-xs text-muted py-8 text-center">Chargement...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PREVISIONNEL ===== -->
+                <div class="section" id="sec-previsionnel">
+                    <div class="mb-6 flex flex-wrap items-start justify-between gap-4">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-playfair font-bold text-ink mb-1" data-i18n="prev.title">Prévisionnel</h1>
+                            <p class="text-muted text-sm" data-i18n="prev.subtitle">Projection de l'activité et de la trésorerie, validée par votre expert-comptable.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="generatePrevisionnelReport()" class="text-xs font-medium bg-ink text-white hover:bg-cedrus-600 px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z"/></svg>
+                                <span data-i18n="prev.gen_report">Générer le rapport CEDRUS</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Toggle de mode -->
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <button id="prevTabCourant" class="prev-tab-btn active" onclick="switchPrevTab('courant')">
+                            <span data-i18n="prev.tab_courant">Année en cours · mensuel</span>
+                        </button>
+                        <button id="prevTab5ans" class="prev-tab-btn" onclick="switchPrevTab('5ans')">
+                            <span data-i18n="prev.tab_5ans">5 prochains exercices</span>
+                        </button>
+                    </div>
+
+                    <!-- Bandeau d'info -->
+                    <div id="prevInfoBanner" class="mb-6 bg-gradient-to-r from-white to-[#FAFDFB] rounded-xl border border-gray-100 px-5 py-4 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2.5 h-2.5 rounded-full bg-cedrus-600"></div>
+                            <div>
+                                <p class="text-sm font-medium text-ink" id="prevBannerTitle">Chargement du prévisionnel…</p>
+                                <p class="text-xs text-muted" id="prevBannerSub">Basé sur la comptabilité Pennylane et le dernier exercice clos.</p>
+                            </div>
+                        </div>
+                        <div class="text-xs text-muted">
+                            <span data-i18n="prev.ref">Exercice de référence : N-1 =</span>
+                            <span id="prevRefYear" class="font-semibold text-ink">—</span>
+                        </div>
+                    </div>
+
+                    <!-- ====== Onglet 1 : Année en cours - SIG ====== -->
+                    <div id="prevPaneCourant">
+                        <!-- Encart pédagogique -->
+                        <div class="bg-cedrus-50 border border-cedrus-200 rounded-xl p-5 mb-6">
+                            <div class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-cedrus-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-ink mb-1">Atterrissage projeté de l'exercice — format SIG</p>
+                                    <p class="text-xs text-muted leading-relaxed">
+                                        Méthode : pour chaque ligne, on prend ce qui a été <strong class="text-cedrus-600">comptabilisé du 1<sup>er</sup> janvier à ce jour</strong>, puis on y ajoute la <strong>projection des mois restants</strong> = montant constaté sur la même période N-1 (saisonnalité réelle).<br/>
+                                        Les <strong>dotations aux amortissements/provisions</strong> sont isolées (charges non décaissables) pour calculer correctement la <strong>CAF</strong> du budget de trésorerie.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tableau SIG comparatif principal -->
+                        <div class="bg-white rounded-xl border border-gray-100 overflow-hidden mb-6">
+                            <div class="px-5 py-4 border-b border-gray-100">
+                                <h3 class="text-sm font-semibold text-ink">Soldes intermédiaires de gestion · atterrissage <span id="prevSigYearCur">—</span></h3>
+                                <p class="text-xs text-muted mt-0.5">Comparé à N-1 (même période YTD et année complète).</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm" id="prevSigTable">
+                                    <thead class="bg-gray-50 text-xs uppercase tracking-wider text-muted">
+                                        <tr>
+                                            <th class="text-left px-4 py-3">Poste SIG</th>
+                                            <th class="text-right px-3 py-3 text-gray-400 normal-case font-normal italic">N-1 même période</th>
+                                            <th class="text-right px-3 py-3 text-cedrus-600">Réalisé YTD</th>
+                                            <th class="text-right px-3 py-3 text-gray-400 normal-case font-normal italic">N-1 mois restants</th>
+                                            <th class="text-right px-3 py-3">Projection mois restants</th>
+                                            <th class="text-right px-3 py-3 text-cedrus-700 font-semibold">Total projeté N</th>
+                                            <th class="text-right px-3 py-3 text-gray-400 normal-case font-normal italic">N-1 complet</th>
+                                            <th class="text-right px-3 py-3">Δ vs N-1</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="prevSigBody">
+                                        <tr><td colspan="8" class="text-center text-muted text-sm py-10">Chargement…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="px-5 py-3 bg-gray-50 border-t border-gray-100 text-[11px] text-muted">
+                                <strong class="text-ink">Lecture :</strong> Total projeté N = Réalisé YTD + Projection mois restants (= N-1 sur la même période restante).
+                                <span class="ml-3"><strong class="text-ink">Période YTD :</strong> <span id="prevYtdLabel">—</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Détail mensuel CA (vue saisonnalité) -->
+                        <div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
+                            <div class="px-5 py-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3">
+                                <div>
+                                    <h3 class="text-sm font-semibold text-ink"><span id="prevCurYearTitle">—</span> · détail mensuel CA &amp; résultat</h3>
+                                    <p class="text-xs text-muted mt-0.5">Mois réalisés en vert, mois projetés (saisonnalité N-1) en gris.</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-flex items-center gap-1.5 text-[11px] text-muted"><span class="w-2 h-2 rounded-full bg-cedrus-600"></span>Réalisé</span>
+                                    <span class="inline-flex items-center gap-1.5 text-[11px] text-muted"><span class="w-2 h-2 rounded-full bg-gray-300"></span>Prévu (N-1)</span>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm" id="prevMonthlyTable">
+                                    <thead class="bg-gray-50 text-xs uppercase tracking-wider text-muted">
+                                        <tr>
+                                            <th class="text-left px-4 py-3">Mois</th>
+                                            <th class="text-right px-3 py-3">CA du mois</th>
+                                            <th class="text-right px-3 py-3 text-gray-400 normal-case font-normal italic">N-1 même mois</th>
+                                            <th class="text-right px-3 py-3">Charges totales</th>
+                                            <th class="text-right px-3 py-3">Résultat brut</th>
+                                            <th class="text-center px-3 py-3 w-24">Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="prevMonthlyBody">
+                                        <tr><td colspan="6" class="text-center text-muted text-sm py-10">Chargement…</td></tr>
+                                    </tbody>
+                                    <tfoot class="bg-gray-50 font-semibold text-ink">
+                                        <tr>
+                                            <td class="px-4 py-3">Total <span id="prevCurYearTotalLbl">—</span></td>
+                                            <td class="text-right px-3 py-3" id="prevTotCa">—</td>
+                                            <td class="text-right px-3 py-3 text-gray-400 italic" id="prevTotCaN1">—</td>
+                                            <td class="text-right px-3 py-3" id="prevTotCharges">—</td>
+                                            <td class="text-right px-3 py-3" id="prevTotResultat">—</td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ====== Onglet 2 : 5 prochains exercices ====== -->
+                    <div id="prevPane5ans" class="hidden">
+                        <!-- Hypothèses -->
+                        <div class="bg-white rounded-xl p-6 border border-gray-100 mb-6">
+                            <h3 class="text-sm font-semibold text-ink uppercase tracking-wider mb-1">Hypothèses</h3>
+                            <p class="text-xs text-muted mb-4">Saisissez vos hypothèses d'évolution annuelle. La projection part du dernier exercice clos.</p>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-medium text-muted uppercase tracking-wider mb-2">Évolution annuelle du chiffre d'affaires</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="prevPctCa" value="3" step="0.5" class="w-24 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cedrus-600" oninput="renderPrev5ans()" />
+                                        <span class="text-sm text-muted">% / an</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-muted uppercase tracking-wider mb-2">Évolution annuelle des frais de personnel</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="prevPctPers" value="2" step="0.5" class="w-24 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cedrus-600" oninput="renderPrev5ans()" />
+                                        <span class="text-sm text-muted">% / an</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-muted mt-4 italic">Les autres charges suivent par défaut l'évolution du CA (au prorata des consommations N-1).</p>
+                        </div>
+
+                        <!-- Compte de résultat 5 ans -->
+                        <div class="bg-white rounded-xl border border-gray-100 overflow-hidden mb-6">
+                            <div class="px-5 py-4 border-b border-gray-100">
+                                <h3 class="text-sm font-semibold text-ink">Compte de résultat prévisionnel</h3>
+                                <p class="text-xs text-muted mt-0.5">5 exercices à venir, basés sur l'exercice de référence N-1.</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm" id="prev5ansTable">
+                                    <thead class="bg-gray-50 text-xs uppercase tracking-wider text-muted">
+                                        <tr id="prev5ansHead">
+                                            <th class="text-left px-4 py-3">Poste</th>
+                                            <!-- années injectées en JS -->
+                                        </tr>
+                                    </thead>
+                                    <tbody id="prev5ansBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Budget de trésorerie -->
+                        <div class="bg-white rounded-xl p-6 border border-gray-100 mb-6">
+                            <h3 class="text-sm font-semibold text-ink uppercase tracking-wider mb-1">Budget de trésorerie</h3>
+                            <p class="text-xs text-muted mb-4">Évolution de la trésorerie sur les 5 prochains exercices.</p>
+                            <div class="grid md:grid-cols-3 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-muted uppercase tracking-wider mb-2">Trésorerie actuelle</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="prevTresoInit" value="0" step="1000" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cedrus-600" oninput="renderPrev5ans()" />
+                                        <span class="text-sm text-muted">€</span>
+                                    </div>
+                                    <p class="text-[11px] text-muted mt-1" id="prevTresoInitHint">—</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-muted uppercase tracking-wider mb-2">Remboursement annuel d'emprunts</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="prevEmpAnnuel" value="0" step="1000" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cedrus-600" oninput="renderPrev5ans()" />
+                                        <span class="text-sm text-muted">€ / an</span>
+                                    </div>
+                                    <p class="text-[11px] text-muted mt-1" id="prevEmpHint">Capital remboursé chaque année.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-muted uppercase tracking-wider mb-2">Investissements annuels</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="prevInvestAnnuel" value="0" step="1000" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cedrus-600" oninput="renderPrev5ans()" />
+                                        <span class="text-sm text-muted">€ / an</span>
+                                    </div>
+                                    <p class="text-[11px] text-muted mt-1">Hors apport / financement externe.</p>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm" id="prevTresoTable">
+                                    <thead class="bg-gray-50 text-xs uppercase tracking-wider text-muted">
+                                        <tr id="prevTresoHead">
+                                            <th class="text-left px-4 py-3">Poste</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="prevTresoBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Rapport CEDRUS -->
+                        <div class="bg-gradient-to-br from-white to-[#FAFDFB] rounded-xl p-6 border border-cedrus-200">
+                            <div class="flex items-start gap-4">
+                                <div class="shrink-0 w-10 h-10 rounded-full bg-cedrus-600 text-white flex items-center justify-center">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-sm font-semibold text-ink uppercase tracking-wider">Rapport de validation CEDRUS</h3>
+                                    <p class="text-xs text-muted mt-1">Votre expert-comptable établit un rapport synthétique de cohérence du prévisionnel (normes EC NP 2300). Il valide la méthodologie de projection, les hypothèses retenues et la traduction comptable.</p>
+                                    <div class="mt-3 flex flex-wrap gap-2">
+                                        <button onclick="generatePrevisionnelReport()" class="text-xs font-medium bg-cedrus-600 text-white hover:bg-cedrus-700 px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M4 6h16M6 6v12a2 2 0 002 2h8a2 2 0 002-2V6"/></svg>
+                                            Télécharger le rapport (PDF)
+                                        </button>
+                                        <button onclick="requestPrevisionnelReview()" class="text-xs font-medium border border-cedrus-600 text-cedrus-600 hover:bg-cedrus-600 hover:text-white px-3 py-2 rounded-lg transition-all">
+                                            Demander un échange avec mon expert-comptable
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2350,6 +2630,14 @@
                     + '<input type="hidden" id="isDateInput" value="' + defaultIso + '">';
             }
 
+            // Bloc comparatif N-1 (préalimenté avec la même date année - 1)
+            var defaultIso = options.length ? options[options.length - 1].iso : '';
+            var defaultCmp = '';
+            if (defaultIso) {
+                var d = new Date(defaultIso + 'T00:00:00Z');
+                defaultCmp = new Date(Date.UTC(d.getUTCFullYear() - 1, d.getUTCMonth(), d.getUTCDate())).toISOString().slice(0, 10);
+            }
+
             document.getElementById('isModalBody').innerHTML =
                 '<div class="max-w-xl mx-auto py-6">'
                 + '<div class="bg-gold/10 border border-gold/30 rounded-xl p-4 mb-6">'
@@ -2357,8 +2645,33 @@
                 + '<svg class="w-5 h-5 text-gold shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.732 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/></svg>'
                 + '<p class="text-xs text-ink leading-relaxed"><strong>Ce compte de r&eacute;sultat a valeur indicative.</strong> Il sera susceptible d\'&ecirc;tre corrig&eacute; et modifi&eacute; par votre Expert-Comptable apr&egrave;s r&eacute;vision du dossier.</p>'
                 + '</div></div>'
-                + '<label class="block text-sm font-medium text-ink mb-3">Arr&ecirc;ter la situation &agrave; la fin du mois de&nbsp;:</label>'
+
+                // Année en cours
+                + '<div class="mb-6">'
+                + '<div class="flex items-center gap-2 mb-3">'
+                + '<span class="inline-block bg-cedrus-600 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded">Étape 1</span>'
+                + '<label class="text-sm font-medium text-ink">Arrêté de l\'année en cours</label>'
+                + '</div>'
                 + optionsHtml
+                + '</div>'
+
+                // Comparatif N-1
+                + '<div class="mb-6 pt-5 border-t border-gray-100">'
+                + '<div class="flex items-center gap-2 mb-2">'
+                + '<span class="inline-block bg-gold text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded">Étape 2</span>'
+                + '<label class="text-sm font-medium text-ink">Comparatif N-1 — même période</label>'
+                + '</div>'
+                + '<p class="text-xs text-muted mb-3">Le système propose la date équivalente l\'an dernier. Vous pouvez la modifier ou désactiver le comparatif.</p>'
+                + '<div class="flex items-center gap-3 mb-2">'
+                + '<label class="flex items-center gap-2 cursor-pointer">'
+                + '<input type="checkbox" id="isCmpEnabled" checked onchange="onCmpToggle()" class="rounded text-cedrus-600">'
+                + '<span class="text-sm text-ink">Inclure le comparatif N-1</span>'
+                + '</label>'
+                + '</div>'
+                + '<input type="date" id="isCmpDate" value="' + defaultCmp + '" class="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-cedrus-600">'
+                + '<p class="text-[11px] text-muted mt-2 italic" id="isCmpHint">Comparaison par défaut : ' + (defaultCmp ? fmtFrDate(defaultCmp) : '—') + '</p>'
+                + '</div>'
+
                 + '<div class="flex gap-3 mt-8">'
                 + '<button onclick="closeIncomeStatementModal()" class="flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 text-muted hover:bg-gray-50 transition-colors text-sm font-medium">Annuler</button>'
                 + '<button onclick="generateIncomeStatement()"' + (options.length ? '' : ' disabled') + ' class="flex-1 px-4 py-3 rounded-xl bg-ink text-white hover:bg-cedrus-600 transition-colors text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed">G&eacute;n&eacute;rer le compte de r&eacute;sultat</button>'
@@ -2370,6 +2683,22 @@
             document.querySelectorAll('#isMonthGrid .is-month-btn').forEach(function(b) { b.classList.remove('active'); });
             btn.classList.add('active');
             document.getElementById('isDateInput').value = btn.dataset.iso;
+            // Mise à jour automatique de la date N-1
+            var endIso = btn.dataset.iso;
+            var d = new Date(endIso + 'T00:00:00Z');
+            var prevIso = new Date(Date.UTC(d.getUTCFullYear() - 1, d.getUTCMonth(), d.getUTCDate())).toISOString().slice(0, 10);
+            var cmpEl = document.getElementById('isCmpDate');
+            if (cmpEl) cmpEl.value = prevIso;
+            var hint = document.getElementById('isCmpHint');
+            if (hint) hint.textContent = 'Comparaison par défaut : ' + fmtFrDate(prevIso);
+        }
+
+        function onCmpToggle() {
+            var enabled = document.getElementById('isCmpEnabled').checked;
+            var cmpEl = document.getElementById('isCmpDate');
+            if (cmpEl) cmpEl.disabled = !enabled;
+            var hint = document.getElementById('isCmpHint');
+            if (hint) hint.textContent = enabled ? ('Comparaison par défaut : ' + fmtFrDate(cmpEl.value)) : 'Comparatif désactivé — compte de résultat sans N-1.';
         }
 
         function fmtFrDate(iso) {
@@ -2379,10 +2708,17 @@
         function generateIncomeStatement() {
             var end = document.getElementById('isDateInput').value;
             if (!end) return;
-            document.getElementById('isModalBody').innerHTML = '<p class="text-center text-muted text-sm py-12">Calcul du compte de r&eacute;sultat...</p>';
-            plFetch('/api/pennylane/income-statement?end=' + end).then(function(d) {
+            var cmpEnabledEl = document.getElementById('isCmpEnabled');
+            var cmpEl = document.getElementById('isCmpDate');
+            var useCompare = cmpEnabledEl ? cmpEnabledEl.checked : true;
+            var compareEnd = useCompare && cmpEl && cmpEl.value ? cmpEl.value : null;
+
+            var url = '/api/pennylane/income-statement?end=' + end + (compareEnd ? '&compare=' + compareEnd : '');
+            document.getElementById('isModalBody').innerHTML = '<p class="text-center text-muted text-sm py-12">Calcul du compte de r&eacute;sultat' + (compareEnd ? ' (avec comparatif ' + fmtFrDate(compareEnd) + ')' : '') + '...</p>';
+            plFetch(url).then(function(d) {
                 renderIncomeStatement(d);
-            }).catch(function() {
+            }).catch(function(e) {
+                console.error('[CR]', e);
                 document.getElementById('isModalBody').innerHTML = '<p class="text-center text-red-500 text-sm py-12">Erreur de calcul</p>';
             });
         }
@@ -2413,23 +2749,54 @@
 
         function isRow(label, value, opts) {
             opts = opts || {};
+            var hasPrev = (opts.prev !== undefined && opts.prev !== null);
             var total = opts.base;
             var pct = total ? fmtPctOfCA(value, total) : '';
             var isResult = opts.type === 'result';
             var isSubtotal = opts.type === 'subtotal';
             var isMinor = opts.type === 'minor';
             var cls = 'is-row';
+            if (hasPrev) cls += ' cmp';
             if (isResult) cls += ' is-row-result';
             else if (isSubtotal) cls += ' is-row-subtotal';
             else if (isMinor) cls += ' is-row-minor';
             var indicator = opts.sign === '+' ? '<span class="is-sign plus">+</span>' : opts.sign === '-' ? '<span class="is-sign minus">−</span>' : '<span class="is-sign"></span>';
             var amountCls = value < 0 ? 'is-amount neg' : 'is-amount pos';
             if (isResult) amountCls += ' is-amount-strong';
+
+            var prevCell = '';
+            var deltaCell = '';
+            if (hasPrev) {
+                prevCell = '<span class="is-amount-prev">' + fmtEuro(opts.prev) + '</span>';
+                var prev = Number(opts.prev) || 0;
+                var diff = value - prev;
+                var pctDelta;
+                if (prev !== 0) {
+                    pctDelta = (diff / Math.abs(prev)) * 100;
+                    var sign = pctDelta >= 0 ? '+' : '';
+                    var dcls = 'is-delta ' + (pctDelta >= 0 ? 'pos' : 'neg');
+                    deltaCell = '<span class="' + dcls + '">' + sign + pctDelta.toFixed(0) + '%</span>';
+                } else if (value !== 0) {
+                    deltaCell = '<span class="is-delta pos">nouveau</span>';
+                } else {
+                    deltaCell = '<span class="is-delta">—</span>';
+                }
+            } else {
+                // mode legacy 4 colonnes : sign | label | pct | amount
+                return '<div class="' + cls + '">'
+                    + indicator
+                    + '<span class="is-label">' + label + '</span>'
+                    + '<span class="is-pct">' + pct + '</span>'
+                    + '<span class="' + amountCls + '">' + fmtEuro(value) + '</span>'
+                    + '</div>';
+            }
+            // mode cmp : sign | label | N-1 | N | delta%
             return '<div class="' + cls + '">'
                 + indicator
                 + '<span class="is-label">' + label + '</span>'
-                + '<span class="is-pct">' + pct + '</span>'
+                + prevCell
                 + '<span class="' + amountCls + '">' + fmtEuro(value) + '</span>'
+                + deltaCell
                 + '</div>';
         }
 
@@ -2444,11 +2811,37 @@
 
         function renderIncomeStatement(d) {
             var t = d.totals;
+            var tP = (d.compare && d.compare.totals) ? d.compare.totals : null;
             var year = d.periodStart.slice(0, 4);
-            document.getElementById('isModalSub').innerHTML = 'Exercice ' + year + ' &middot; arr&ecirc;t&eacute; au ' + fmtFrDate(d.periodEnd);
+            var yearP = d.compare ? d.compare.periodStart.slice(0, 4) : null;
+            document.getElementById('isModalSub').innerHTML = 'Exercice ' + year + ' &middot; arr&ecirc;t&eacute; au ' + fmtFrDate(d.periodEnd)
+                + (tP ? ' &middot; <span style="color:#3E9364">comparatif ' + yearP + ' m&ecirc;me p&eacute;riode</span>' : '');
 
             var c = companyInfo || {};
             var base = t.productionVendue + t.ventesMarchandises || 1;
+
+            // Helpers locaux pour propager prev
+            function P(k) { return tP ? tP[k] : undefined; }
+            function R(label, key, opts) {
+                opts = Object.assign({ base: base }, opts || {});
+                opts.prev = P(key);
+                return isRow(label, t[key], opts);
+            }
+            function RD(label, key, opts) {
+                opts = Object.assign({ base: base }, opts || {});
+                opts.prev = P(key);
+                return isRowWithDetails(label, t[key], (d.groups && d.groups[key]) || null, opts);
+            }
+            // En-tête colonnes du mode comparatif
+            var cmpHead = tP ? (
+                '<div class="is-row cmp" style="border-bottom:1px solid #E5E7EB;padding-bottom:6px;margin-bottom:6px;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#6B7280">'
+                + '<span></span>'
+                + '<span class="is-label" style="color:#6B7280">Poste</span>'
+                + '<span style="text-align:right;color:#9CA3AF">' + yearP + ' m&ecirc;me p&eacute;riode</span>'
+                + '<span style="text-align:right;color:#0B1420">' + year + '</span>'
+                + '<span style="text-align:right">&Delta;</span>'
+                + '</div>'
+            ) : '';
 
             var header =
                 '<div id="isReportRoot" class="is-report">'
@@ -2479,8 +2872,8 @@
                 + '<div class="is-title-block">'
                 + '<p class="is-title-kicker">Document comptable provisoire</p>'
                 + '<h1 class="is-title">Compte de r&eacute;sultat</h1>'
-                + '<p class="is-title-sub">Soldes Interm&eacute;diaires de Gestion &middot; Exercice ' + year + '</p>'
-                + '<p class="is-title-period">Arr&ecirc;t&eacute; au ' + fmtFrDate(d.periodEnd) + '</p>'
+                + '<p class="is-title-sub">Soldes Interm&eacute;diaires de Gestion &middot; Exercice ' + year + (tP ? ' vs ' + yearP : '') + '</p>'
+                + '<p class="is-title-period">Arr&ecirc;t&eacute; au ' + fmtFrDate(d.periodEnd) + (tP ? ' &middot; comparaison ' + yearP + ' au ' + fmtFrDate(d.compare.periodEnd) : '') + '</p>'
                 + '</div>'
 
                 ;
@@ -2491,78 +2884,88 @@
             if (t.ventesMarchandises || t.coutMarchandises) {
                 body += '<div class="is-block">'
                     + '<p class="is-block-title">Marge commerciale</p>'
-                    + isRowWithDetails('Ventes de marchandises', t.ventesMarchandises, d.groups.ventesMarchandises, { sign: '+', base: base })
-                    + isRowWithDetails('Co&ucirc;t d\'achat des marchandises vendues', t.coutMarchandises, d.groups.coutMarchandises, { sign: '-', base: base })
-                    + isRow('Marge commerciale', t.margeCommerciale, { type: 'subtotal', base: base })
+                    + cmpHead
+                    + RD('Ventes de marchandises', 'ventesMarchandises', { sign: '+' })
+                    + RD('Co&ucirc;t d\'achat des marchandises vendues', 'coutMarchandises', { sign: '-' })
+                    + R('Marge commerciale', 'margeCommerciale', { type: 'subtotal' })
                     + '</div>';
             }
 
             // Production / Valeur ajoutée
             body += '<div class="is-block">'
                 + '<p class="is-block-title">Production &amp; Valeur ajout&eacute;e</p>'
-                + isRowWithDetails('Production vendue', t.productionVendue, d.groups.productionVendue, { sign: '+', base: base })
-                + (t.productionStockee ? isRowWithDetails('Production stock&eacute;e', t.productionStockee, d.groups.productionStockee, { sign: '+', base: base }) : '')
-                + (t.productionImmobilisee ? isRowWithDetails('Production immobilis&eacute;e', t.productionImmobilisee, d.groups.productionImmobilisee, { sign: '+', base: base }) : '')
-                + isRow('Production de l\'exercice', t.productionExercice, { type: 'minor', base: base })
-                + (t.achatsMp ? isRowWithDetails('Achats mati&egrave;res premi&egrave;res &amp; approvisionnements', t.achatsMp, d.groups.achatsMp, { sign: '-', base: base }) : '')
-                + isRowWithDetails('Autres achats et charges externes', t.autresAchatsCharges, d.groups.autresAchatsCharges, { sign: '-', base: base })
-                + isRow('Consommations en provenance de tiers', t.consommations, { type: 'minor', base: base })
-                + isRow('VALEUR AJOUT&Eacute;E', t.valeurAjoutee, { type: 'result', base: base })
+                + cmpHead
+                + RD('Production vendue', 'productionVendue', { sign: '+' })
+                + (t.productionStockee ? RD('Production stock&eacute;e', 'productionStockee', { sign: '+' }) : '')
+                + (t.productionImmobilisee ? RD('Production immobilis&eacute;e', 'productionImmobilisee', { sign: '+' }) : '')
+                + R('Production de l\'exercice', 'productionExercice', { type: 'minor' })
+                + (t.achatsMp ? RD('Achats mati&egrave;res premi&egrave;res &amp; approvisionnements', 'achatsMp', { sign: '-' }) : '')
+                + RD('Autres achats et charges externes', 'autresAchatsCharges', { sign: '-' })
+                + R('Consommations en provenance de tiers', 'consommations', { type: 'minor' })
+                + R('VALEUR AJOUT&Eacute;E', 'valeurAjoutee', { type: 'result' })
                 + '</div>';
 
             // EBE
             body += '<div class="is-block">'
                 + '<p class="is-block-title">Exc&eacute;dent brut d\'exploitation</p>'
-                + isRow('Valeur ajout&eacute;e', t.valeurAjoutee, { sign: '+', base: base })
-                + (t.subventionsExpl ? isRowWithDetails('Subventions d\'exploitation', t.subventionsExpl, d.groups.subventionsExpl, { sign: '+', base: base }) : '')
-                + isRowWithDetails('Imp&ocirc;ts, taxes et versements assimil&eacute;s', t.impotsTaxes, d.groups.impotsTaxes, { sign: '-', base: base })
-                + (t.chargesPersonnel ? isRowWithDetails('Charges de personnel', t.chargesPersonnel, d.groups.chargesPersonnel, { sign: '-', base: base }) : '')
-                + isRow('EXC&Eacute;DENT BRUT D\'EXPLOITATION', t.ebe, { type: 'result', base: base })
+                + cmpHead
+                + R('Valeur ajout&eacute;e', 'valeurAjoutee', { sign: '+' })
+                + (t.subventionsExpl ? RD('Subventions d\'exploitation', 'subventionsExpl', { sign: '+' }) : '')
+                + RD('Imp&ocirc;ts, taxes et versements assimil&eacute;s', 'impotsTaxes', { sign: '-' })
+                + (t.chargesPersonnel ? RD('Charges de personnel', 'chargesPersonnel', { sign: '-' }) : '')
+                + R('EXC&Eacute;DENT BRUT D\'EXPLOITATION', 'ebe', { type: 'result' })
                 + '</div>';
 
             // Résultat d'exploitation
             body += '<div class="is-block">'
                 + '<p class="is-block-title">R&eacute;sultat d\'exploitation</p>'
-                + isRow('Exc&eacute;dent brut d\'exploitation', t.ebe, { sign: '+', base: base })
-                + (t.autresProduits ? isRowWithDetails('Autres produits de gestion + reprises + transferts', t.autresProduits, d.groups.autresProduits, { sign: '+', base: base }) : '')
-                + (t.autresCharges ? isRowWithDetails('Autres charges + dotations aux amortissements', t.autresCharges, d.groups.autresCharges, { sign: '-', base: base }) : '')
-                + isRow('R&Eacute;SULTAT D\'EXPLOITATION', t.resultatExploitation, { type: 'result', base: base })
+                + cmpHead
+                + R('Exc&eacute;dent brut d\'exploitation', 'ebe', { sign: '+' })
+                + (t.autresProduits ? RD('Autres produits de gestion (comptes 75)', 'autresProduits', { sign: '+' }) : '')
+                + (t.reprises ? RD('Reprises sur amortissements &amp; provisions (non encaissables)', 'reprises', { sign: '+' }) : '')
+                + (t.autresCharges ? RD('Autres charges de gestion (comptes 65)', 'autresCharges', { sign: '-' }) : '')
+                + (t.dotations ? RD('Dotations aux amortissements &amp; provisions (non d&eacute;caissables)', 'dotations', { sign: '-' }) : '')
+                + R('R&Eacute;SULTAT D\'EXPLOITATION', 'resultatExploitation', { type: 'result' })
                 + '</div>';
 
             // Résultat courant
             body += '<div class="is-block">'
                 + '<p class="is-block-title">R&eacute;sultat courant avant imp&ocirc;ts</p>'
-                + isRow('R&eacute;sultat d\'exploitation', t.resultatExploitation, { sign: '+', base: base })
-                + (t.produitsFin ? isRowWithDetails('Produits financiers', t.produitsFin, d.groups.produitsFin, { sign: '+', base: base }) : '')
-                + (t.chargesFin ? isRowWithDetails('Charges financi&egrave;res', t.chargesFin, d.groups.chargesFin, { sign: '-', base: base }) : '')
-                + isRow('R&eacute;sultat financier', t.resultatFinancier, { type: 'subtotal', base: base })
-                + isRow('R&Eacute;SULTAT COURANT AVANT IMP&Ocirc;TS', t.resultatCourant, { type: 'result', base: base })
+                + cmpHead
+                + R('R&eacute;sultat d\'exploitation', 'resultatExploitation', { sign: '+' })
+                + (t.produitsFin ? RD('Produits financiers', 'produitsFin', { sign: '+' }) : '')
+                + (t.chargesFin ? RD('Charges financi&egrave;res', 'chargesFin', { sign: '-' }) : '')
+                + R('R&eacute;sultat financier', 'resultatFinancier', { type: 'subtotal' })
+                + R('R&Eacute;SULTAT COURANT AVANT IMP&Ocirc;TS', 'resultatCourant', { type: 'result' })
                 + '</div>';
 
             // Exceptionnel
             if (t.produitsExc || t.chargesExc) {
                 body += '<div class="is-block">'
                     + '<p class="is-block-title">R&eacute;sultat exceptionnel</p>'
-                    + (t.produitsExc ? isRowWithDetails('Produits exceptionnels', t.produitsExc, d.groups.produitsExc, { sign: '+', base: base }) : '')
-                    + (t.chargesExc ? isRowWithDetails('Charges exceptionnelles', t.chargesExc, d.groups.chargesExc, { sign: '-', base: base }) : '')
-                    + isRow('R&Eacute;SULTAT EXCEPTIONNEL', t.resultatExceptionnel, { type: 'result', base: base })
+                    + cmpHead
+                    + (t.produitsExc ? RD('Produits exceptionnels', 'produitsExc', { sign: '+' }) : '')
+                    + (t.chargesExc ? RD('Charges exceptionnelles', 'chargesExc', { sign: '-' }) : '')
+                    + R('R&Eacute;SULTAT EXCEPTIONNEL', 'resultatExceptionnel', { type: 'result' })
                     + '</div>';
             }
 
             // Résultat net
             body += '<div class="is-block">'
                 + '<p class="is-block-title">R&eacute;sultat net de l\'exercice</p>'
-                + isRow('R&eacute;sultat courant avant imp&ocirc;ts', t.resultatCourant, { sign: '+', base: base })
-                + isRow('R&eacute;sultat exceptionnel', t.resultatExceptionnel, { sign: '+', base: base })
-                + (t.participation ? isRowWithDetails('Participation des salari&eacute;s', t.participation, d.groups.participation, { sign: '-', base: base }) : '')
-                + (t.impot ? isRowWithDetails('Imp&ocirc;t sur les b&eacute;n&eacute;fices', t.impot, d.groups.impot, { sign: '-', base: base }) : '')
+                + cmpHead
+                + R('R&eacute;sultat courant avant imp&ocirc;ts', 'resultatCourant', { sign: '+' })
+                + R('R&eacute;sultat exceptionnel', 'resultatExceptionnel', { sign: '+' })
+                + (t.participation ? RD('Participation des salari&eacute;s', 'participation', { sign: '-' }) : '')
+                + (t.impot ? RD('Imp&ocirc;t sur les b&eacute;n&eacute;fices', 'impot', { sign: '-' }) : '')
+                + R('R&Eacute;SULTAT NET DE L\'EXERCICE', 'resultatNet', { type: 'result' })
                 + '</div>'
 
                 + '<div class="is-final">'
                 + '<div class="is-final-inner">'
                 + '<p class="is-final-label">R&Eacute;SULTAT NET DE L\'EXERCICE</p>'
                 + '<p class="is-final-value ' + (t.resultatNet < 0 ? 'neg' : 'pos') + '">' + fmtEuro(t.resultatNet) + '</p>'
-                + (base ? '<p class="is-final-pct">' + fmtPctOfCA(t.resultatNet, base) + ' du chiffre d\'affaires</p>' : '')
+                + (base ? '<p class="is-final-pct">' + fmtPctOfCA(t.resultatNet, base) + ' du chiffre d\'affaires' + (tP ? ' &middot; ' + yearP + ' : ' + fmtEuro(tP.resultatNet) : '') + '</p>' : '')
                 + '</div></div>';
 
             var footer =
@@ -3949,12 +4352,664 @@
             return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
         }
 
+        // ============================================================
+        // ============      MODULE PREVISIONNEL                =========
+        // ============================================================
+        const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+        const prevState = {
+            loaded: false,
+            loading: false,
+            currentYear: new Date().getFullYear(),
+            refYear: new Date().getFullYear() - 1,
+            // Mensuel N et N-1 (CA et charges totales par mois)
+            monthlyCaCurrent: new Array(12).fill(0),
+            monthlyCaPrev: new Array(12).fill(0),
+            monthlyChargesCurrent: new Array(12).fill(0),
+            monthlyChargesPrev: new Array(12).fill(0),
+            refMonth: new Date().getMonth() + 1, // 1..12
+            // Compte de résultat N-1 (agrégats SIG)
+            isPrev: null,
+            // Disponibilités actuelles
+            tresoActuelle: 0,
+            // Tab actif
+            activeTab: 'courant'
+        };
+
+        function fmtEurPrev(n) {
+            if (n == null || isNaN(n)) return '—';
+            const v = Math.round(Number(n));
+            return v.toLocaleString('fr-FR').replace(/ /g, ' ') + ' €';
+        }
+        function fmtPctPrev(n, decimals = 1) {
+            if (n == null || isNaN(n)) return '—';
+            const v = Number(n);
+            const sign = v > 0 ? '+' : '';
+            return sign + v.toFixed(decimals).replace('.', ',') + ' %';
+        }
+        function fmtSignedEurPrev(n) {
+            if (n == null || isNaN(n)) return '—';
+            const v = Math.round(Number(n));
+            const sign = v > 0 ? '+' : '';
+            return sign + v.toLocaleString('fr-FR').replace(/ /g, ' ') + ' €';
+        }
+
+        function switchPrevTab(tab) {
+            prevState.activeTab = tab;
+            document.getElementById('prevTabCourant').classList.toggle('active', tab === 'courant');
+            document.getElementById('prevTab5ans').classList.toggle('active', tab === '5ans');
+            document.getElementById('prevPaneCourant').classList.toggle('hidden', tab !== 'courant');
+            document.getElementById('prevPane5ans').classList.toggle('hidden', tab !== '5ans');
+            if (tab === '5ans' && prevState.loaded) renderPrev5ans();
+        }
+
+        async function loadPrevisionnel() {
+            if (prevState.loading) return;
+            prevState.loading = true;
+            const cy = new Date().getFullYear();
+            const refY = cy - 1;
+            prevState.currentYear = cy;
+            prevState.refYear = refY;
+            prevState.refMonth = new Date().getMonth() + 1;
+
+            // Mise à jour des libellés (uniquement les éléments qui existent)
+            const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+            setText('prevCurYearTitle', String(cy));
+            setText('prevCurYearTotalLbl', String(cy));
+            setText('prevRefYear', String(refY));
+            setText('prevBannerTitle', 'Chargement des données comptables…');
+            setText('prevBannerSub', 'Récupération en cours depuis Pennylane.');
+
+            function showLoadError(msg) {
+                setText('prevBannerTitle', 'Erreur de chargement');
+                const sub = document.getElementById('prevBannerSub');
+                if (sub) sub.innerHTML = '<span class="text-red-600">' + msg + '</span> · <button onclick="retryPrevisionnel()" class="text-cedrus-600 underline">Réessayer</button>';
+                const tbody = document.getElementById('prevMonthlyBody');
+                if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="text-center text-red-600 text-sm py-10">' + msg + '</td></tr>';
+            }
+            function explainErr(e) {
+                const s = String(e && e.message ? e.message : e);
+                if (s.includes('401') || s.includes('invalid_token')) return 'Session expirée. Reconnectez-vous.';
+                if (s.includes('403')) return 'Accès refusé à ce dossier.';
+                if (s.includes('409') || s.includes('pennylane_not_configured')) return 'Dossier non connecté à Pennylane. Contactez CEDRUS.';
+                if (s.includes('Failed to fetch') || s.includes('NetworkError')) return 'Pas de réponse du serveur.';
+                return 'Erreur Pennylane (' + s + ')';
+            }
+
+            // PHASE 1 — données rapides : IS N-1 (annuel) + IS N YTD avec comparatif N-1 même période + loans
+            const lastClosedMonth = Math.max(1, prevState.refMonth - 1);
+            const lastDayOfMonth = new Date(Date.UTC(cy, lastClosedMonth, 0)).toISOString().slice(0, 10);
+            const lastDayN1 = new Date(Date.UTC(refY, lastClosedMonth, 0)).toISOString().slice(0, 10);
+            try {
+                const [isPrevRes, isCurRes, loansRes] = await Promise.all([
+                    plFetch('/api/pennylane/income-statement?end=' + refY + '-12-31')
+                        .catch(e => { console.error('[prev] IS N-1 FAIL', e); return null; }),
+                    plFetch('/api/pennylane/income-statement?end=' + lastDayOfMonth + '&compare=' + lastDayN1)
+                        .catch(e => { console.warn('[prev] IS N YTD FAIL', e); return null; }),
+                    plFetch('/api/pennylane/loans')
+                        .catch(e => { console.warn('[prev] loans FAIL (non bloquant)', e); return null; })
+                ]);
+                console.log('[prev] IS N-1', isPrevRes, '| IS N YTD', isCurRes, '| loans', loansRes);
+
+                if (!isPrevRes || !isPrevRes.totals) {
+                    showLoadError('Compte de résultat ' + refY + ' indisponible.');
+                    prevState.loading = false;
+                    return;
+                }
+                prevState.isPrev = isPrevRes;
+                prevState.isCurYTD = (isCurRes && isCurRes.totals) ? isCurRes : null;
+                // IS N-1 YTD (même période) : extrait du bloc compare retourné par la route
+                prevState.isPrevYTD = (isCurRes && isCurRes.compare && isCurRes.compare.totals)
+                    ? { totals: isCurRes.compare.totals, groups: isCurRes.compare.groups, periodEnd: isCurRes.compare.periodEnd }
+                    : null;
+
+                // Emprunts
+                if (loansRes && !loansRes.error) {
+                    prevState.loans = loansRes;
+                    const empInput = document.getElementById('prevEmpAnnuel');
+                    if (empInput && (!empInput.value || Number(empInput.value) === 0)) {
+                        empInput.value = Math.round(loansRes.remboursementPrev || 0);
+                    }
+                    const empHint = document.getElementById('prevEmpHint');
+                    if (empHint) {
+                        if (loansRes.crd > 0 || loansRes.remboursementPrev > 0) {
+                            empHint.innerHTML = 'Détecté en compta · CRD : <strong>' + fmtEurPrev(loansRes.crd) + '</strong> · capital remboursé en ' + loansRes.yearRef + ' : <strong>' + fmtEurPrev(loansRes.remboursementPrev) + '</strong>';
+                        } else {
+                            empHint.textContent = 'Aucun emprunt détecté en comptabilité (comptes 164/165/168).';
+                        }
+                    }
+                }
+
+                // Mensualisation initiale par linéarisation (rapide)
+                const caN1 = getProduitsExpl(prevState.isPrev);
+                const chN1 = getChargesExpl(prevState.isPrev);
+                prevState.monthlyCaPrev = new Array(12).fill(caN1 / 12);
+                prevState.monthlyChargesPrev = new Array(12).fill(chN1 / 12);
+                const monthlyCaCur = new Array(12).fill(0);
+                const monthlyChCur = new Array(12).fill(0);
+                if (prevState.isCurYTD) {
+                    const caYtd = getProduitsExpl(prevState.isCurYTD);
+                    const chYtd = getChargesExpl(prevState.isCurYTD);
+                    for (let m = 0; m < lastClosedMonth; m++) {
+                        monthlyCaCur[m] = caYtd / lastClosedMonth;
+                        monthlyChCur[m] = chYtd / lastClosedMonth;
+                    }
+                }
+                prevState.monthlyCaCurrent = monthlyCaCur;
+                prevState.monthlyChargesCurrent = monthlyChCur;
+
+                setText('prevBannerTitle', 'Prévisionnel basé sur la comptabilité Pennylane');
+                const sub = document.getElementById('prevBannerSub');
+                if (sub) sub.innerHTML = 'Exercice N-1 clos · CA ' + fmtEurPrev(caN1) + ' · charges ' + fmtEurPrev(chN1) +
+                    ' · <span class="text-muted italic">mensualisation précise en cours…</span>';
+
+                prevState.loaded = true;
+                renderPrevCourant();
+                renderPrev5ans();
+            } catch (e) {
+                console.error('[prev] phase 1 FAIL', e);
+                showLoadError(explainErr(e));
+                prevState.loading = false;
+                return;
+            }
+
+            // PHASE 2 — synthesis (peut être lent) pour la mensualisation par saisonnalité + trésorerie
+            try {
+                const synthRes = await plFetch('/api/pennylane/synthesis?year=' + cy + '&compare=' + refY);
+                console.log('[prev] synthesis', synthRes);
+                const ch = synthRes.charts || {};
+                if (ch.ca && Array.isArray(ch.ca.current))   prevState.monthlyCaCurrent      = ch.ca.current;
+                if (ch.ca && Array.isArray(ch.ca.previous))  prevState.monthlyCaPrev         = ch.ca.previous;
+                if (ch.charges && Array.isArray(ch.charges.current))  prevState.monthlyChargesCurrent = ch.charges.current;
+                if (ch.charges && Array.isArray(ch.charges.previous)) prevState.monthlyChargesPrev    = ch.charges.previous;
+                if (synthRes.refMonth) prevState.refMonth = synthRes.refMonth;
+                prevState.tresoActuelle = (synthRes.current && synthRes.current.dispo) || 0;
+
+                const tInitEl = document.getElementById('prevTresoInit');
+                if (tInitEl && (!tInitEl.value || Number(tInitEl.value) === 0)) {
+                    tInitEl.value = Math.round(prevState.tresoActuelle);
+                }
+                const tHint = document.getElementById('prevTresoInitHint');
+                if (tHint) tHint.textContent = 'Disponibilités Pennylane à date : ' + fmtEurPrev(prevState.tresoActuelle);
+
+                const sub = document.getElementById('prevBannerSub');
+                if (sub) {
+                    sub.innerHTML = 'Exercice N-1 clos · CA ' + fmtEurPrev(getProduitsExpl(prevState.isPrev)) +
+                        ' · charges ' + fmtEurPrev(getChargesExpl(prevState.isPrev)) +
+                        ' · <span class="text-cedrus-600">saisonnalité mensuelle chargée ✓</span>';
+                }
+                renderPrevCourant();
+                renderPrev5ans();
+            } catch (e) {
+                console.warn('[prev] synthesis FAIL (mensuel approximé)', e);
+                const sub = document.getElementById('prevBannerSub');
+                if (sub) sub.innerHTML += ' <span class="text-amber-600 italic">(mensualisation linéaire — synthèse Pennylane indisponible)</span>';
+            } finally {
+                prevState.loading = false;
+            }
+        }
+
+        function retryPrevisionnel() {
+            prevState.loaded = false;
+            prevState.loading = false;
+            loadPrevisionnel();
+        }
+
+        // ===== Helpers : agrégats à partir du compte de résultat (SIG) =====
+        // Les helpers retournent toujours un nombre (0 si absent), pour fluidité du calcul.
+        function _t(is) { return (is && is.totals) ? is.totals : {}; }
+        function getCA(is) {
+            const t = _t(is);
+            return (t.productionVendue || 0) + (t.ventesMarchandises || 0);
+        }
+        function getProduitsExpl(is) {
+            const t = _t(is);
+            return getCA(is) + (t.productionStockee || 0) + (t.productionImmobilisee || 0) + (t.subventionsExpl || 0) + (t.autresProduits || 0);
+        }
+        function getAchatsConso(is) {
+            const t = _t(is);
+            return (t.coutMarchandises || 0) + (t.achatsMp || 0);
+        }
+        function getChargesExternes(is) { return _t(is).autresAchatsCharges || 0; }
+        function getFraisPersonnel(is)  { return _t(is).chargesPersonnel || 0; }
+        function getImpotsTaxes(is)     { return _t(is).impotsTaxes || 0; }
+        function getSubventions(is)     { return _t(is).subventionsExpl || 0; }
+        function getAutresChargesGestion(is) { return _t(is).autresCharges || 0; }    // 65x
+        function getAutresProduitsGestion(is) { return _t(is).autresProduits || 0; }  // 75x
+        function getDotations(is)       { return _t(is).dotations || 0; }             // 681 + 687 (non décaissables)
+        function getReprises(is)        { return _t(is).reprises || 0; }              // 781 + 791 (non encaissables)
+        function getChargesFin(is)      { return _t(is).chargesFin || 0; }
+        function getProduitsFin(is)     { return _t(is).produitsFin || 0; }
+        function getChargesExc(is)      { return _t(is).chargesExc || 0; }
+        function getProduitsExc(is)     { return _t(is).produitsExc || 0; }
+        function getImpot(is)           { return _t(is).impot || 0; }
+        function getParticipation(is)   { return _t(is).participation || 0; }
+
+        // SIG calculés
+        function sigMargeCommerciale(is) {
+            const t = _t(is);
+            return (t.ventesMarchandises || 0) - (t.coutMarchandises || 0);
+        }
+        function sigProductionExercice(is) {
+            const t = _t(is);
+            return (t.productionVendue || 0) + (t.productionStockee || 0) + (t.productionImmobilisee || 0);
+        }
+        function sigConsommations(is) {
+            return getAchatsConso(is) + getChargesExternes(is);
+        }
+        function sigValeurAjoutee(is) {
+            return sigMargeCommerciale(is) + sigProductionExercice(is) - sigConsommations(is);
+        }
+        function sigEBE(is) {
+            return sigValeurAjoutee(is) + getSubventions(is) - getImpotsTaxes(is) - getFraisPersonnel(is);
+        }
+        function sigResultatExploitation(is) {
+            return sigEBE(is) + getAutresProduitsGestion(is) + getReprises(is) - getAutresChargesGestion(is) - getDotations(is);
+        }
+        function sigResultatFinancier(is) { return getProduitsFin(is) - getChargesFin(is); }
+        function sigResultatCourant(is)   { return sigResultatExploitation(is) + sigResultatFinancier(is); }
+        function sigResultatExceptionnel(is) { return getProduitsExc(is) - getChargesExc(is); }
+        function sigResultatNet(is) {
+            return sigResultatCourant(is) + sigResultatExceptionnel(is) - getParticipation(is) - getImpot(is);
+        }
+        function sigCAF(is) {
+            // CAF = Résultat net + Dotations - Reprises (méthode additive simplifiée)
+            return sigResultatNet(is) + getDotations(is) - getReprises(is);
+        }
+        function getChargesExpl(is) {
+            return getAchatsConso(is) + getChargesExternes(is) + getImpotsTaxes(is) + getFraisPersonnel(is)
+                + getAutresChargesGestion(is) + getDotations(is) + getChargesFin(is) + getChargesExc(is) + getImpot(is) + getParticipation(is);
+        }
+        // Charges DÉCAISSABLES uniquement (exclut dotations)
+        function getChargesDecaissables(is) {
+            return getChargesExpl(is) - getDotations(is);
+        }
+
+        // ===== Onglet 1 : rendu SIG comparatif + détail mensuel =====
+        // Construit un pseudo-IS à partir de 2 IS (soustraction terme à terme)
+        function subtractIs(a, b) {
+            const ta = _t(a), tb = _t(b);
+            const out = { totals: {}, groups: {} };
+            const keys = new Set([...Object.keys(ta), ...Object.keys(tb)]);
+            keys.forEach(k => { out.totals[k] = (ta[k] || 0) - (tb[k] || 0); });
+            return out;
+        }
+        // Trouve la liste des labels SIG à afficher dans le tableau
+        function getSigRows(isCurYTD, isPrevYTD, isPrevFull) {
+            // isProjMois = IS « mois restants projetés » = isPrevFull - isPrevYTD
+            const isPrevRest = subtractIs(isPrevFull, isPrevYTD || isPrevFull);
+            // Total projeté N = isCurYTD + isPrevRest
+            const isProjN = (function() {
+                const out = { totals: {} };
+                const tA = _t(isCurYTD), tB = _t(isPrevRest);
+                const keys = new Set([...Object.keys(tA), ...Object.keys(tB)]);
+                keys.forEach(k => { out.totals[k] = (tA[k] || 0) + (tB[k] || 0); });
+                return out;
+            })();
+            return { isPrevYTD: isPrevYTD || { totals: {} }, isCurYTD: isCurYTD || { totals: {} }, isPrevRest, isProjN, isPrevFull };
+        }
+
+        function renderPrevCourant() {
+            const refMonth = prevState.refMonth;
+            const lastClosedMonth = Math.max(0, refMonth - 1);
+            const cy = prevState.currentYear, ny1 = prevState.refYear;
+            const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+            setText('prevSigYearCur', String(cy));
+            const ytdLabel = lastClosedMonth > 0 ? ('1ᵉʳ jan. → fin ' + MONTHS_FR[lastClosedMonth - 1] + ' ' + cy) : 'Aucun mois clos';
+            setText('prevYtdLabel', ytdLabel);
+
+            // ========== TABLEAU SIG ==========
+            const isCurYTD  = prevState.isCurYTD;
+            const isPrevYTD = prevState.isPrevYTD;
+            const isPrevFul = prevState.isPrev;
+            const sig = getSigRows(isCurYTD, isPrevYTD, isPrevFul);
+
+            // Helper de rendu de ligne SIG
+            function sigRow(label, fn, opts = {}) {
+                const vPrevYTD = isPrevYTD ? fn(sig.isPrevYTD) : null;
+                const vCurYTD  = isCurYTD ? fn(sig.isCurYTD) : 0;
+                const vPrevRest = fn(sig.isPrevRest);
+                const vProj    = fn(sig.isProjN);
+                const vPrevFul = fn(sig.isPrevFull);
+                const delta = (vPrevFul !== 0) ? ((vProj - vPrevFul) / Math.abs(vPrevFul)) * 100 : null;
+                const deltaCls = delta == null ? 'text-gray-400' : (delta >= 0 ? 'total-positive' : 'total-negative');
+                const deltaTxt = delta == null ? '—' : fmtPctPrev(delta, 0);
+                let cls = 'border-b border-gray-50';
+                let labelCls = 'text-ink';
+                let valueCls = '';
+                if (opts.style === 'subtotal') { cls += ' bg-cedrus-50/60'; labelCls = 'font-semibold text-cedrus-700'; }
+                if (opts.style === 'result')   { cls += ' bg-cedrus-100/40'; labelCls = 'font-bold text-cedrus-700 uppercase tracking-wider text-xs'; valueCls = 'font-bold'; }
+                if (opts.style === 'sub')      { labelCls = 'text-muted italic'; }
+                return '<tr class="' + cls + '">' +
+                    '<td class="px-4 py-2 ' + labelCls + '">' + label + '</td>' +
+                    '<td class="text-right px-3 py-2 num-cell text-gray-400 italic ' + valueCls + '">' + (vPrevYTD == null ? '—' : fmtEurPrev(vPrevYTD)) + '</td>' +
+                    '<td class="text-right px-3 py-2 num-cell text-cedrus-600 ' + valueCls + '">' + fmtEurPrev(vCurYTD) + '</td>' +
+                    '<td class="text-right px-3 py-2 num-cell text-gray-400 italic ' + valueCls + '">' + fmtEurPrev(vPrevRest) + '</td>' +
+                    '<td class="text-right px-3 py-2 num-cell ' + valueCls + '">' + fmtEurPrev(vPrevRest) + '</td>' +
+                    '<td class="text-right px-3 py-2 num-cell text-cedrus-700 ' + valueCls + ' font-semibold">' + fmtEurPrev(vProj) + '</td>' +
+                    '<td class="text-right px-3 py-2 num-cell text-gray-400 italic ' + valueCls + '">' + fmtEurPrev(vPrevFul) + '</td>' +
+                    '<td class="text-right px-3 py-2 ' + deltaCls + ' text-xs font-semibold">' + deltaTxt + '</td>' +
+                '</tr>';
+            }
+            let body = '';
+            // CA
+            body += sigRow('Chiffre d\'affaires (ventes + production)', getCA, { style: 'subtotal' });
+            // Marge commerciale (si présente)
+            if (Math.abs(sigMargeCommerciale(isPrevFul)) > 0.5) {
+                body += sigRow('Marge commerciale', sigMargeCommerciale);
+            }
+            body += sigRow('— Achats consommés', is => -getAchatsConso(is), { style: 'sub' });
+            body += sigRow('— Charges externes', is => -getChargesExternes(is), { style: 'sub' });
+            body += sigRow('VALEUR AJOUTÉE', sigValeurAjoutee, { style: 'subtotal' });
+            body += sigRow('+ Subventions d\'exploitation', getSubventions, { style: 'sub' });
+            body += sigRow('— Impôts &amp; taxes', is => -getImpotsTaxes(is), { style: 'sub' });
+            body += sigRow('— Frais de personnel', is => -getFraisPersonnel(is), { style: 'sub' });
+            body += sigRow('EBE (Excédent Brut d\'Exploitation)', sigEBE, { style: 'result' });
+            body += sigRow('+ Autres produits de gestion', getAutresProduitsGestion, { style: 'sub' });
+            body += sigRow('+ Reprises sur amort./prov.', getReprises, { style: 'sub' });
+            body += sigRow('— Autres charges de gestion', is => -getAutresChargesGestion(is), { style: 'sub' });
+            body += sigRow('— Dotations aux amort./prov. (non décaissables)', is => -getDotations(is), { style: 'sub' });
+            body += sigRow('RÉSULTAT D\'EXPLOITATION', sigResultatExploitation, { style: 'subtotal' });
+            body += sigRow('+ Résultat financier', sigResultatFinancier, { style: 'sub' });
+            body += sigRow('+ Résultat exceptionnel', sigResultatExceptionnel, { style: 'sub' });
+            body += sigRow('— Participation', is => -getParticipation(is), { style: 'sub' });
+            body += sigRow('— Impôt sur les bénéfices', is => -getImpot(is), { style: 'sub' });
+            body += sigRow('RÉSULTAT NET', sigResultatNet, { style: 'result' });
+            body += sigRow('CAF (Capacité d\'autofinancement)', sigCAF, { style: 'subtotal' });
+            document.getElementById('prevSigBody').innerHTML = body;
+
+            // ========== TABLEAU MENSUEL SIMPLIFIÉ ==========
+            // Répartition charges/CA mensuelle : depuis monthlyCa* et monthlyCharges*
+            const sumCaPrevArr = (prevState.monthlyCaPrev || []).reduce((a, b) => a + b, 0);
+            let totCa = 0, totCaN1 = 0, totCh = 0, totRes = 0;
+            let rows = '';
+            for (let m = 0; m < 12; m++) {
+                const isActual = m < lastClosedMonth;
+                const caN1 = (prevState.monthlyCaPrev[m] || 0);
+                const ca = isActual ? (prevState.monthlyCaCurrent[m] || 0) : caN1;
+                const ch = isActual ? (prevState.monthlyChargesCurrent[m] || 0) : (prevState.monthlyChargesPrev[m] || 0);
+                const res = ca - ch;
+                totCa += ca; totCaN1 += caN1; totCh += ch; totRes += res;
+                const rowClass = isActual ? 'row-actual' : 'row-forecast';
+                const pill = isActual
+                    ? '<span class="status-pill status-actual">Réalisé</span>'
+                    : '<span class="status-pill status-forecast">Prévu (N-1)</span>';
+                let deltaTxt = '';
+                if (caN1 > 0 && isActual) {
+                    const dPct = ((ca - caN1) / caN1) * 100;
+                    const cls = dPct >= 0 ? 'total-positive' : 'total-negative';
+                    deltaTxt = '<span class="' + cls + ' text-[10px] ml-1">' + fmtPctPrev(dPct, 0) + '</span>';
+                }
+                rows += '<tr class="' + rowClass + '">' +
+                    '<td class="px-4 py-2.5 text-ink font-medium">' + MONTHS_FR[m] + '</td>' +
+                    '<td class="text-right px-3 py-2.5 num-cell">' + fmtEurPrev(ca) + deltaTxt + '</td>' +
+                    '<td class="text-right px-3 py-2.5 num-cell text-gray-400 italic">' + fmtEurPrev(caN1) + '</td>' +
+                    '<td class="text-right px-3 py-2.5 num-cell">' + fmtEurPrev(ch) + '</td>' +
+                    '<td class="text-right px-3 py-2.5 num-cell ' + (res >= 0 ? 'total-positive' : 'total-negative') + '">' + fmtEurPrev(res) + '</td>' +
+                    '<td class="text-center px-3 py-2.5">' + pill + '</td>' +
+                '</tr>';
+            }
+            document.getElementById('prevMonthlyBody').innerHTML = rows;
+            setText('prevTotCa', fmtEurPrev(totCa));
+            setText('prevTotCaN1', fmtEurPrev(totCaN1));
+            setText('prevTotCharges', fmtEurPrev(totCh));
+            const resEl = document.getElementById('prevTotResultat');
+            if (resEl) { resEl.textContent = fmtEurPrev(totRes); resEl.className = 'text-right px-3 py-3 ' + (totRes >= 0 ? 'total-positive' : 'total-negative'); }
+        }
+
+        // ===== Onglet 2 : rendu 5 ans en SIG + budget trésorerie sur CAF =====
+        function renderPrev5ans() {
+            if (!prevState.isPrev) {
+                document.getElementById('prev5ansBody').innerHTML = '<tr><td colspan="7" class="text-center text-muted text-sm py-10">Compte de résultat N-1 indisponible.</td></tr>';
+                document.getElementById('prevTresoBody').innerHTML = '';
+                return;
+            }
+            const pctCa = Number(document.getElementById('prevPctCa').value) / 100 || 0;
+            const pctPers = Number(document.getElementById('prevPctPers').value) / 100 || 0;
+            const tresoInit = Number(document.getElementById('prevTresoInit').value) || 0;
+            const empAnnuel = Number(document.getElementById('prevEmpAnnuel').value) || 0;
+            const investAnnuel = Number(document.getElementById('prevInvestAnnuel').value) || 0;
+
+            // Base N-1 par poste (chiffres N-1 réels depuis Pennylane)
+            const base = {
+                ventes: _t(prevState.isPrev).ventesMarchandises || 0,
+                cout: _t(prevState.isPrev).coutMarchandises || 0,
+                production: sigProductionExercice(prevState.isPrev),
+                achats: getAchatsConso(prevState.isPrev),
+                externes: getChargesExternes(prevState.isPrev),
+                subventions: getSubventions(prevState.isPrev),
+                impotsTaxes: getImpotsTaxes(prevState.isPrev),
+                pers: getFraisPersonnel(prevState.isPrev),
+                autresProd: getAutresProduitsGestion(prevState.isPrev),
+                reprises: getReprises(prevState.isPrev),
+                autresCh: getAutresChargesGestion(prevState.isPrev),
+                dotations: getDotations(prevState.isPrev),
+                prodFin: getProduitsFin(prevState.isPrev),
+                chFin: getChargesFin(prevState.isPrev),
+                prodExc: getProduitsExc(prevState.isPrev),
+                chExc: getChargesExc(prevState.isPrev),
+                participation: getParticipation(prevState.isPrev),
+                impot: getImpot(prevState.isPrev)
+            };
+
+            // Années : N-1 (référence) + 5 années suivantes
+            const yearLabels = ['N-1 (' + prevState.refYear + ')'];
+            for (let i = 0; i < 5; i++) yearLabels.push((prevState.currentYear + i) + (i === 0 ? ' (N)' : ''));
+
+            // Projection : CA suit pctCa, frais de personnel suivent pctPers, autres charges suivent CA.
+            // Dotations et résultats fin/exc constants (par défaut).
+            const years = [];
+            for (let i = 0; i <= 5; i++) {
+                const fCa = Math.pow(1 + pctCa, i);
+                const fPers = Math.pow(1 + pctPers, i);
+                const y = {
+                    ventes: base.ventes * fCa,
+                    cout: base.cout * fCa,
+                    production: base.production * fCa,
+                    achats: base.achats * fCa,
+                    externes: base.externes * fCa,
+                    subventions: base.subventions,
+                    impotsTaxes: base.impotsTaxes * fCa,
+                    pers: base.pers * fPers,
+                    autresProd: base.autresProd * fCa,
+                    reprises: base.reprises,
+                    autresCh: base.autresCh * fCa,
+                    dotations: base.dotations, // constantes par défaut
+                    prodFin: base.prodFin,
+                    chFin: base.chFin,
+                    prodExc: base.prodExc,
+                    chExc: base.chExc,
+                    participation: base.participation,
+                    impot: 0 // recalculé plus bas selon le RN avant impôt
+                };
+                // Calculs SIG
+                y.ca = y.ventes + y.production;
+                y.margeCom = y.ventes - y.cout;
+                y.va = y.margeCom + y.production - y.achats - y.externes;
+                y.ebe = y.va + y.subventions - y.impotsTaxes - y.pers;
+                y.rex = y.ebe + y.autresProd + y.reprises - y.autresCh - y.dotations;
+                y.rFin = y.prodFin - y.chFin;
+                y.rCour = y.rex + y.rFin;
+                y.rExc = y.prodExc - y.chExc;
+                y.rnAvantImpot = y.rCour + y.rExc - y.participation;
+                // IS estimé (25 % au-delà de 42 500 €, 15 % en dessous - barème PME simplifié)
+                y.impot = Math.max(0, y.rnAvantImpot > 42500
+                    ? 42500 * 0.15 + (y.rnAvantImpot - 42500) * 0.25
+                    : y.rnAvantImpot * 0.15);
+                if (i === 0) y.impot = base.impot; // pour N-1 on garde l'IS réel
+                y.rn = y.rnAvantImpot - y.impot;
+                y.caf = y.rn + y.dotations - y.reprises;
+                years.push(y);
+            }
+
+            // En-tête tableau SIG
+            let head = '<th class="text-left px-4 py-3">Poste</th>';
+            yearLabels.forEach((lbl, i) => {
+                head += '<th class="text-right px-3 py-3' + (i === 0 ? ' text-cedrus-600' : '') + '">' + lbl + '</th>';
+            });
+            document.getElementById('prev5ansHead').innerHTML = head;
+
+            // Lignes SIG
+            function renderRow(label, key, opts = {}) {
+                const sign = opts.sign || '';
+                let cls = '';
+                let labelCls = '';
+                if (opts.style === 'subtotal') { cls = 'bg-cedrus-50/60'; labelCls = 'font-semibold text-cedrus-700'; }
+                if (opts.style === 'result')   { cls = 'bg-cedrus-100/40'; labelCls = 'font-bold text-cedrus-700 uppercase text-xs tracking-wider'; }
+                if (opts.style === 'sub')      { labelCls = 'text-muted italic'; }
+                let tr = '<tr class="' + cls + ' border-b border-gray-50">';
+                tr += '<td class="px-4 py-2 ' + labelCls + '">' + (sign ? sign + ' ' : '') + label + '</td>';
+                years.forEach((y, i) => {
+                    const v = y[key];
+                    const isRef = i === 0;
+                    const numCls = (opts.style === 'result' ? 'font-bold ' : '') + (v >= 0 ? '' : 'total-negative');
+                    tr += '<td class="text-right px-3 py-2 num-cell ' + numCls + (isRef ? ' text-cedrus-600 italic' : '') + '">' + fmtEurPrev(v) + '</td>';
+                });
+                tr += '</tr>';
+                return tr;
+            }
+            let body = '';
+            body += renderRow('Chiffre d\'affaires', 'ca', { style: 'subtotal' });
+            if (Math.abs(base.ventes) > 0.5 || Math.abs(base.cout) > 0.5) {
+                body += renderRow('Marge commerciale', 'margeCom');
+            }
+            body += renderRow('Achats consommés', 'achats', { sign: '—', style: 'sub' });
+            body += renderRow('Charges externes', 'externes', { sign: '—', style: 'sub' });
+            body += renderRow('VALEUR AJOUTÉE', 'va', { style: 'subtotal' });
+            body += renderRow('Subventions d\'exploitation', 'subventions', { sign: '+', style: 'sub' });
+            body += renderRow('Impôts &amp; taxes', 'impotsTaxes', { sign: '—', style: 'sub' });
+            body += renderRow('Frais de personnel', 'pers', { sign: '—', style: 'sub' });
+            body += renderRow('EBE', 'ebe', { style: 'result' });
+            body += renderRow('Autres produits de gestion', 'autresProd', { sign: '+', style: 'sub' });
+            body += renderRow('Reprises sur amort./prov.', 'reprises', { sign: '+', style: 'sub' });
+            body += renderRow('Autres charges de gestion', 'autresCh', { sign: '—', style: 'sub' });
+            body += renderRow('Dotations aux amort./prov.', 'dotations', { sign: '—', style: 'sub' });
+            body += renderRow('RÉSULTAT D\'EXPLOITATION', 'rex', { style: 'subtotal' });
+            body += renderRow('Résultat financier', 'rFin', { sign: '+', style: 'sub' });
+            body += renderRow('Résultat exceptionnel', 'rExc', { sign: '+', style: 'sub' });
+            body += renderRow('Impôt sur les bénéfices', 'impot', { sign: '—', style: 'sub' });
+            body += renderRow('RÉSULTAT NET', 'rn', { style: 'result' });
+            body += renderRow('CAF (= RN + dotations − reprises)', 'caf', { style: 'subtotal' });
+            document.getElementById('prev5ansBody').innerHTML = body;
+
+            // ===== BUDGET DE TRÉSORERIE — basé sur la CAF (correct) =====
+            const tresoHead = '<th class="text-left px-4 py-3">Poste</th>' +
+                yearLabels.slice(1).map(l => '<th class="text-right px-3 py-3">' + l + '</th>').join('');
+            document.getElementById('prevTresoHead').innerHTML = tresoHead;
+
+            let tresoPrec = tresoInit;
+            const debutRow = [], cafRow = [], empRow = [], investRow = [], variationRow = [], finRow = [];
+            for (let i = 1; i <= 5; i++) {
+                const caf = years[i].caf;
+                const variation = caf - empAnnuel - investAnnuel;
+                const debut = tresoPrec;
+                const fin = debut + variation;
+                debutRow.push(debut);
+                cafRow.push(caf);
+                empRow.push(-empAnnuel);
+                investRow.push(-investAnnuel);
+                variationRow.push(variation);
+                finRow.push(fin);
+                tresoPrec = fin;
+            }
+            function tresoLine(label, arr, opts = {}) {
+                let cls = '';
+                let labelCls = '';
+                if (opts.style === 'result') { cls = 'bg-cedrus-100/40'; labelCls = 'font-bold text-cedrus-700 uppercase text-xs tracking-wider'; }
+                if (opts.style === 'subtotal') { cls = 'bg-cedrus-50/60'; labelCls = 'font-semibold text-cedrus-700'; }
+                let tr = '<tr class="' + cls + ' border-b border-gray-50">';
+                tr += '<td class="px-4 py-2.5 ' + labelCls + '">' + label + '</td>';
+                arr.forEach(v => {
+                    const colorCls = opts.signed ? (v >= 0 ? 'total-positive' : 'total-negative') : '';
+                    tr += '<td class="text-right px-3 py-2.5 num-cell ' + colorCls + '">' + (opts.signed ? fmtSignedEurPrev(v) : fmtEurPrev(v)) + '</td>';
+                });
+                tr += '</tr>';
+                return tr;
+            }
+            let tresoBody = '';
+            tresoBody += tresoLine('Trésorerie au 1er janvier', debutRow);
+            tresoBody += tresoLine('+ CAF (capacité d\'autofinancement)', cafRow, { signed: true, style: 'subtotal' });
+            tresoBody += tresoLine('— Remboursement d\'emprunts (capital)', empRow, { signed: true });
+            tresoBody += tresoLine('— Investissements', investRow, { signed: true });
+            tresoBody += tresoLine('= Variation de trésorerie', variationRow, { signed: true, style: 'subtotal' });
+            tresoBody += tresoLine('Trésorerie au 31 décembre', finRow, { signed: true, style: 'result' });
+            document.getElementById('prevTresoBody').innerHTML = tresoBody;
+
+            // Mémorise les valeurs courantes pour le PDF
+            prevState.last5ans = {
+                years, yearLabels, base, pctCa, pctPers,
+                treso: { debutRow, cafRow, empRow, investRow, variationRow, finRow, tresoInit, empAnnuel, investAnnuel }
+            };
+        }
+
+        // ===== Génération du rapport CEDRUS =====
+        async function generatePrevisionnelReport() {
+            if (!prevState.loaded) { alert('Les données ne sont pas encore chargées.'); return; }
+            const payload = {
+                year_current: prevState.currentYear,
+                year_ref: prevState.refYear,
+                ref_month: prevState.refMonth,
+                monthly: {
+                    months_fr: MONTHS_FR,
+                    ca_current: prevState.monthlyCaCurrent,
+                    ca_prev: prevState.monthlyCaPrev,
+                    charges_current: prevState.monthlyChargesCurrent,
+                    charges_prev: prevState.monthlyChargesPrev
+                },
+                income_statement_prev: prevState.isPrev ? prevState.isPrev.totals : null,
+                hypotheses: {
+                    pct_ca: Number(document.getElementById('prevPctCa').value) || 0,
+                    pct_pers: Number(document.getElementById('prevPctPers').value) || 0,
+                    treso_init: Number(document.getElementById('prevTresoInit').value) || 0,
+                    emp_annuel: Number(document.getElementById('prevEmpAnnuel').value) || 0,
+                    invest_annuel: Number(document.getElementById('prevInvestAnnuel').value) || 0
+                },
+                projection: prevState.last5ans || null,
+                treso_actuelle: prevState.tresoActuelle,
+                loans: prevState.loans || null,
+                client: (companyInfo ? {
+                    raison_sociale: companyInfo.name || '',
+                    siren: companyInfo.siren || '',
+                    adresse: [companyInfo.address, companyInfo.postalCode, companyInfo.city].filter(Boolean).join(', ')
+                } : undefined)
+            };
+            try {
+                const r = await fetch('/api/previsionnel/rapport', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!r.ok) {
+                    const t = await r.text();
+                    throw new Error(t || ('HTTP ' + r.status));
+                }
+                const blob = await r.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'previsionnel-cedrus-' + prevState.currentYear + '.pdf';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                console.error('PDF rapport prévisionnel', e);
+                alert('Impossible de générer le rapport : ' + e.message);
+            }
+        }
+
+        function requestPrevisionnelReview() {
+            const subject = encodeURIComponent('Échange sur mon prévisionnel');
+            const body = encodeURIComponent('Bonjour,\n\nJe souhaite échanger avec mon expert-comptable au sujet du prévisionnel construit dans mon espace client.\n\nMerci.');
+            window.location.href = 'mailto:Cabinet@cedrus-expertisecomptable.com?subject=' + subject + '&body=' + body;
+        }
+
         // Hook showSection pour charger les salariés quand on ouvre la section
         const _origShowSectionSoc = typeof showSection === 'function' ? showSection : null;
         if (_origShowSectionSoc) {
             window.showSection = function(name) {
                 _origShowSectionSoc(name);
                 if (name === 'social') loadSalaries();
+                if (name === 'previsionnel' && !prevState.loaded && !prevState.loading) loadPrevisionnel();
             };
         }
 

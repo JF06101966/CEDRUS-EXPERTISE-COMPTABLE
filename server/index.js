@@ -5,6 +5,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { generateAttestationCA } from './services/pdf-attestation-ca.js';
+import { generatePrevisionnelReport } from './services/pdf-previsionnel.js';
 
 // Nouveaux modules Supabase / multi-client
 import leadsRouter from './routes/leads.js';
@@ -571,6 +572,7 @@ async function buildSynthesis(year, compare) {
         months: ['Jan.','Fév.','Mars','Avr.','Mai','Juin','Juil.','Août','Sep.','Oct.','Nov.','Déc.'],
         charts: {
             ca: { current: cur.monthlyCa, previous: prev.monthlyCa },
+            charges: { current: cur.monthlyCharges, previous: prev.monthlyCharges },
             dispo: { current: cur.monthlyDispo, previous: prev.monthlyDispo }
         }
     };
@@ -688,119 +690,146 @@ const CHARGE_CLASS_LABELS = {
     '69': 'Participation, impôts sur les bénéfices'
 };
 
+// SIG bucketing (réutilisable)
+// IMPORTANT : les dotations aux amortissements/provisions (681x, 687x) sont isolées dans
+// le bucket 'dotations' (charges NON décaissables) pour permettre le calcul correct
+// de la CAF en prévisionnel. Idem côté produits : reprises (781x, 786x, 787x, 791x...) → 'reprises'.
+function _isBucket(n) {
+    n = String(n);
+    if (n.startsWith('707')) return 'ventesMarchandises';
+    if (n.startsWith('6037') || n.startsWith('607')) return 'coutMarchandises';
+    if (/^70[1-6]/.test(n) || n.startsWith('708')) return 'productionVendue';
+    if (n.startsWith('713') || n.startsWith('71')) return 'productionStockee';
+    if (n.startsWith('72')) return 'productionImmobilisee';
+    if (/^60/.test(n)) return 'achatsMp';
+    if (/^61/.test(n) || /^62/.test(n)) return 'autresAchatsCharges';
+    if (/^63/.test(n)) return 'impotsTaxes';
+    if (/^64/.test(n)) return 'chargesPersonnel';
+    if (n.startsWith('74')) return 'subventionsExpl';
+    // Reprises sur amort. et provisions (non encaissables) — séparées des autres produits
+    if (n.startsWith('781') || n.startsWith('786') || n.startsWith('787') || n.startsWith('791') || n.startsWith('796') || n.startsWith('797')) return 'reprises';
+    if (/^75/.test(n)) return 'autresProduits';
+    // Dotations aux amortissements/provisions (non décaissables) — séparées des autres charges
+    if (n.startsWith('681') || n.startsWith('686') || n.startsWith('687') || n.startsWith('696') || n.startsWith('698') || n.startsWith('699')) return 'dotations';
+    if (/^65/.test(n)) return 'autresCharges';
+    if (/^76/.test(n)) return 'produitsFin';
+    if (/^66/.test(n)) return 'chargesFin';
+    if (/^77/.test(n)) return 'produitsExc';
+    if (/^67/.test(n)) return 'chargesExc';
+    if (/^691/.test(n)) return 'participation';
+    if (/^695/.test(n)) return 'impot';
+    return null;
+}
+const _IS_PRODUCT_BUCKETS = new Set([
+    'ventesMarchandises', 'productionVendue', 'productionStockee', 'productionImmobilisee',
+    'subventionsExpl', 'autresProduits', 'reprises', 'produitsFin', 'produitsExc'
+]);
+
+function _isComputeTotals(items) {
+    const groups = {};
+    for (const it of items) {
+        const b = _isBucket(it.number);
+        if (!b) continue;
+        const debits = parseFloat(it.debits || 0);
+        const credits = parseFloat(it.credits || 0);
+        const isProduct = _IS_PRODUCT_BUCKETS.has(b);
+        const net = isProduct ? (credits - debits) : (debits - credits);
+        if (!groups[b]) groups[b] = [];
+        groups[b].push({ number: String(it.number), label: it.label || '', debits, credits, net });
+    }
+    for (const k of Object.keys(groups)) groups[k].sort((a, b) => b.net - a.net);
+    const totalOf = (k) => (groups[k] || []).reduce((s, a) => s + a.net, 0);
+
+    const ventesMarchandises = totalOf('ventesMarchandises');
+    const coutMarchandises = totalOf('coutMarchandises');
+    const margeCommerciale = ventesMarchandises - coutMarchandises;
+    const productionVendue = totalOf('productionVendue');
+    const productionStockee = totalOf('productionStockee');
+    const productionImmobilisee = totalOf('productionImmobilisee');
+    const productionExercice = productionVendue + productionStockee + productionImmobilisee;
+    const achatsMp = totalOf('achatsMp');
+    const autresAchatsCharges = totalOf('autresAchatsCharges');
+    const consommations = achatsMp + autresAchatsCharges;
+    const valeurAjoutee = margeCommerciale + productionExercice - consommations;
+    const subventionsExpl = totalOf('subventionsExpl');
+    const impotsTaxes = totalOf('impotsTaxes');
+    const chargesPersonnel = totalOf('chargesPersonnel');
+    const ebe = valeurAjoutee + subventionsExpl - impotsTaxes - chargesPersonnel;
+    const autresProduits = totalOf('autresProduits');
+    const reprises = totalOf('reprises');
+    const autresCharges = totalOf('autresCharges');
+    const dotations = totalOf('dotations'); // amortissements & provisions (NON décaissables)
+    const resultatExploitation = ebe + autresProduits + reprises - autresCharges - dotations;
+    const produitsFin = totalOf('produitsFin');
+    const chargesFin = totalOf('chargesFin');
+    const resultatFinancier = produitsFin - chargesFin;
+    const resultatCourant = resultatExploitation + resultatFinancier;
+    const produitsExc = totalOf('produitsExc');
+    const chargesExc = totalOf('chargesExc');
+    const resultatExceptionnel = produitsExc - chargesExc;
+    const participation = totalOf('participation');
+    const impot = totalOf('impot');
+    const resultatNet = resultatCourant + resultatExceptionnel - participation - impot;
+    const totalProduits = productionVendue + ventesMarchandises + productionStockee + productionImmobilisee
+        + subventionsExpl + autresProduits + reprises + produitsFin + produitsExc;
+
+    // CAF (Capacité d'AutoFinancement) = Résultat net + Dotations - Reprises
+    // C'est le flux de trésorerie d'exploitation hors variation BFR. Sert au prévisionnel de trésorerie.
+    const caf = resultatNet + dotations - reprises;
+
+    return {
+        groups,
+        totals: {
+            ventesMarchandises, coutMarchandises, margeCommerciale,
+            productionVendue, productionStockee, productionImmobilisee, productionExercice,
+            achatsMp, autresAchatsCharges, consommations,
+            valeurAjoutee,
+            subventionsExpl, impotsTaxes, chargesPersonnel, ebe,
+            autresProduits, reprises, autresCharges, dotations, resultatExploitation,
+            produitsFin, chargesFin, resultatFinancier,
+            resultatCourant,
+            produitsExc, chargesExc, resultatExceptionnel,
+            participation, impot, resultatNet,
+            caf,
+            totalProduits
+        }
+    };
+}
+
 app.get('/api/pennylane/income-statement', async (req, res) => {
     const end = req.query.end;
+    const compare = req.query.compare; // YYYY-MM-DD pour N-1 même période (facultatif)
     if (!end || !/^\d{4}-\d{2}-\d{2}$/.test(end)) {
         return res.status(400).json({ error: 'end date required (YYYY-MM-DD)' });
     }
     const year = end.slice(0, 4);
     const start = `${year}-01-01`;
     try {
-        const r = await plAll('/trial_balance', { query: { period_start: start, period_end: end } });
+        const calls = [plAll('/trial_balance', { query: { period_start: start, period_end: end } })];
+        let compareStart = null, compareEnd = null;
+        if (compare && /^\d{4}-\d{2}-\d{2}$/.test(compare)) {
+            const py = compare.slice(0, 4);
+            compareStart = `${py}-01-01`;
+            compareEnd = compare;
+            calls.push(plAll('/trial_balance', { query: { period_start: compareStart, period_end: compareEnd } }));
+        }
+        const [r, rPrev] = await Promise.all(calls);
         if (!r.ok) return res.status(r.status).json(r.body);
-        const items = r.body.items || [];
-
-        // Classify each account into a SIG bucket
-        function bucket(n) {
-            n = String(n);
-            if (n.startsWith('707')) return 'ventesMarchandises';
-            if (n.startsWith('6037') || n.startsWith('607')) return 'coutMarchandises';
-            if (/^70[1-6]/.test(n) || n.startsWith('708')) return 'productionVendue';
-            if (n.startsWith('713') || n.startsWith('71')) return 'productionStockee';
-            if (n.startsWith('72')) return 'productionImmobilisee';
-            if (/^60/.test(n)) return 'achatsMp';
-            if (/^61/.test(n) || /^62/.test(n)) return 'autresAchatsCharges';
-            if (/^63/.test(n)) return 'impotsTaxes';
-            if (/^64/.test(n)) return 'chargesPersonnel';
-            if (n.startsWith('74')) return 'subventionsExpl';
-            if (/^75/.test(n) || n.startsWith('781') || n.startsWith('791')) return 'autresProduits';
-            if (/^65/.test(n) || n.startsWith('681') || n.startsWith('687')) return 'autresCharges';
-            if (/^76/.test(n) || n.startsWith('786') || n.startsWith('796')) return 'produitsFin';
-            if (/^66/.test(n) || n.startsWith('686') || n.startsWith('696')) return 'chargesFin';
-            if (/^77/.test(n) || n.startsWith('787') || n.startsWith('797')) return 'produitsExc';
-            if (/^67/.test(n)) return 'chargesExc';
-            if (/^691/.test(n)) return 'participation';
-            if (/^695/.test(n) || /^698/.test(n) || /^699/.test(n)) return 'impot';
-            return null;
-        }
-
-        const PRODUCT_BUCKETS = new Set([
-            'ventesMarchandises', 'productionVendue', 'productionStockee', 'productionImmobilisee',
-            'subventionsExpl', 'autresProduits', 'produitsFin', 'produitsExc'
-        ]);
-
-        const groups = {};
-        for (const it of items) {
-            const b = bucket(it.number);
-            if (!b) continue;
-            const debits = parseFloat(it.debits || 0);
-            const credits = parseFloat(it.credits || 0);
-            const isProduct = PRODUCT_BUCKETS.has(b);
-            const net = isProduct ? (credits - debits) : (debits - credits);
-            if (!groups[b]) groups[b] = [];
-            groups[b].push({ number: String(it.number), label: it.label || '', debits, credits, net });
-        }
-        for (const k of Object.keys(groups)) groups[k].sort((a, b) => b.net - a.net);
-
-        const totalOf = (k) => (groups[k] || []).reduce((s, a) => s + a.net, 0);
-
-        const ventesMarchandises = totalOf('ventesMarchandises');
-        const coutMarchandises = totalOf('coutMarchandises');
-        const margeCommerciale = ventesMarchandises - coutMarchandises;
-
-        const productionVendue = totalOf('productionVendue');
-        const productionStockee = totalOf('productionStockee');
-        const productionImmobilisee = totalOf('productionImmobilisee');
-        const productionExercice = productionVendue + productionStockee + productionImmobilisee;
-
-        const achatsMp = totalOf('achatsMp');
-        const autresAchatsCharges = totalOf('autresAchatsCharges');
-        const consommations = achatsMp + autresAchatsCharges;
-
-        const valeurAjoutee = margeCommerciale + productionExercice - consommations;
-
-        const subventionsExpl = totalOf('subventionsExpl');
-        const impotsTaxes = totalOf('impotsTaxes');
-        const chargesPersonnel = totalOf('chargesPersonnel');
-        const ebe = valeurAjoutee + subventionsExpl - impotsTaxes - chargesPersonnel;
-
-        const autresProduits = totalOf('autresProduits');
-        const autresCharges = totalOf('autresCharges');
-        const resultatExploitation = ebe + autresProduits - autresCharges;
-
-        const produitsFin = totalOf('produitsFin');
-        const chargesFin = totalOf('chargesFin');
-        const resultatFinancier = produitsFin - chargesFin;
-        const resultatCourant = resultatExploitation + resultatFinancier;
-
-        const produitsExc = totalOf('produitsExc');
-        const chargesExc = totalOf('chargesExc');
-        const resultatExceptionnel = produitsExc - chargesExc;
-
-        const participation = totalOf('participation');
-        const impot = totalOf('impot');
-        const resultatNet = resultatCourant + resultatExceptionnel - participation - impot;
-
-        const totalProduits = productionVendue + ventesMarchandises + productionStockee + productionImmobilisee
-            + subventionsExpl + autresProduits + produitsFin + produitsExc;
-
-        res.json({
+        const cur = _isComputeTotals(r.body.items || []);
+        const out = {
             periodStart: start, periodEnd: end,
-            groups,
-            totals: {
-                ventesMarchandises, coutMarchandises, margeCommerciale,
-                productionVendue, productionStockee, productionImmobilisee, productionExercice,
-                achatsMp, autresAchatsCharges, consommations,
-                valeurAjoutee,
-                subventionsExpl, impotsTaxes, chargesPersonnel, ebe,
-                autresProduits, autresCharges, resultatExploitation,
-                produitsFin, chargesFin, resultatFinancier,
-                resultatCourant,
-                produitsExc, chargesExc, resultatExceptionnel,
-                participation, impot, resultatNet,
-                totalProduits
-            }
-        });
+            groups: cur.groups,
+            totals: cur.totals
+        };
+        if (rPrev) {
+            const prev = _isComputeTotals(rPrev.body.items || []);
+            out.compare = {
+                periodStart: compareStart, periodEnd: compareEnd,
+                groups: prev.groups,
+                totals: prev.totals
+            };
+        }
+        res.json(out);
     } catch (e) {
         res.status(500).json({ error: String(e) });
     }
@@ -1001,6 +1030,97 @@ app.post('/api/attestation-ca', express.json({ limit: '1mb' }), async (req, res)
         return res.send(pdf);
     } catch (err) {
         console.error('[attestation-ca]', err);
+        return res.status(500).json({ error: String(err && err.message || err) });
+    }
+});
+
+// ---- Emprunts (capital restant dû + annuité observée N-1) ----
+// GET /api/pennylane/loans → solde des comptes 164/165/168 (CRD) + flux N-1 (annuité)
+app.get('/api/pennylane/loans', async (_req, res) => {
+    const today = new Date();
+    const Y = today.getUTCFullYear();
+    const todayIso2 = today.toISOString().slice(0, 10);
+    const prev = Y - 1;
+    try {
+        // Solde de bilan : période très large depuis la création
+        const [rAll, rPrev, rCur] = await Promise.all([
+            plAll('/trial_balance', { query: { period_start: '2000-01-01', period_end: todayIso2 }, debugTag: 'loans-all' }),
+            plAll('/trial_balance', { query: { period_start: `${prev}-01-01`, period_end: `${prev}-12-31` }, debugTag: 'loans-prev' }),
+            plAll('/trial_balance', { query: { period_start: `${Y}-01-01`, period_end: todayIso2 }, debugTag: 'loans-cur' })
+        ]);
+        const isLoanAccount = (n) => /^16[4-8]/.test(String(n || ''));
+        const accounts = {};
+        function ingest(items, key) {
+            for (const it of items.body?.items || []) {
+                const n = String(it.number || '');
+                if (!isLoanAccount(n)) continue;
+                if (!accounts[n]) accounts[n] = { number: n, label: it.label || '', solde: 0, debitsPrev: 0, creditsPrev: 0, debitsCur: 0, creditsCur: 0 };
+                const d = parseFloat(it.debits || 0);
+                const c = parseFloat(it.credits || 0);
+                if (key === 'all')  accounts[n].solde      = c - d; // passif : crédit - débit
+                if (key === 'prev') { accounts[n].debitsPrev = d; accounts[n].creditsPrev = c; }
+                if (key === 'cur')  { accounts[n].debitsCur  = d; accounts[n].creditsCur  = c; }
+            }
+        }
+        ingest(rAll, 'all');
+        ingest(rPrev, 'prev');
+        ingest(rCur, 'cur');
+
+        const list = Object.values(accounts).sort((a, b) => b.solde - a.solde);
+        const crd = list.reduce((s, a) => s + a.solde, 0);
+        const remboursementPrev = list.reduce((s, a) => s + a.debitsPrev, 0); // capital remboursé en N-1
+        const remboursementCur  = list.reduce((s, a) => s + a.debitsCur, 0);  // capital remboursé YTD en N
+        res.json({
+            yearRef: prev,
+            crd,
+            remboursementPrev,
+            remboursementCur,
+            asOf: todayIso2,
+            accounts: list
+        });
+    } catch (e) {
+        console.error('[loans]', e);
+        res.status(500).json({ error: String(e) });
+    }
+});
+
+// ---- Rapport prévisionnel CEDRUS ----
+// POST /api/previsionnel/rapport → renvoie un PDF directement téléchargeable.
+// Le corps contient les hypothèses saisies par le client + projection calculée côté front.
+app.post('/api/previsionnel/rapport', express.json({ limit: '2mb' }), async (req, res) => {
+    try {
+        const body = req.body || {};
+
+        // Récupère les infos entreprise depuis le contexte client si disponible
+        let client = body.client || {};
+        const ctx = plContext.getStore();
+        if (ctx?.clientProfile) {
+            const c = ctx.clientProfile;
+            client = {
+                raison_sociale: c.raison_sociale || client.raison_sociale || '',
+                siren: c.siren || client.siren || '',
+                adresse: [c.adresse, c.code_postal, c.ville].filter(Boolean).join(', ') || client.adresse || ''
+            };
+        }
+
+        const pdf = await generatePrevisionnelReport({
+            year_current: Number(body.year_current) || new Date().getFullYear(),
+            year_ref: Number(body.year_ref) || (new Date().getFullYear() - 1),
+            income_statement_prev: body.income_statement_prev || null,
+            hypotheses: body.hypotheses || {},
+            treso_actuelle: Number(body.treso_actuelle) || 0,
+            loans: body.loans || null,
+            client,
+            ville_emission: body.ville_emission || 'Marnes-la-Coquette',
+            date_emission: body.date_emission || new Date(),
+        });
+        const raison = String(client.raison_sociale || 'client').replace(/[^a-zA-Z0-9]+/g, '_');
+        const filename = `Rapport_previsionnel_${raison}_${body.year_current}.pdf`;
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        return res.send(pdf);
+    } catch (err) {
+        console.error('[previsionnel-rapport]', err);
         return res.status(500).json({ error: String(err && err.message || err) });
     }
 });
