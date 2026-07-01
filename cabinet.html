@@ -471,5 +471,44 @@
         updateNav();
     })();
     </script>
+<!-- 🧪 Bloc test magic link — à retirer après validation -->
+<div style="max-width:480px;margin:24px auto;padding:16px;border:1px dashed #94a3b8;border-radius:8px;font-family:system-ui,sans-serif">
+  <h3 style="margin:0 0 8px;font-size:14px;color:#334155">🧪 Test magic link (dev)</h3>
+  <input id="test-magic-email" type="email" placeholder="votre-email@domaine.com"
+         style="width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px;margin-bottom:8px" />
+  <button id="test-magic-btn" type="button"
+          style="width:100%;padding:10px;background:#0f766e;color:#fff;border:0;border-radius:6px;cursor:pointer">
+    Envoyer le magic link de test
+  </button>
+  <pre id="test-magic-log" style="margin-top:10px;padding:8px;background:#f1f5f9;border-radius:6px;font-size:12px;white-space:pre-wrap;max-height:200px;overflow:auto"></pre>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const SUPABASE_URL = 'https://wwpvccorccwxhgzfllgq.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cHZjY29yY2N3eGhnemZsbGdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxMzU1NDMsImV4cCI6MjA5NzcxMTU0M30.dw_Y9I9gsmAs6qVKfhp7-l58Hr-ZtD-M0XPcIa8ae4Y';
+  const REDIRECT = 'https://pilot.cedrus-expertisecomptable.com/auth-callback';
+
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const log = (m) => {
+    const el = document.getElementById('test-magic-log');
+    el.textContent += `[${new Date().toLocaleTimeString()}] ${m}\n`;
+  };
+
+  document.getElementById('test-magic-btn').addEventListener('click', async () => {
+    const email = document.getElementById('test-magic-email').value.trim();
+    if (!email) return log('❌ Email requis');
+    log(`→ Envoi vers ${email}`);
+    log(`   redirectTo = ${REDIRECT}`);
+    const { data, error } = await sb.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: REDIRECT, shouldCreateUser: false },
+    });
+    if (error) return log(`❌ ERREUR: ${error.message}`);
+    log(`✅ Email envoyé. Vérifiez votre boîte, cliquez sur le lien.`);
+    log(`   L'URL d'atterrissage doit commencer par ${REDIRECT}#access_token=...`);
+  });
+</script>
 </body>
 </html>
